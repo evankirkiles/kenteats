@@ -1,1 +1,3 @@
-// Will contain index code
+const ProductRetriever = require('./scripts/products').ProductRetriever
+
+var products = new ProductRetriever()
