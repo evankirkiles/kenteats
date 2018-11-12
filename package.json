@@ -1,0 +1,22 @@
+{
+  "name": "kenteats",
+  "version": "1.0.0",
+  "description": "Automating checkout and making ease of access for KentEATS.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/evankirkiles/kenteats.git"
+  },
+  "keywords": [
+    "automation"
+  ],
+  "author": "Evan Kirkiles",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/evankirkiles/kenteats/issues"
+  },
+  "homepage": "https://github.com/evankirkiles/kenteats#readme"
+}
