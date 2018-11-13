@@ -1,3 +1,5 @@
-const ProductRetriever = require('./scripts/products').ProductRetriever
+const Checkout = require('./scripts/checkout').Checkout
+const Product = require('./scripts/products').ProductRetriever
 
-var products = new ProductRetriever()
+// var checkout = new Checkout()
+var product = new Product()

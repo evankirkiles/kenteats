@@ -1,0 +1,12 @@
+{
+	"configuration": {
+		"config_id": "configuration",
+		"store_token": "10190",
+		"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.1 Safari/605.1.15"
+	},
+	"development": {
+		"config_id": "development",
+		"app_name": "KentEATS",
+		"app_desc": "Order for delivery from your favorite coffee places."
+	}
+}

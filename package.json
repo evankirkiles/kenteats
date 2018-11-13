@@ -21,8 +21,10 @@
   },
   "homepage": "https://github.com/evankirkiles/kenteats#readme",
   "dependencies": {
+    "chromedriver": "^2.43.1",
     "prompt": "^1.0.0",
     "prompt-sync": "^4.1.6",
-    "request": "^2.88.0"
+    "request": "^2.88.0",
+    "selenium-webdriver": "^4.0.0-alpha.1"
   }
 }
