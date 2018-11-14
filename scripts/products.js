@@ -121,7 +121,7 @@ class ProductRetriever {
 			while (choice != 0) {
 				if (choice > 0) {
 					// In this case, an option is being considered
-					let currentOption = [choice]
+					let currentOption = [iteration[choice - 1].name]
 					// Here we get the children next
 					iteration = iteration[choice - 1].children
 					optionsString = 'Please select a sub option:\n    (-1) RETURN'
@@ -136,7 +136,7 @@ class ProductRetriever {
 					// Finally get the product
 					if (choice > 0) {
 						// Add the new choice to the vector of options
-						currentOption.push(choice)
+						currentOption.push(iteration[choice - 1].name)
 
 						// Continue on to product/option selection
 						iteration = iteration[choice - 1].products
@@ -152,7 +152,7 @@ class ProductRetriever {
 						// Choose a size now
 						if (choice > 0) {
 							// Add the new choice to the vector of options
-							currentOption.push(choice)
+							currentOption.push(iteration[choice - 1].form.name)
 
 							// Continue on to quantity selection
 							iteration = iteration[choice - 1].form.sizes
@@ -169,9 +169,10 @@ class ProductRetriever {
 							// Now add this selection to the product options
 							if (choice > 0) {
 								// Add it to current option before pushing all into larger options array
-								currentOption.push(choice)
+								currentOption.push(iteration[choice - 1].name)
 								options.push(currentOption)
 
+								console.log(iteration)
 								console.log('got here')
 								// Set choice to -1 to simulate returning to beginning
 								choice = -1
@@ -190,7 +191,8 @@ class ProductRetriever {
 				}
 			}
 
-			// At end print out options
+			// At end print out options and ask for quantity
+			
 			console.log(options)
 		})
 	}
