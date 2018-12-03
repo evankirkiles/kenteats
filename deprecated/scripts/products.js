@@ -32,12 +32,20 @@ class ProductRetriever {
 	// Initialize pulls the menu first
 	async initialize() {
 		syslog('Retrieving menu...')
-		await request.get({
-			url: 'https://app.starbucks.com/bff/ordering/menu?storeNumber=' + CONFIG.configuration.store_token,
-		}, (err, resp, body) => {
-			this.fullproducts = JSON.parse(body)
-			this.ready = true
-			this.products = []
+		await this.pullMenu()
+	}
+
+	// Get request to pull the menu
+	pullMenu() {
+		return new Promise(resolve => {
+			request.get({
+				url: 'https://app.starbucks.com/bff/ordering/menu?storeNumber=' + CONFIG.configuration.store_token,
+			}, (err, resp, body) => {
+				this.fullproducts = JSON.parse(body)
+				this.ready = true
+				this.products = []
+				resolve()
+			})
 		})
 	}
 
