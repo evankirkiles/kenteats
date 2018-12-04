@@ -9,12 +9,18 @@ const SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
 // time.
 const TOKEN_PATH = 'token.json';
 
-// Load client secrets from a local file.
-fs.readFile('credentials.json', (err, content) => {
-  if (err) return console.log('Error loading client secret file:', err);
-  // Authorize a client with credentials, then call the Google Sheets API.
-  authorize(JSON.parse(content), sendAfternoonReceipts);
-});
+function runAuthorizeFunction(funcToRun, args, callback) {
+  // Load client secrets from a local file.
+  fs.readFile('credentials.json', (err, content) => {
+    if (err) return console.log('Error loading client secret file:', err);
+    // Authorize a client with credentials, then call the Google Sheets API.
+    authorize(JSON.parse(content), (auth) => {
+      funcToRun(auth, args, callback)
+    })
+  })
+}
+
+module.exports.runAuthorizeFunction = runAuthorizeFunction
 
 /**
  * Create an OAuth2 client with the given credentials, and then execute the
@@ -92,47 +98,95 @@ function asdasd(auth) {
 }
 
 /**
- * Prints the receipts for the afternoon
+ * Returns the receipts for a given time
  */
-function sendAfternoonReceipts(auth) {
+function getReceipts(auth, type, callback) {
   const sheets = google.sheets({version: 'v4', auth});
   sheets.spreadsheets.values.get({
-    spreadsheetId: '1uL4TKwHW3EUpRUSPUZokcVRdsHUfk3iYmsITI6biya4',
-    range: 'Afternoon Main!A21:AR',
+    spreadsheetId: '13RBFxTLfO7bCwFgvyxp3K4QVDI82Y-JJXA6sJyEyBas',
+    range: 'Complete ' + type + ' Receipt!A1:AD91',
   }, (err, res) => {
     if (err) return console.log('The API returned an error: ' + err);
     // Build an array which will hold each message to be sent
-    let messages = []
+    var messages = []
     const rows = res.data.values;
     if (rows.length) {
-      // This i value keeps track of the number of receipts there are
-      let i = -1
+      // This array keeps track of the starting points of each receipt
+      let receiptStarts = []
+      let numreceits = 0
       // This index keeps track of which row is currently being read
       let index = 0
       rows.map((row) => {
-      	if (i == -1) {
-      		i = 0
-      		for (let j = 0; j < row.length; j+=2) {
-      			if (row[j] != undefined) {
-      				i++
-      				messages[j/2] = [row[j]]
+        if (index == 0) {
+          index++
+        } else if (index == 1) {
+      		for (let j = 0; j < row.length; j++) {
+      			if (row[j] != undefined && row[j] != '' && row[j] != '#REF!') {
+      				receiptStarts.push(j)
+      				messages.push([row[j]])
       			}
       		}
-      	} else {
+          index++
+      	} else if (index == 22 || index == 45 || index == 68 || index == 91 || index == 112 || index == 134) {
+          receiptStarts = []
+          numreceits = messages.length
+          index = 0
+        } else if (index == 45) {
+          receiptStarts = []
+          numreceits = messages.length
+          index = 0
+        } else {
       		index++
       		// At this point the number of receipts is known
-      		for (let j = 0; j < i; j++) {
-      			if (index >= 9) {
-      				messages[j].push(row[j*2] + ' ' + row[(j*2)+1])
-      			} else {
-      				messages[j].push(row[j*2])
-      			}
+      		for (let j = 0; j < receiptStarts.length; j++) {
+              messages[numreceits+j].push([row[receiptStarts[j]], row[receiptStarts[j]+1], row[receiptStarts[j]+2]])
       		}
       	}
       });
-	console.log(messages)
+	   callback(messages)
     } else {
-      console.log('No data found.');
+      callback('No data found.')
     }
   });
 }
+
+module.exports.getReceipts = getReceipts
+
+/*
+*   Creates a readable format for a receipt based on its existing values.
+*/
+function receiptToString(receipt) {
+  // First element is always the name
+  var toReturn = "-- Receipt for " + receipt[0] + " --\nItems: \n"
+  // Iterate through items and add each one that exists
+  for (let i = 0; i < 8; i++) {
+    if (receipt[2 + i][0] != '#VALUE!' && receipt[2 + i][0] != '#REF!') {
+      toReturn += "[" + receipt[2 + i][0].slice(0, -1) + ": $" + receipt[2 + i][2] + "\n"
+    }
+  }
+  // Next comes payment method and drop off location
+  toReturn += "Payment Method: " + receipt[10][0] + "\nLocation: " + receipt[11][0] + "\nNumber: " + receipt[15][0] +
+                "\nTotal Without Fee: " + receipt[17][1] + "\nFee: " + receipt[18][1] + "\nTotal: " + receipt[20][1]
+  // Finally return this string
+  return toReturn
+}
+
+/*
+* Creates a readable order format for a receipt (only includes items and the total price)
+*/
+function orderToString(receipt, ordernum) {
+  // First element is always the name
+  var toReturn = "- Order #" + ordernum + " for " + receipt[0] + " -\nItems:"
+  // Iterate through the items and add each one that eixsts
+  for (let i = 0; i < 8; i++) {
+    if (receipt[2 + i][0] != '#VALUE!' && receipt[2 + i][0] != '#REF!') {
+      toReturn += "[" + receipt[2 + i][0].slice(0, -1) + "\n"
+    }
+  }
+  // Next comes total price
+  toReturn += "Total: " + receipt[20][1]
+  return toReturn
+}
+
+module.exports.receiptToString = receiptToString
+module.exports.orderToString = orderToString

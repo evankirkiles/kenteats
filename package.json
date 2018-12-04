@@ -4,7 +4,7 @@
   "description": "Automating checkout and making ease of access for KentEATS.",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node app/bot.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -24,9 +24,11 @@
     "chromedriver": "^2.43.1",
     "express": "^4.16.4",
     "googleapis": "^27.0.0",
+    "http": "0.0.0",
     "prompt": "^1.0.0",
     "prompt-sync": "^4.1.6",
     "request": "^2.88.0",
-    "selenium-webdriver": "^4.0.0-alpha.1"
+    "selenium-webdriver": "^4.0.0-alpha.1",
+    "twilio": "^3.25.0"
   }
 }
