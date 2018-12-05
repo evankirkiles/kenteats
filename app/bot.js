@@ -2,6 +2,8 @@
 var VAULT = require('../config/vault.json')
 // Google API for getting receipts and other data
 var googleapi = require('./googleapi')
+// Analytics for user data
+var SQLInterface = require('./analytics').SQLInterface
 // Twilio / http imports
 const http = require('http')
 const express = require('express')
@@ -17,13 +19,51 @@ app.use(bodyParser.urlencoded({ extended: false }))
 // Listen for messages sent to Twilio
 app.post('/', (req, res) => {
 	const twiml = new MessagingResponse()
+	const database = new SQLInterface()
 
-	// Set the response to the request based on content
+	// Log the command to the console
+	console.log("[" + new Date(Date.now()).toLocaleString() + "] (" + req.body.From + ") " + req.body.Body)
+
+	// HELP COMMAND
+	// Pass in the name of an argument or type just "help" to get a list of arguments
+	// USAGE: 'help' or 'help get receipts'
+	if (req.body.Body.toLowerCase().indexOf('?') > -1) {
+		// Separate admin commands from others
+		if (VAULT.twilio.allowedNumbers.indexOf(req.body.From) > -1) {
+			let commands = VAULT.admincommands
+			// If there is a command after 'help', then check to see if more help can be provided
+			if (req.body.Body.trim().toLowerCase() != '?') {
+				let keyword = req.body.Body.replace('? ', '').toLowerCase()
+				Object.keys(commands).forEach((key) => {
+					if (key.indexOf(keyword) > -1) {
+						twiml.message(commands[key])
+					}
+				})
+			} else {
+				let toPrint = ""
+				// Otherwise, just list out all of the commands
+				toPrint += "Admin commands:\n"
+				Object.keys(commands).forEach(function(key) {
+			  		toPrint += "- " + key + "\n"
+				})
+				toPrint += "Type '? [COMMAND]' to see more info.\n"
+				// Finally print the message
+				twiml.message(toPrint)
+			}
+			// Add a content accepted header and send
+			res.writeHead(200, { 'Content-Type': 'text/xml' })
+			res.end(twiml.toString())
+		} else {
+			twiml.message('No commands yet for non-admins! Sorry!')
+			// Add a content accepted header and send
+			res.writeHead(200, { 'Content-Type': 'text/xml' })
+			res.end(twiml.toString())
+		}
 
 	// GET RECEIPT COMMAND
 	// Gets the receipts for the given parameters
 	// Usage: 'Get breakfast receipts' or 'Get breakfast receipts for Starbucks'
-	if (req.body.Body.toLowerCase().indexOf('get') > -1 && req.body.Body.toLowerCase().indexOf('receipt') > -1) {
+	} else if (req.body.Body.toLowerCase().indexOf('get') > -1 && req.body.Body.toLowerCase().indexOf('receipt') > -1) {
 		// Check if the phone number is a valid number
 		if (VAULT.twilio.allowedNumbers.indexOf(req.body.From) > -1) {
 			// Get the type and convert it into the right format
@@ -71,7 +111,7 @@ app.post('/', (req, res) => {
 		}
 
 	// SEND RECEIPT COMMAND
-	// Usage: 'Send receipt NAME' or 'Send receipts'
+	// Usage: 'Send breakfast receipts NAME' or 'Send breakfast receipts'
 	} else if (req.body.Body.toLowerCase().indexOf('send') > -1 && req.body.Body.toLowerCase().indexOf('receipt') > -1) {
 		// Check if the phone number is a valid number
 		if (VAULT.twilio.allowedNumbers.indexOf(req.body.From) > -1) {
@@ -86,13 +126,15 @@ app.post('/', (req, res) => {
 				// For each string, send a message to the recipient containing their receipt
 				let sentAMessage = false
 				for (let i = 0; i < data.length; i++) {
+					// Update the receipt
+					database.processReceipt(data[i], (returned) => {})
 					// If name is specified, check it against each data
 					if (name == undefined || data[i][0][0].toLowerCase().indexOf(name.toLowerCase()) > -1) {
 						// Get the number without dashes or parentheses or spaces and add +1
 						let number = '+1' + data[i][15][0].replace(/\D+/g, '')
 						// Do some cleanup on the receipts and then send the normalized messages to their corresponding recipients
 						client.messages.create({
-							body: googleapi.receiptToString(data[i]).normalize('NFD').replace(/[\u0300-\u036f]/g, ""),
+							body: googleapi.receiptToString(data[i]),
 							to: number,
 							from: '+12038946844'
 						})
@@ -279,7 +321,7 @@ app.post('/', (req, res) => {
 		} else if (req.body.Body == 'bye') {
 			twiml.message('Goodbye!')
 		} else {
-			twiml.message('No paramater match. Try "help" for list of commands!')
+			twiml.message('No parameter match. Try "help" for list of commands!')
 		}
 		// Add a content accepted header
 		res.writeHead(200, { 'Content-Type': 'text/xml' })

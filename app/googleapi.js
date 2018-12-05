@@ -161,7 +161,8 @@ function receiptToString(receipt) {
   // Iterate through items and add each one that exists
   for (let i = 0; i < 8; i++) {
     if (receipt[2 + i][0] != '#VALUE!' && receipt[2 + i][0] != '#REF!') {
-      toReturn += "[" + receipt[2 + i][0].slice(0, -1) + ": $" + receipt[2 + i][2] + "\n"
+      let item = i == 0 ? receipt[2 + i][0].slice(0, -1) : receipt[2 + i][0]
+      toReturn += "[" + item + ": $" + receipt[2 + i][2] + "\n"
     }
   }
   // Next comes payment method and drop off location
@@ -176,11 +177,12 @@ function receiptToString(receipt) {
 */
 function orderToString(receipt, ordernum) {
   // First element is always the name
-  var toReturn = "- Order #" + ordernum + " for " + receipt[0] + " -\nItems:"
+  var toReturn = "- Order #" + ordernum + " for " + receipt[0] + " -\nItems:\n"
   // Iterate through the items and add each one that eixsts
   for (let i = 0; i < 8; i++) {
     if (receipt[2 + i][0] != '#VALUE!' && receipt[2 + i][0] != '#REF!') {
-      toReturn += "[" + receipt[2 + i][0].slice(0, -1) + "\n"
+      let item = i == 0 ? receipt[2 + i][0].slice(0, -1) : receipt[2 + i][0]
+      toReturn += "[" + item + "\n"
     }
   }
   // Next comes total price
