@@ -33,6 +33,7 @@ class SQLInterface {
 			if (results.length == 0) {
 				// Create the userObject based on the receipt and then add it into the MySQL database
 				userObject.username = receipt[0]
+				console.log('Processing receipt for \'' + userObject.username + '\'')
 				userObject.phone = '+1' + receipt[15][0].replace(/\D+/g, '')
 				userObject.dorm = receipt[11][0] != undefined ? receipt[11][0] : receipt[12][0]
 				// Perform the insert of the new userobject with the spending and orders as the initial values
@@ -57,6 +58,9 @@ class SQLInterface {
 		})
 	}
 
+	// Processes a receipt for the financial trackings. Needs to combine the stats of all the receipts so must retain
+	// an object over multiple calls, hence it being a separate function.
+
 	// Interprets a receipt to find out how much was spent on each store and how many orders were placed.
 	// Returns the information in a SQL formatted string for updating.
 	interpretOrdersFromReceipt(receipt) {
@@ -64,7 +68,7 @@ class SQLInterface {
 		let toReturn = 'UPDATE useranalytics SET '
 		let updateObj = {
 			"Chipotle": { orders: 0, spending: 0.0 } ,
-	        "Chick-Fil-A": { orders: 0, spending: 0.0 } ,
+	        "Chick-A": { orders: 0, spending: 0.0 } ,
 	        "Taco Bell": { orders: 0, spending: 0.0 } ,
 	        "Five Guys": { orders: 0, spending: 0.0 } ,
 	        "Panera": { orders: 0, spending: 0.0 } ,
@@ -97,9 +101,9 @@ class SQLInterface {
 		})
 
 		// Finally add total orders and total spending, as well as profit
-		toReturn += 'ordersplaced=ordersplaced+' + totalOrders + 
-					',spending=spending+' + receipt[20][1].slice(1) + 
-					',profit=profit+' + receipt[18][1] +
+		toReturn += 'itemsordered=itemsordered+' + totalOrders + 
+					',spending=spending+' + receipt[20][1].replace('$', '') + 
+					',profit=profit+' + receipt[18][1].replace('$', '') +
 					' WHERE phone=\'+1' + receipt[15][0].replace(/\D+/g, '') + '\''
 		return toReturn
 	}

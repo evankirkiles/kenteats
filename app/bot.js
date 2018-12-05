@@ -82,13 +82,13 @@ app.post('/', (req, res) => {
 				for (let i = 0; i < data.length; i++) {
 					// Do some cleanup on the receipts and then send the normalized message without accents
 					if (store == undefined) {
-						twiml.message(googleapi.receiptToString(data[i]).normalize('NFD').replace(/[\u0300-\u036f]/g, ""))
+						twiml.message(googleapi.receiptToString(data[i], true).normalize('NFD').replace(/[\u0300-\u036f]/g, ""))
 						
 					} else {
 						// Check if the store matches any of the items' store
 						for (let j = 2; j < 10; j++) {
 							if (data[i][j][1] != undefined && data[i][j][1] == store) {
-								twiml.message(googleapi.receiptToString(data[i]).normalize('NFD').replace(/[\u0300-\u036f]/g, ""))
+								twiml.message(googleapi.receiptToString(data[i], true).normalize('NFD').replace(/[\u0300-\u036f]/g, ""))
 								j = 10
 							}		
 						}
@@ -126,15 +126,19 @@ app.post('/', (req, res) => {
 				// For each string, send a message to the recipient containing their receipt
 				let sentAMessage = false
 				for (let i = 0; i < data.length; i++) {
-					// Update the receipt
+
+
+					// Update the receipt database
 					database.processReceipt(data[i], (returned) => {})
+
+
 					// If name is specified, check it against each data
 					if (name == undefined || data[i][0][0].toLowerCase().indexOf(name.toLowerCase()) > -1) {
 						// Get the number without dashes or parentheses or spaces and add +1
 						let number = '+1' + data[i][15][0].replace(/\D+/g, '')
 						// Do some cleanup on the receipts and then send the normalized messages to their corresponding recipients
 						client.messages.create({
-							body: googleapi.receiptToString(data[i]),
+							body: googleapi.receiptToString(data[i], false),
 							to: number,
 							from: '+12038946844'
 						})
@@ -228,6 +232,36 @@ app.post('/', (req, res) => {
 			// Add a content accepted header
 			res.writeHead(200, { 'Content-Type': 'text/xml' })
 			res.end(twiml.toString())
+		}
+
+	// STORE ORDERS COMMAND
+	// Shows orders for the given store
+	// Usage: '{STORE} store orders' i.e
+	} else if (req.body.Body.toLowerCase().indexOf('store') > -1 && req.body.Body.toLowerCase().indexOf('orders') > -1) {
+		// This command queries the dorm orders page in google sheets
+		if (VAULT.twilio.allowedNumbers.indexOf(req.body.From) > -1) {
+			// Get the store and convert it into the right format
+			let store = req.body.Body.split(" store orders")[0]
+			// Get the receipts for the specified time to retrieve orders
+			googleapi.runAuthorizeFunction(googleapi.getReceipts, 'Afternoon', (data) => {
+				// Iterate through the data, and for each store match send the item to order
+				let toReturn = '- ' + store + ' Orders -\n'
+				for (let i = 0; i < data.length; i++) {
+					let storeAdded = false
+					// Iterate through items in each receipt
+					for (let j = 2; j < 10; j++) {
+						if (data[i][j][1].toLowerCase().indexOf(store.toLowerCase()) > -1) {
+							if (!storeAdded) { toReturn += data[i][0] + ':\n'; storeAdded = true}
+							toReturn += ' - ' + data[i][j][0].split(')')[1].trim() + '\n'
+						}
+					}
+				}
+				// When orders are acquired, then send the message
+				twiml.message(toReturn)
+				// Add a content accepted header to send
+				res.writeHead(200, { 'Content-Type': 'text/xml' })
+				res.end(twiml.toString())
+			})
 		}
 
 	// DORM ORDERS COMMAND
