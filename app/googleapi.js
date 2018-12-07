@@ -155,9 +155,10 @@ module.exports.getReceipts = getReceipts
 /*
 *   Creates a readable format for a receipt based on its existing values.
 */
-function receiptToString(receipt, admin) {
+function receiptToString(receipt, admin, index) {
   // First element is always the name
-  var toReturn = "-- Receipt for " + receipt[0] + " --\nItems: \n"
+  var toReturn = "-- Receipt for " + receipt[0] + " --\n"
+  toReturn += (index != undefined ? ('Order Number: ' + index + '\n') : '') +  "Items: \n"
   // Iterate through items and add each one that exists
   for (let i = 0; i < 8; i++) {
     if (receipt[2 + i][0] != '#VALUE!' && receipt[2 + i][0] != '#REF!') {
@@ -171,7 +172,7 @@ function receiptToString(receipt, admin) {
   } else {
     toReturn += "Payment Method: " + receipt[10][0] + (receipt[10][0] == 'Venmo' ? '\nPay to: Brady_McGowan' : '')
   }
-  toReturn += "\nLocation: " + receipt[11][0] + "\nNumber: " + receipt[15][0] +
+  toReturn += "\nLocation: " + receipt[11][0] + "\nPhone: " + receipt[15][0] +
                 "\nTotal Without Fee: " + receipt[17][1] + "\nFee: " + receipt[18][1] + "\nTotal: " + receipt[20][1]
   // Finally return this string
   return toReturn
