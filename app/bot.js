@@ -170,6 +170,38 @@ app.post('/', (req, res) => {
 			res.end(twiml.toString())
 		}
 
+	// ANNOUNCE COMMAND
+	// Sends a text to everyone with a number registered in the database.
+	// Usage: 'announce "sale coming soon!"'
+	} else if (req.body.Body.toLowerCase().indexOf('announce') > -1) {
+		if (VAULT.twilio.allowedNumbers.indexOf(req.body.From) > -1) {
+
+			// Perform MySQL request to get the list of numbers
+			database.pullNumbers((results) => {
+				// With the list of numbers, use the client to send the message to each
+				for (let i = 0; i < results.length; i++) {
+					client.messages.create({
+						body: req.body.Body.split('"')[1],
+						to: results[i]['phone'],
+						from: '+12038946844'
+					})
+				}
+
+				// Respond with a message successful
+				twiml.message('Sent message to all ' + results.length + ' customers.')
+				// Add a content accepted header and send
+				res.writeHead(200, { 'Content-Type': 'text/xml' })
+				res.end(twiml.toString())
+			})
+
+		} else {
+			twiml.message('Invalid permission for this command!')
+
+			// Add a content accepted header
+			res.writeHead(200, { 'Content-Type': 'text/xml' })
+			res.end(twiml.toString())
+		}
+
 	// MASS MESSAGE COMMAND
 	// Usage: 'Mass a message "My message here" DORM'
 	} else if (req.body.Body.toLowerCase().indexOf('mass') > -1 && req.body.Body.toLowerCase().indexOf('message') > -1) {
@@ -342,7 +374,7 @@ app.post('/', (req, res) => {
 		} else if (req.body.Body == 'bye') {
 			twiml.message('Goodbye!')
 		} else {
-			twiml.message('No parameter match. Order here')
+			twiml.message('No parameter match. Order here: ')
 		}
 		// Add a content accepted header
 		res.writeHead(200, { 'Content-Type': 'text/xml' })

@@ -58,6 +58,17 @@ class SQLInterface {
 		})
 	}
 
+	// Retrieves all the numbers from the database and returns it in an array for the announce command to iterate through.
+	pullNumbers(callback) {
+		// Query all numbers
+		this.con.query('SELECT phone FROM useranalytics', (err, results) => {
+			// Make sure no error occured
+			if (err) { return err }
+			// Otherwise return the results
+			callback(results)
+		})
+	}
+
 	// Processes a receipt for the financial trackings. Needs to combine the stats of all the receipts so must retain
 	// an object over multiple calls, hence it being a separate function.
 
