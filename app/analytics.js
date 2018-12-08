@@ -7,11 +7,30 @@ var VAULT = require('../config/vault.json')
 class SQLInterface {
 	// Constructor initializes the MySQL connection
 	constructor() {
-		this.con = mysql.createConnection({
+		// Initialize the params
+		this.conParams = {
 			host: VAULT.mysql.host,
 			user: VAULT.mysql.username,
 			password: VAULT.mysql.password,
 			database: 'kenteats'
+		}
+
+		// Build the connection now
+		this.handleDisconnect()
+	}
+
+	// Handle disconnect function simply rebuilds the connection with the same params
+	handleDisconnect() {
+		// Initialize the connection
+		this.con = mysql.createConnection(this.conParams)
+		// On error, handle it
+		this.con.on('error', (err) => {
+			console.log('Database error, restoring session.', err)
+			if (err.code === 'PROTOCOL_CONNECTION_LOST') {
+				this.handleDisconnect()
+			} else {
+				throw err
+			}
 		})
 	}
 
