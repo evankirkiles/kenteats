@@ -91,14 +91,12 @@ app.post('/', (req, res) => {
 					// Get the store name as well and convert it into the right format, if specified
 					let store = undefined
 					if (req.body.Body.toLowerCase().indexOf('for') > -1) {
-						console.log('asdad')
 						store = req.body.Body.split(" ")
 						store = store[store.length - 1].toLowerCase()
 						store = store.charAt(0).toUpperCase() + store.slice(1)
 					}
 
 					for (let i = 0; i < data.length; i++) {
-						console.log(data[i])
 						// Do some cleanup on the receipts and then send the normalized message without accents
 						if (store == undefined) {
 							twiml.message(googleapi.receiptToString(data[i], true, i+1).normalize('NFD').replace(/[\u0300-\u036f]/g, ""))
