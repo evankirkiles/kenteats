@@ -69,6 +69,17 @@ class SQLInterface {
 		})
 	}
 
+	// Adds a number to the database
+	addNumber(number) {
+		// Simply insert the number into the database
+		this.con.query('INSERT INTO useranalytics (name,phone) VALUES ("","' + number + '")', (err, results) => {
+			// Make sure no error occurred
+			if (err) { return err }
+			// Otherwise notify that a user was added
+			console.log('Added number to database: ' + number)
+		})
+	}
+
 	// Processes a receipt for the financial trackings. Needs to combine the stats of all the receipts so must retain
 	// an object over multiple calls, hence it being a separate function.
 
@@ -101,6 +112,9 @@ class SQLInterface {
 				updateObj[receipt[i][1]].spending += parseFloat(receipt[i][2]) * 1.06
 			}
 		}
+
+		// Update the name and dorm with those on the receipt
+		toReturn += 'name="' + receipt[0] + '",dorm="' + receipt[11][0] + '",'
 
 		// Now return the full MySQL update string for all stores
 		Object.keys(updateObj).forEach((key) => {
