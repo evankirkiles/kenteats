@@ -145,11 +145,11 @@ app.post('/', (req, res) => {
 
 
 						// Update the receipt database
-						database.processReceipt(data[i], (returned) => {})
+						database.processReceipt(data[i], req.body.From == '+18609467150', (returned) => {})
 
 
 						// If name is specified, check it against each data
-						if (name == undefined || data[i][0][0].toLowerCase().indexOf(name.toLowerCase()) > -1) {
+						if ((name == undefined || data[i][0][0].toLowerCase().indexOf(name.toLowerCase()) > -1) && req.body.From != '+18609467150') {
 							// Get the number without dashes or parentheses or spaces and add +1
 							let number = '+1' + data[i][15][0].replace(/\D+/g, '')
 							// Do some cleanup on the receipts and then send the normalized messages to their corresponding recipients

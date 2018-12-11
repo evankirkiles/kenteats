@@ -158,7 +158,7 @@ module.exports.getReceipts = getReceipts
 function receiptToString(receipt, admin, index) {
   // First element is always the name
   var toReturn = "-- Receipt for " + receipt[0] + " --\n"
-  toReturn += (index != undefined ? ('Order Number: ' + index + '\n') : '') +  "Items: \n"
+  toReturn += (index != undefined ? ('Order Number: ' + index + '\n') : '') + "Items: \n"
   // Iterate through items and add each one that exists
   for (let i = 0; i < 8; i++) {
     if (receipt[2 + i][0] != '#VALUE!' && receipt[2 + i][0] != '#REF!') {
