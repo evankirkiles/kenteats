@@ -118,7 +118,6 @@ class SQLInterface {
 		// Get the date to eventually fill in
 		let currDay = new Date();
 		currDay = currDay.getFullYear() + '-' + (currDay.getMonth() + 1) + '-' + currDay.getDate()
-		console.log(currDay + ' ' + test)
 		// Checks if the column exists in the database. If it doesn't, then create the column
 		this.con.query('SHOW COLUMNS FROM ' + table + ' LIKE "' + number + '"', (err, results) => {
 			// Make sure no error occurred
