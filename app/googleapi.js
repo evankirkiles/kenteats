@@ -104,7 +104,7 @@ function getReceipts(auth, type, callback) {
   const sheets = google.sheets({version: 'v4', auth});
   sheets.spreadsheets.values.get({
     spreadsheetId: '13RBFxTLfO7bCwFgvyxp3K4QVDI82Y-JJXA6sJyEyBas',
-    range: 'Complete ' + type + ' Receipt!A1:AD91',
+    range: 'Complete ' + type + ' Receipt!A1:AD137',
   }, (err, res) => {
     if (err) return console.log('The API returned an error: ' + err);
     // Build an array which will hold each message to be sent
@@ -127,11 +127,7 @@ function getReceipts(auth, type, callback) {
       			}
       		}
           index++
-      	} else if (index == 22 || index == 45 || index == 68 || index == 91 || index == 112 || index == 134) {
-          receiptStarts = []
-          numreceits = messages.length
-          index = 0
-        } else if (index == 45) {
+      	} else if (index == 22 || index == 45 || index == 68 || index == 91 || index == 114 || index == 137) {
           receiptStarts = []
           numreceits = messages.length
           index = 0

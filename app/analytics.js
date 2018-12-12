@@ -132,13 +132,31 @@ class SQLInterface {
 					this.con.query('SELECT * FROM ' + table + ' WHERE day=`' + currDay + '` LIMIT 1', (err, returns) => {
 						// If there was an error, say it
 						if (err) { console.log(err); return err }
-						// Otherwise perform check on the size of return, if 0 then row does not exist
-						if (returns.length > 0) {
-							this.con.query('UPDATE ' + table + ' SET `profit`=`profit`+' + receipt[18][1].replace('$', '') + ',`revenue`=`revenue`+' + receipt[20][1].replace('$', '') + ',`expenditures`=`expenditures`+' + expenditures.toFixed(2) +  ',`' + number + '`=`' + number + '`+' + receipt[20][1].replace('$', '') + ' WHERE day="' + currDay + '"')
-						// If row doesn't exist, then simply insert this one
-						} else {
-							this.con.query('INSERT INTO ' + table + ' (`profit`,`revenue`,`expenditures`,`day`, `' + number + '`) VALUES (' + receipt[18][1].replace('$', '') + ',' + receipt[20][1].replace('$', '') + ',' + expenditures.toFixed(2) + ',"' + currDay + '", ' + receipt[20][1].replace('$', '') + ')')
-						}
+						// Update the financials
+						this.updateFinancials(receipt, table, number, currDay, returns, (err, returns) => {
+							// If there was an error, say it
+							if (err) { console.log(err); return err }
+							// Update the financials
+							this.updateFinancials(receipt, table, number, currDay, returns, () => {
+								// Update the running totals for type of transaction
+								let returnString = 'UPDATE ' + table  + ' SET `'
+								// Choose payment type to increment based on the receipt
+								let paymentMethod = receipt[10][0].toLowerCase().replace(' ', '')
+								if (paymentMethod.indexOf('cash') > -1) {
+									returnString += 'cash`=`cash`+' + receipt[20][1].replace('$', '') + ' '
+								} else if (paymentMethod.indexOf('card') > -1) {
+									returnString += 'card`=`card`+' + receipt[20][1].replace('$', '') + ' '
+								} else if (paymentMethod.indexOf('venmo') > -1) {
+									returnString += 'venmo`=`venmo`+' + receipt[20][1].replace('$', '') + ' '
+								} else if (paymentMethod.indexOf('id') > -1) {
+									returnString += 'studentid`=`studentid`+' + receipt[20][1].replace('$', '') + ' '
+								}
+								// Finish the return string
+								returnString += 'WHERE day="' + currDay + '"'
+								// Finally, run the query
+								this.con.query(returnString)
+							})
+						})
 					}) 
 				})
 			// If column does exist, go straight to adding the day
@@ -146,16 +164,40 @@ class SQLInterface {
 				this.con.query('SELECT * FROM ' + table + ' WHERE day="' + currDay + '" LIMIT 1', (err, returns) => {
 					// If there was an error, say it
 					if (err) { console.log(err); return err }
-					// Otherwise perform check on the size of return, if 0 then row does not exist
-					if (returns.length > 0) {
-						this.con.query('UPDATE ' + table + ' SET `profit`=`profit`+' + receipt[18][1].replace('$', '') + ',`revenue`=`revenue`+' + receipt[20][1].replace('$', '') + ',`expenditures`=`expenditures`+' + expenditures.toFixed(2) +  ',`' + number + '`=`' + number + '`+' + receipt[20][1].replace('$', '') + ' WHERE day="' + currDay + '"')
-					// If row doesn't exist, then simply insert this one
-					} else {
-						this.con.query('INSERT INTO ' + table + ' (`profit`,`revenue`,`expenditures`,`day`, `' + number + '`) VALUES (' + receipt[18][1].replace('$', '') + ',' + receipt[20][1].replace('$', '') + ',' + expenditures.toFixed(2) + ',"' + currDay + '", ' + receipt[20][1].replace('$', '') + ')')
-					}
+					// Update the financials
+					this.updateFinancials(receipt, table, number, currDay, returns, () => {
+						// Update the running totals for type of transaction
+						let returnString = 'UPDATE ' + table  + ' SET `'
+						// Choose payment type to increment based on the receipt
+						let paymentMethod = receipt[10][0].toLowerCase().replace(' ', '')
+						if (paymentMethod.indexOf('cash') > -1) {
+							returnString += 'cash`=`cash`+' + receipt[20][1].replace('$', '') + ' '
+						} else if (paymentMethod.indexOf('card') > -1) {
+							returnString += 'card`=`card`+' + receipt[20][1].replace('$', '') + ' '
+						} else if (paymentMethod.indexOf('venmo') > -1) {
+							returnString += 'venmo`=`venmo`+' + receipt[20][1].replace('$', '') + ' '
+						} else if (paymentMethod.indexOf('id') > -1) {
+							returnString += 'studentid`=`studentid`+' + receipt[20][1].replace('$', '') + ' '
+						}
+						// Finish the return string
+						returnString += 'WHERE day="' + currDay + '"'
+						// Finally, run the query
+						this.con.query(returnString)
+					})
 				}) 
 			}
 		})
+	}
+
+	//  Updates financial table (necessary so don't repeat code much)
+	updateFinancials(receipt, table, number, currDay, returns, callback) {
+		// Otherwise perform check on the size of return, if 0 then row does not exist
+		if (returns.length > 0) {
+			this.con.query('UPDATE ' + table + ' SET `profit`=`profit`+' + receipt[18][1].replace('$', '') + ',`revenue`=`revenue`+' + receipt[20][1].replace('$', '') + ',`expenditures`=`expenditures`+' + expenditures.toFixed(2) +  ',`' + number + '`=`' + number + '`+' + receipt[20][1].replace('$', '') + ' WHERE day="' + currDay + '"', callback())
+		// If row doesn't exist, then simply insert this one
+		} else {
+			this.con.query('INSERT INTO ' + table + ' (`profit`,`revenue`,`expenditures`,`day`, `' + number + '`) VALUES (' + receipt[18][1].replace('$', '') + ',' + receipt[20][1].replace('$', '') + ',' + expenditures.toFixed(2) + ',"' + currDay + '", ' + receipt[20][1].replace('$', '') + ')', callback())
+		}
 	}
 
 	// Interprets a receipt to find out how much was spent on each store and how many orders were placed.
