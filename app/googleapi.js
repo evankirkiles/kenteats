@@ -15,7 +15,7 @@ function runAuthorizeFunction(funcToRun, args, callback) {
     if (err) return console.log('Error loading client secret file:', err);
     // Authorize a client with credentials, then call the Google Sheets API.
     authorize(JSON.parse(content), (auth) => {
-      funcToRun(auth, args, callback)
+      funcToRun(auth, callback, args)
     })
   })
 }
@@ -80,16 +80,16 @@ function getNewToken(oAuth2Client, callback) {
 function asdasd(auth) {
   const sheets = google.sheets({version: 'v4', auth});
   sheets.spreadsheets.values.get({
-    spreadsheetId: '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms',
-    range: 'Class Data!A2:E',
+    spreadsheetId: '1KKfMseFC2xg0FzYmnTuTukTnqY4UUbhEIvZ2xjyHbNA',
+    range: 'Sheet1!A2:F',
   }, (err, res) => {
     if (err) return console.log('The API returned an error: ' + err);
     const rows = res.data.values;
     if (rows.length) {
-      console.log('Name, Major:');
+      console.log('Codename, First Name, Last Name:');
       // Print columns A and E, which correspond to indices 0 and 4.
       rows.map((row) => {
-        console.log(`${row[0]}, ${row[4]}`);
+        console.log(`${row[0]}, ${row[1]}, ${row[2]}`);
       });
     } else {
       console.log('No data found.');
@@ -97,10 +97,12 @@ function asdasd(auth) {
   });
 }
 
+module.exports.asdasd = asdasd
+
 /**
  * Returns the receipts for a given time
  */
-function getReceipts(auth, type, callback) {
+function getReceipts(auth, callback, type) {
   const sheets = google.sheets({version: 'v4', auth});
   sheets.spreadsheets.values.get({
     spreadsheetId: '13RBFxTLfO7bCwFgvyxp3K4QVDI82Y-JJXA6sJyEyBas',
@@ -108,7 +110,7 @@ function getReceipts(auth, type, callback) {
   }, (err, res) => {
     if (err) return console.log('The API returned an error: ' + err);
     // Build an array which will hold each message to be sent
-    var messages = []
+    let messages = []
     const rows = res.data.values;
     if (rows.length) {
       // This array keeps track of the starting points of each receipt
