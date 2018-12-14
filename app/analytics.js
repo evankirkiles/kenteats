@@ -129,7 +129,7 @@ class SQLInterface {
 					// If there was an error, say it
 					if (err) { console.log(err); return err }
 					// Otherwise continue on to update the spending for the user (and add )
-					this.con.query('SELECT * FROM ' + table + ' WHERE day=`' + currDay + '` LIMIT 1', (err, returns) => {
+					this.con.query('SELECT * FROM ' + table + ' WHERE day="' + currDay + '"" LIMIT 1', (err, returns) => {
 						// If there was an error, say it
 						if (err) { console.log(err); return err }
 						// Update the financials
