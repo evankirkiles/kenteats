@@ -88,36 +88,14 @@ app.post('/', (req, res) => {
 				// Get the type and convert it into the right format
 				let type = req.body.Body.split(" ")[1].toLowerCase()
 				googleapi.runAuthorizeFunction(googleapi.getReceipts, (type == 'b' ? 'Breakfast' : 'Afternoon'), (data) => {
-					// Get the store name as well and convert it into the right format, if specified
-					let store = undefined
-					if (req.body.Body.toLowerCase().indexOf('for') > -1) {
-						store = req.body.Body.split(" ")
-						store = store[store.length - 1].toLowerCase()
-						store = store.charAt(0).toUpperCase() + store.slice(1)
-					}
 
 					for (let i = 0; i < data.length; i++) {
 						// Do some cleanup on the receipts and then send the normalized message without accents
-						if (store == undefined) {
-							twiml.message(googleapi.receiptToString(data[i], true, i+1).normalize('NFD').replace(/[\u0300-\u036f]/g, ""))
-							
-						} else {
-							// Check if the store matches any of the items' store
-							for (let j = 2; j < 10; j++) {
-								if (data[i][j][1] != undefined && data[i][j][1] == store) {
-									twiml.message(googleapi.receiptToString(data[i], true, i+1).normalize('NFD').replace(/[\u0300-\u036f]/g, ""))
-									j = 10
-								}		
-							}
-						}
+						twiml.message(googleapi.receiptToString(data[i], true, i+1).normalize('NFD').replace(/[\u0300-\u036f]/g, ""))
 					}
 
 					// Log this action to console
-					if (store == undefined) {
-						console.log('Retrieved all ' + type + ' receipts!')
-					} else {
-						console.log('Retrieved all ' + store + ' ' + type + ' receipts!')
-					}	
+					console.log('Retrieved all ' + type + ' receipts!')
 
 					// Add a content accepted header
 					res.writeHead(200, { 'Content-Type': 'text/xml' })
