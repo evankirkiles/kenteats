@@ -191,13 +191,16 @@ class SQLInterface {
 
 	//  Updates financial table (necessary so don't repeat code much)
 	updateFinancials(receipt, table, number, currDay, returns, callback) {
+		let str
 		// Otherwise perform check on the size of return, if 0 then row does not exist
 		if (returns.length > 0) {
-			this.con.query('UPDATE ' + table + ' SET `profit`=`profit`+' + receipt[18][1].replace('$', '') + ',`revenue`=`revenue`+' + receipt[20][1].replace('$', '') + ',`expenditures`=`expenditures`+' + expenditures.toFixed(2) +  ',`' + number + '`=`' + number + '`+' + receipt[20][1].replace('$', '') + ' WHERE day="' + currDay + '"', callback())
+			str = 'UPDATE ' + table + ' SET `profit`=`profit`+' + receipt[18][1].replace('$', '') + ',`revenue`=`revenue`+' + receipt[20][1].replace('$', '') + ',`expenditures`=`expenditures`+' + expenditures.toFixed(2) +  ',`' + number + '`=`' + number + '`+' + receipt[20][1].replace('$', '') + ' WHERE day="' + currDay + '"'
 		// If row doesn't exist, then simply insert this one
 		} else {
-			this.con.query('INSERT INTO ' + table + ' (`profit`,`revenue`,`expenditures`,`day`, `' + number + '`) VALUES (' + receipt[18][1].replace('$', '') + ',' + receipt[20][1].replace('$', '') + ',' + expenditures.toFixed(2) + ',"' + currDay + '", ' + receipt[20][1].replace('$', '') + ')', callback())
+			str = 'INSERT INTO ' + table + ' (`profit`,`revenue`,`expenditures`,`day`, `' + number + '`) VALUES (' + receipt[18][1].replace('$', '') + ',' + receipt[20][1].replace('$', '') + ',' + expenditures.toFixed(2) + ',"' + currDay + '", ' + receipt[20][1].replace('$', '') + ')'
 		}
+
+		this.con.query(str, callback())
 	}
 
 	// Interprets a receipt to find out how much was spent on each store and how many orders were placed.
