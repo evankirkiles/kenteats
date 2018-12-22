@@ -3,7 +3,7 @@ const readline = require('readline');
 const {google} = require('googleapis');
 
 // If modifying these scopes, delete token.json.
-const SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
+const SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
 // time.
@@ -98,6 +98,40 @@ function asdasd(auth) {
 }
 
 module.exports.asdasd = asdasd
+
+/**
+ * Fills in the bookkeeping sheet with the necessary information at the end of the day.
+ */
+function fillBookkeeping(auth, callback, data) {
+  // If the data is undefined, then do nothing
+  if (data == undefined) { return }
+  const sheets = google.sheets({version: 'v4', auth});
+  sheets.spreadsheets.values.get({
+    spreadsheetId: '1Gxg4E_WcXnN-x21fIA3yr3msZ1XPEZm-RW4FoeKBRTg',
+    range: 'Sheet1!A1:A99',
+  }, (err, result) => {
+    if (err) return console.log('The API returned an error: ' + err);
+    // Cycle through the results to find the first empty cell to begin the range with
+    let range = 'Sheet1!A' + (result.data.values.length + 1) + ':T'
+    // With the range in hand, use the data to perform another query which updates the spreadsheet
+    console.log(data)
+    sheets.spreadsheets.values.update({
+      spreadsheetId: '1Gxg4E_WcXnN-x21fIA3yr3msZ1XPEZm-RW4FoeKBRTg',
+      range: range,
+      valueInputOption: 'USER_ENTERED',
+      resource: {
+        values: data
+      },
+    }, (err, result) => {
+      if (err) return console.log('The API returned an error: ' + err);
+      // Log the updated books
+      console.log('Updated financal tracking Google Sheet!')
+      callback(result)
+    })
+  })
+}
+
+module.exports.fillBookkeeping = fillBookkeeping
 
 /**
  * Returns the receipts for a given time

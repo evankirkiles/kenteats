@@ -4,6 +4,8 @@ var VAULT = require('../config/vault.json')
 var googleapi = require('./googleapi')
 // Analytics for user data
 var SQLInterface = require('./analytics').SQLInterface
+// Scheduling of functions for financial updates
+var schedule = require('node-schedule')
 // Twilio / http imports
 const http = require('http')
 const express = require('express')
@@ -19,6 +21,16 @@ app.use(bodyParser.urlencoded({ extended: false }))
 // Keep track of the number of orders sent in the current day
 let currentDayOrders = 0
 let currentDay = undefined
+
+// Schedule the financial trackings to update every day at 9:30 (if they exist)
+var financialUpdates = schedule.scheduleJob('30 20 * * *', () => {
+	// Run the MySQL query to determine if any data is available
+	let financeData = new SQLInterface()
+	financeData.getFinancials((data) => {
+		// With the data in hand, fill the books with it
+		googleapi.runAuthorizeFunction(googleapi.fillBookkeeping, data, () => {})
+	})
+})
 
 // Listen for messages sent to Twilio
 app.post('/', (req, res) => {
@@ -132,11 +144,11 @@ app.post('/', (req, res) => {
 					// For each string, send a message to the recipient containing their receipt
 					let sentAMessage = false
 					for (let i = 0; i < data.length; i++) {
-						// Make sure the number exists
-						if (data[i][15][0] == undefined) { continue; }
-
 						// Update the running total of orders in the day
 						currentDayOrders++
+
+						// Make sure the number exists
+						if (data[i][15][0] == undefined) { continue; }
 
 						// Update the receipt database
 						database.processReceipt(data[i], currentDayOrders, req.body.From == '+18609467150', (returned) => {})

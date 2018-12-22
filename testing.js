@@ -1,24 +1,9 @@
 const googleapi = require('./app/googleapi')
+const SQLInterface = require('./app/analytics').SQLInterface
 
-let store = undefined
-
-googleapi.runAuthorizeFunction(googleapi.getReceipts, 'Afternoon', (data) => {
-	for (let i = 0; i < data.length; i++) {
-		// Do some cleanup on the receipts and then send the normalized message without accents
-		if (store == undefined) {
-			console.log(googleapi.receiptToString(data[i], true, i+1).normalize('NFD').replace(/[\u0300-\u036f]/g, ""))
-		} else {
-			// Check if the store matches any of the items' store
-			for (let j = 2; j < 10; j++) {
-				if (data[i][j][1] != undefined && data[i][j][1] == store) {
-					console.log(googleapi.receiptToString(data[i], true, i+1).normalize('NFD').replace(/[\u0300-\u036f]/g, ""))
-					j = 10
-				}		
-			}
-		}
-
-		if (data[i][10][0].toLowerCase() == 'venmo') {
-			console.log('Pay here: https://venmo.com/Brady_McGowan?txn=pay&amount=' + data[i][20][1].replace('$',''))
-		}
-	}
+// Run the MySQL query to determine if any data is available
+let financeData = new SQLInterface()
+financeData.getFinancials((data) => {
+	// With the data in hand, fill the books with it
+	googleapi.runAuthorizeFunction(googleapi.fillBookkeeping, data, () => {})
 })
