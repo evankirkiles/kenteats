@@ -136,6 +136,15 @@ app.post('/', (req, res) => {
 								to: number,
 								from: '+12038946844'
 							})
+							// If the payment method is Venmo, then also send a Venmo payment request
+							if (data[i][10][0].toLowerCase() == 'venmo') {
+								client.messages.create({
+									body: 'Pay here: https://venmo.com/Brady_McGowan?txn=pay&amount=' + receipt[20][1].replace('$',''),
+									to: number,
+									from: '+12038946844'
+								})
+							}
+
 							sentAMessage = true
 						}
 					}

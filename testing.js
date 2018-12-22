@@ -16,12 +16,9 @@ googleapi.runAuthorizeFunction(googleapi.getReceipts, 'Afternoon', (data) => {
 				}		
 			}
 		}
-	}
 
-	// Log this action to console
-	if (store == undefined) {
-		console.log('Retrieved all ' + type + ' receipts!')
-	} else {
-		console.log('Retrieved all ' + store + ' ' + type + ' receipts!')
-	}	
+		if (data[i][10][0].toLowerCase() == 'venmo') {
+			console.log('Pay here: https://venmo.com/Brady_McGowan?txn=pay&amount=' + data[i][20][1].replace('$',''))
+		}
+	}
 })

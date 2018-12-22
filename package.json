@@ -32,6 +32,7 @@
     "prompt-sync": "^4.1.6",
     "request": "^2.88.0",
     "selenium-webdriver": "^4.0.0-alpha.1",
-    "twilio": "^3.25.0"
+    "twilio": "^3.25.0",
+    "venmo": "0.0.2"
   }
 }
