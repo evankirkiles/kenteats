@@ -40,14 +40,13 @@ class SQLInterface {
 	// 	- name, dorm, phone number, aggregate spending, number of orders, number of orders at each different store
 	// Each receipt will be processed to see if it is a new user (based on phone number), and if it is it returns a message
 	// to send back to the user welcoming them as well as a console log telling the information of the new user.
-	processReceipt(receipt, test, callback) {
+	processReceipt(receipt, index, test, callback) {
 		// Set the table name to test if using test
 		let table = test ? 'testanalytics' : 'useranalytics'
 		// Format the number
 		let number = '+1' + receipt[15][0].replace(/\D+/g, '')
-
 		// Process the financials at the same time
-		this.processFinancials(receipt, test)
+		this.processFinancials(receipt, index, test)
 
 		// Check if number exists in database and if it does, update the name. Also,
 		// parse through the items ordered in the receipt and add the price and 1 to corresponding columns.
@@ -108,13 +107,11 @@ class SQLInterface {
 
 	// Processes a receipt for the financial trackings. Needs to combine the stats of all the receipts so must retain
 	// an object over multiple calls, hence it being a separate function.
-	processFinancials(receipt, test) {
+	processFinancials(receipt, index, test) {
 		// Set the table name to test if using test
 		let table = test ? 'testfinancials' : 'financials'
-		// Format the number
-		let number = '+1' + receipt[15][0].replace(/\D+/g, '')
-		// Save expenditures here so do not need to do it in mysql
-		let expenditures = parseFloat(receipt[20][1].replace('$', '')) - parseFloat(receipt[18][1].replace('$', ''))
+		// Format the number (the number of the order)
+		let number = 'order' + index
 		// Get the date to eventually fill in
 		let currDay = new Date();
 		currDay = currDay.getFullYear() + '-' + (currDay.getMonth() + 1) + '-' + currDay.getDate()
@@ -129,33 +126,28 @@ class SQLInterface {
 					// If there was an error, say it
 					if (err) { console.log(err); return err }
 					// Otherwise continue on to update the spending for the user (and add )
-					this.con.query('SELECT * FROM ' + table + ' WHERE day="' + currDay + '"" LIMIT 1', (err, returns) => {
+					this.con.query('SELECT * FROM ' + table + ' WHERE day="' + currDay + '" LIMIT 1', (err, returns) => {
 						// If there was an error, say it
 						if (err) { console.log(err); return err }
 						// Update the financials
-						this.updateFinancials(receipt, table, number, currDay, returns, (err, returns) => {
-							// If there was an error, say it
-							if (err) { console.log(err); return err }
-							// Update the financials
-							this.updateFinancials(receipt, table, number, currDay, returns, () => {
-								// Update the running totals for type of transaction
-								let returnString = 'UPDATE ' + table  + ' SET `'
-								// Choose payment type to increment based on the receipt
-								let paymentMethod = receipt[10][0].toLowerCase().replace(' ', '')
-								if (paymentMethod.indexOf('cash') > -1) {
-									returnString += 'cash`=`cash`+' + receipt[20][1].replace('$', '') + ' '
-								} else if (paymentMethod.indexOf('card') > -1) {
-									returnString += 'card`=`card`+' + receipt[20][1].replace('$', '') + ' '
-								} else if (paymentMethod.indexOf('venmo') > -1) {
-									returnString += 'venmo`=`venmo`+' + receipt[20][1].replace('$', '') + ' '
-								} else if (paymentMethod.indexOf('id') > -1) {
-									returnString += 'studentid`=`studentid`+' + receipt[20][1].replace('$', '') + ' '
-								}
-								// Finish the return string
-								returnString += 'WHERE day="' + currDay + '"'
-								// Finally, run the query
-								this.con.query(returnString)
-							})
+						this.updateFinancials(receipt, table, number, currDay, returns, (err, returns2) => {
+							// Update the running totals for type of transaction
+							let returnString = 'UPDATE ' + table  + ' SET `'
+							// Choose payment type to increment based on the receipt
+							let paymentMethod = receipt[10][0].toLowerCase().replace(' ', '')
+							if (paymentMethod.indexOf('cash') > -1) {
+								returnString += 'cash`=`cash`+' + receipt[20][1].replace('$', '') + ' '
+							} else if (paymentMethod.indexOf('card') > -1) {
+								returnString += 'card`=`card`+' + receipt[20][1].replace('$', '') + ' '
+							} else if (paymentMethod.indexOf('venmo') > -1) {
+								returnString += 'venmo`=`venmo`+' + receipt[20][1].replace('$', '') + ' '
+							} else if (paymentMethod.indexOf('id') > -1) {
+								returnString += 'studentid`=`studentid`+' + receipt[20][1].replace('$', '') + ' '
+							}
+							// Finish the return string
+							returnString += 'WHERE day="' + currDay + '"'
+							// Finally, run the query
+							this.con.query(returnString)
 						})
 					}) 
 				})
@@ -178,7 +170,7 @@ class SQLInterface {
 							returnString += 'venmo`=`venmo`+' + receipt[20][1].replace('$', '') + ' '
 						} else if (paymentMethod.indexOf('id') > -1) {
 							returnString += 'studentid`=`studentid`+' + receipt[20][1].replace('$', '') + ' '
-						}
+						} 	
 						// Finish the return string
 						returnString += 'WHERE day="' + currDay + '"'
 						// Finally, run the query
@@ -191,16 +183,14 @@ class SQLInterface {
 
 	//  Updates financial table (necessary so don't repeat code much)
 	updateFinancials(receipt, table, number, currDay, returns, callback) {
-		let str
+		let expenditures = parseFloat(receipt[20][1].replace('$', '')) - parseFloat(receipt[18][1].replace('$', ''))
 		// Otherwise perform check on the size of return, if 0 then row does not exist
 		if (returns.length > 0) {
-			str = 'UPDATE ' + table + ' SET `profit`=`profit`+' + receipt[18][1].replace('$', '') + ',`revenue`=`revenue`+' + receipt[20][1].replace('$', '') + ',`expenditures`=`expenditures`+' + expenditures.toFixed(2) +  ',`' + number + '`=`' + number + '`+' + receipt[20][1].replace('$', '') + ' WHERE day="' + currDay + '"'
+			this.con.query('UPDATE ' + table + ' SET `profit`=`profit`+' + receipt[18][1].replace('$', '') + ',`revenue`=`revenue`+' + receipt[20][1].replace('$', '') + ',`expenditures`=`expenditures`+' + expenditures.toFixed(2) +  ',`' + number + '`=`' + number + '`+' + receipt[20][1].replace('$', '') + ' WHERE day="' + currDay + '"', callback())
 		// If row doesn't exist, then simply insert this one
 		} else {
-			str = 'INSERT INTO ' + table + ' (`profit`,`revenue`,`expenditures`,`day`, `' + number + '`) VALUES (' + receipt[18][1].replace('$', '') + ',' + receipt[20][1].replace('$', '') + ',' + expenditures.toFixed(2) + ',"' + currDay + '", ' + receipt[20][1].replace('$', '') + ')'
+			this.con.query('INSERT INTO ' + table + ' (`profit`,`revenue`,`expenditures`,`day`, `' + number + '`) VALUES (' + receipt[18][1].replace('$', '') + ',' + receipt[20][1].replace('$', '') + ',' + expenditures.toFixed(2) + ',"' + currDay + '", ' + receipt[20][1].replace('$', '') + ')', callback())
 		}
-
-		this.con.query(str, callback())
 	}
 
 	// Interprets a receipt to find out how much was spent on each store and how many orders were placed.

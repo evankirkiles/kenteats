@@ -16,6 +16,10 @@ const client = require('twilio')(VAULT.twilio.accountSid, VAULT.twilio.authToken
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }))
 
+// Keep track of the number of orders sent in the current day
+let currentDayOrders = 0
+let currentDay = undefined
+
 // Listen for messages sent to Twilio
 app.post('/', (req, res) => {
 	const twiml = new MessagingResponse()
@@ -108,6 +112,14 @@ app.post('/', (req, res) => {
 		// SEND RECEIPT COMMAND
 		// Usage: 'Send b receipts NAME' or 'Send b receipts'
 		} else if (req.body.Body.toLowerCase().indexOf('send') > -1 && req.body.Body.toLowerCase().indexOf('receipt') > -1) {
+			// First validate the current day's orders
+			let currDayTemp = new Date();
+			currDayTemp = currDayTemp.getFullYear() + '-' + (currDayTemp.getMonth() + 1) + '-' + currDayTemp.getDate()
+			if (currDayTemp != currentDay) {
+				currentDayOrders = 0
+				currentDay = currDayTemp
+			}
+
 			// Check if the phone number is a valid number
 			if (VAULT.twilio.allowedNumbers.indexOf(req.body.From) > -1) {
 				// Get the type and convert it into the right format
@@ -120,11 +132,14 @@ app.post('/', (req, res) => {
 					// For each string, send a message to the recipient containing their receipt
 					let sentAMessage = false
 					for (let i = 0; i < data.length; i++) {
+						// Make sure the number exists
+						if (data[i][15][0] == undefined) { continue; }
 
+						// Update the running total of orders in the day
+						currentDayOrders++
 
 						// Update the receipt database
-						database.processReceipt(data[i], req.body.From == '+18609467150', (returned) => {})
-
+						database.processReceipt(data[i], currentDayOrders, req.body.From == '+18609467150', (returned) => {})
 
 						// If name is specified, check it against each data
 						if ((name == undefined || data[i][0][0].toLowerCase().indexOf(name.toLowerCase()) > -1) && req.body.From != '+18609467150') {
@@ -139,7 +154,7 @@ app.post('/', (req, res) => {
 							// If the payment method is Venmo, then also send a Venmo payment request
 							if (data[i][10][0].toLowerCase() == 'venmo') {
 								client.messages.create({
-									body: 'Pay here: https://venmo.com/Brady_McGowan?txn=pay&amount=' + receipt[20][1].replace('$',''),
+									body: 'Pay here: https://venmo.com/Brady_McGowan?txn=pay&amount=' + data[i][20][1].replace('$',''),
 									to: number,
 									from: '+12038946844'
 								})
