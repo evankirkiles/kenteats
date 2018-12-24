@@ -44,18 +44,40 @@ class SQLInterface {
 		let currDay = new Date();
 		currDay = currDay.getFullYear() + '-' + (currDay.getMonth() + 1) + '-' + currDay.getDate()
 		// Perform a MySQL query on the financials table to get the row of financial data
-		this.con.query('SELECT profit,revenue,expenditures,venmo,square FROM testfinancials WHERE day="' + currDay + '" LIMIT 1', (err, results) => {
+		this.con.query('SELECT profit,revenue,expenditures,venmo,card FROM financials WHERE day="' + currDay + '" LIMIT 1', (err, results) => {
 			// If there was an error, return it
 			if (err) { console.log(err); return }
 			// If there isn't any data for the day, then do nothing
-			console.log(results)
 			if (results.length > 0) {
 				// Otherwise, change the financials into the cell format
-				let cells = [[currDay, results[0]['revenue'], undefined, undefined, results[0]['expenditures'], undefined, undefined, results[0]['profit'], undefined, undefined, undefined, undefined, undefined, undefined, undefined, results[0]['venmo'], undefined, undefined, undefined, results[0]['square']]]
+				let cells = [[currDay, results[0]['revenue'], undefined, undefined, results[0]['expenditures'], undefined, undefined, results[0]['profit'], undefined, undefined, undefined, undefined, undefined, undefined, undefined, results[0]['venmo'], undefined, undefined, results[0]['card'], undefined]]
 				callback(cells)
 			} else {
 				console.log('Tried to update financials, but no data for ' + currDay + '.')
 				callback(undefined)
+			}
+		})
+	}
+
+	// Function which pulls the financial data for single orders to enter into the second Bookkeeping Google Sheet. Called
+	// at the same time as the other GetFinancials function, and again will only update the Google Sheet if orders existed.
+	// The order of the columns is also the same.
+	getSingleOrderFinancials(callback) {
+		// Get the current day for which to update
+		let currDay = new Date();
+		currDay = currDay.getFullYear() + '-' + (currDay.getMonth() + 1) + '-' + currDay.getDate()
+		// Perform a MySQL query on the financials table to get the row of financial data
+		this.con.query('SELECT profit,revenue,expenditures,venmo,card FROM financialorders WHERE day="' + currDay + '"', (err, results) => {
+			// If there was an error, return
+			if (err) { console.log(err); return }
+			// If there isn't any data for the day, then do nothing
+			if (results.length > 0) {
+				// Build the cells data to return
+				let cells = []
+				// Iterate through the results and build a row for each (each one is an order)
+				for (let i = 0; i < results.length; i++) 
+					cells.push[currDay, results[i]['revenue'], undefined, undefined, results[i]['expenditures'], undefined, undefined, results[i]['profit'], undefined, undefined, undefined, undefined, undefined, undefined, undefined, results[i]['venmo'], undefined, undefined, results[0]['card'], undefined]
+				callback(cells)
 			}
 		})
 	}
@@ -135,11 +157,29 @@ class SQLInterface {
 	processFinancials(receipt, index, test) {
 		// Set the table name to test if using test
 		let table = test ? 'testfinancials' : 'financials'
+		let table1 = test ? 'testfinancialorders' : 'financialorders'
 		// Format the number (the number of the order)
 		let number = 'order' + index
 		// Get the date to eventually fill in
 		let currDay = new Date();
 		currDay = currDay.getFullYear() + '-' + (currDay.getMonth() + 1) + '-' + currDay.getDate()
+
+		// Adds a row to represent the order
+		let expenditures = parseFloat(receipt[20][1].replace('$', '')) - parseFloat(receipt[18][1].replace('$', ''))
+		this.con.query('INSERT INTO ' + table1 + '(`day`,`profit`, `revenue`,`expenditures`,`venmo`,`card`,`phone`) VALUES ("' + 
+			currDay + '",' +                                                         // The day
+			parseFloat(receipt[18][1].replace('$', '')).toFixed(2) + ',' +           // The profit
+			parseFloat(receipt[20][1].replace('$', '')).toFixed(2) + ',' +           // The total transaction
+			expenditures.toFixed(2) + ',' +                                          // The money spent on food
+			'0' + ',' +                                                              // TODO: Get the amount taxed in Venmo transacton
+			'0' + ',"+1' +                                                            // TODO: Get the amount taxed in Square transacton
+			receipt[15][0].replace(/\D+/g, '') + '")',                               // The phone number of whoever placed order
+			(err, results) => {
+				// If there was an error, log it
+				if (err) { console.log(err); return err }
+			}
+		)
+
 		// Checks if the column exists in the database. If it doesn't, then create the column
 		this.con.query('SHOW COLUMNS FROM ' + table + ' LIKE "' + number + '"', (err, results) => {
 			// Make sure no error occurred
@@ -160,7 +200,7 @@ class SQLInterface {
 							let returnString = 'UPDATE ' + table  + ' SET `'
 							// Choose payment type to increment based on the receipt
 							let paymentMethod = receipt[10][0].toLowerCase().replace(' ', '')
-							if (paymentMethod.indexOf('cash') > -1) {
+							if (paymentMethod.indexOf('cash') > -1 || paymentMethod.indexOf('square') > -1) {
 								returnString += 'cash`=`cash`+' + parseFloat(receipt[20][1].replace('$', '')).toFixed(2)
 							} else if (paymentMethod.indexOf('card') > -1) {
 								returnString += 'card`=`card`+' + parseFloat(receipt[20][1].replace('$', '')).toFixed(2)
@@ -168,8 +208,6 @@ class SQLInterface {
 								returnString += 'venmo`=`venmo`+' + parseFloat(receipt[20][1].replace('$', '')).toFixed(2)
 							} else if (paymentMethod.indexOf('id') > -1) {
 								returnString += 'studentid`=`studentid`+' + parseFloat(receipt[20][1].replace('$', '')).toFixed(2)
-							} else if (paymentMethod.indexOf('square') > -1) {
-								returnString += 'square`=`square`+' + parseFloat(receipt[20][1].replace('$', '')).toFixed(2)
 							}
 							// Finish the return string
 							returnString += ' WHERE day="' + currDay + '"'

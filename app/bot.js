@@ -22,14 +22,31 @@ app.use(bodyParser.urlencoded({ extended: false }))
 let currentDayOrders = 0
 let currentDay = undefined
 
+// Keep track of the last updated financial day
+let lastFinanceUpdateDay = undefined
+
 // Schedule the financial trackings to update every day at 9:30 (if they exist)
-var financialUpdates = schedule.scheduleJob('30 20 * * *', () => {
-	// Run the MySQL query to determine if any data is available
-	let financeData = new SQLInterface()
-	financeData.getFinancials((data) => {
-		// With the data in hand, fill the books with it
-		googleapi.runAuthorizeFunction(googleapi.fillBookkeeping, data, () => {})
-	})
+var financialUpdates = schedule.scheduleJob('30 21 * * *', () => {
+	// Get the current day
+	let currDay = new Date();
+	currDay = currDay.getFullYear() + '-' + (currDay.getMonth() + 1) + '-' + currDay.getDate()
+	// Check it against the last updated finance day, only continuing if they do not match
+	if (lastFinanceUpdateDay != currDay) {
+		lastFinanceUpdateDay = currDay
+
+		// Run the MySQL query to determine if any data is available
+		let financeData = new SQLInterface()
+
+		financeData.getFinancials((data) => {
+			// With the data in hand, fill the books with it
+			googleapi.runAuthorizeFunction(googleapi.fillFullDayBookkeeping, data, () => {})
+		})
+
+		financeData.getSingleOrderFinancials((data) => {
+			// With the data in hand, fill the books with it
+			googleapi.runAuthorizeFunction(googleapi.fillSingleOrderBookkeeping, data, () => {})
+		})
+	}
 })
 
 // Listen for messages sent to Twilio
@@ -397,6 +414,26 @@ app.post('/', (req, res) => {
 				res.writeHead(200, { 'Content-Type': 'text/xml' })
 				res.end(twiml.toString())
 			}
+
+		// UPDATE FINANCIALS COMMAND
+		// Updates the financials (used to manually do what the scheduled command does)
+		// Usage: 'update financials'
+		} else if (req.body.Body.toLowerCase().indexOf('update') > -1 && req.body.Body.toLowerCase().indexOf('financials') > -1) {
+			// Get the current day
+			let currDay = new Date();
+			currDay = currDay.getFullYear() + '-' + (currDay.getMonth() + 1) + '-' + currDay.getDate()
+			lastFinanceUpdateDay = currDay
+
+			// Run the MySQL query to determine if any data is available
+			let financeData = new SQLInterface()
+			financeData.getFinancials((data) => {
+				// With the data in hand, fill the books with it
+				googleapi.runAuthorizeFunction(googleapi.fillFullDayBookkeeping, data, () => {})
+			})
+			financeData.getSingleOrderFinancials((data) => {
+				// With the data in hand, fill the books with it
+				googleapi.runAuthorizeFunction(googleapi.fillSingleOrderBookkeeping, data, () => {})
+			})
 
 		// FORM COMMAND
 		// Simply responds with the link to the form
