@@ -304,7 +304,17 @@ class SQLInterface {
 		}
 
 		// Update the name and dorm with those on the receipt
-		toReturn += 'name="' + receipt[0] + '",dorm="' + receipt[11][0] + '",'
+		toReturn += 'name="' + receipt[0] + '",' 
+		if (receipt[11][0] != undefined) { 
+			toReturn += 'dorm="' + receipt[11][0] + '",' 
+		} else {
+			for (let i = 0; i < VAULT.dorms.length; i++) {
+				if (receipt[12][0].toLowerCase().indexOf(VAULT.dorms[i].toLowerCase()) > -1) {
+					toReturn += 'dorm="' + VAULT.dorms[i] + '",'
+					break
+				}
+			}
+		}
 
 		// Now return the full MySQL update string for all stores
 		Object.keys(updateObj).forEach((key) => {

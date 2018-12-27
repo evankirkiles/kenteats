@@ -271,7 +271,7 @@ app.post('/', (req, res) => {
 					// Check the dorm against all receipts. If there is a match, then send the message to that person
 					for (let i = 0; i < data.length; i++) {
 						triedToSend = true
-						if (dorm == undefined || data[i][11][0].toLowerCase().indexOf(dorm) > -1) {
+						if (dorm == undefined || data[i][11][0].toLowerCase().indexOf(dorm) > -1 || data[i][12][0].toLowerCase().indexOf(dorm) > -1) {
 							// Get the number without dashes or parentheses or spaces and add +1
 							let number = '+1' + data[i][15][0].replace(/\D+/g, '')
 							// Send the message now
@@ -354,7 +354,8 @@ app.post('/', (req, res) => {
 					} else {
 						// Iterate through the data, and for each dorm match send the order name and number
 						for (let i = 0; i < data.length; i++) {
-							if (data[i][11][0] != undefined && data[i][11][0].toLowerCase().indexOf(dorm) > -1) {
+							if (data[i][11][0] != undefined && data[i][11][0].toLowerCase().indexOf(dorm) > -1 || 
+								data[i][12][0] != undefined && data[i][12][0].toLowerCase().indexOf(dorm) > -1) {
 								twiml.message(googleapi.orderToString(data[i], i + 1))
 							}
 						}
