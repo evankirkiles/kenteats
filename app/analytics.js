@@ -173,8 +173,8 @@ class SQLInterface {
 			parseFloat(receipt[18][1].replace('$', '')).toFixed(2) + ',' +           // The profit
 			parseFloat(receipt[20][1].replace('$', '')).toFixed(2) + ',' +           // The total transaction
 			expenditures.toFixed(2) + ',' +                                          // The money spent on food
-			(paymentMethod.indexOf('venmo') > -1 ? parseFloat(receipt[20][1].replace('$', '')).toFixed(2) : '') + ',' +
-			(paymentMethod.indexOf('square') > -1 || paymentMethod.indexOf('card') > -1 ? parseFloat(receipt[20][1].replace('$', '')).toFixed(2) : '') + ',' +
+			(paymentMethod.indexOf('venmo') > -1 ? parseFloat(receipt[20][1].replace('$', '')).toFixed(2) : '0.00') + ',' +
+			(paymentMethod.indexOf('square') > -1 || paymentMethod.indexOf('card') > -1 ? parseFloat(receipt[20][1].replace('$', '')).toFixed(2) : '0.00') + ',' +
 			receipt[15][0].replace(/\D+/g, '') + '")',                               // The phone number of whoever placed order
 			(err, results) => {
 				// If there was an error, log it
