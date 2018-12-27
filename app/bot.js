@@ -119,7 +119,7 @@ app.post('/', (req, res) => {
 			// Check if the phone number is a valid number
 			if (VAULT.twilio.allowedNumbers.indexOf(req.body.From) > -1) {
 				// Get the type and convert it into the right format
-				let type = req.body.Body.split(" ")[1].toLowerCase()
+				let type = req.body.Body.replace('  ', ' ').trim().split(" ")[1].toLowerCase()
 				googleapi.runAuthorizeFunction(googleapi.getReceipts, (type == 'b' ? 'Breakfast' : 'Afternoon'), (data) => {
 
 					for (let i = 0; i < data.length; i++) {
@@ -152,10 +152,10 @@ app.post('/', (req, res) => {
 			// Check if the phone number is a valid number
 			if (VAULT.twilio.allowedNumbers.indexOf(req.body.From) > -1) {
 				// Get the type and convert it into the right format
-				let type = req.body.Body.split(" ")[1].toLowerCase()
+				let type = req.body.Body.replace('  ', ' ').trim().split(" ")[1].toLowerCase()
 				googleapi.runAuthorizeFunction(googleapi.getReceipts, (type == 'b' ? 'Breakfast' : 'Afternoon'), (data) => {
 					// If there is a name given after the 'Send TYPE receipt', use it in filtering
-					let name = req.body.Body.split(" ")
+					let name = req.body.Body.replace('  ', ' ').trim().split(" ")
 					if (name.length > 3) { name = name[3] } else { name = undefined }
 
 					// For each string, send a message to the recipient containing their receipt
@@ -229,7 +229,7 @@ app.post('/', (req, res) => {
 					// With the list of numbers, use the client to send the message to each
 					for (let i = 0; i < results.length; i++) {
 						client.messages.create({
-							body: req.body.Body.split('"')[1],
+							body: req.body.Body.replace('  ', ' ').trim().split('"')[1],
 							to: results[i]['phone'],
 							from: '+12038946844'
 						})
@@ -257,13 +257,13 @@ app.post('/', (req, res) => {
 			if (VAULT.twilio.allowedNumbers.indexOf(req.body.From) > -1) {
 
 				// Get the type and convert it into the right format
-				let type = req.body.Body.split(" ")[1].toLowerCase()
+				let type = req.body.Body.replace('  ', ' ').trim().split(" ")[1].toLowerCase()
 				// Get the receipts for the specified time to retrieve phone numbers, dorm, etc.
 				googleapi.runAuthorizeFunction(googleapi.getReceipts, (type == 'b' ? 'Breakfast' : 'Afternoon'), (data) => {
 					// Get the dorm if the last character is not a quotation mark
 					let dorm = undefined
 					if (req.body.Body.trim().charAt(req.body.Body.length - 1) != '"') {
-						dorm = req.body.Body.split(" ").pop().toLowerCase()
+						dorm = req.body.Body.replace('  ', ' ').trim().split(" ").pop().toLowerCase()
 					}
 
 					let sentAMessage = false
@@ -276,7 +276,7 @@ app.post('/', (req, res) => {
 							let number = '+1' + data[i][15][0].replace(/\D+/g, '')
 							// Send the message now
 							client.messages.create({
-								body: req.body.Body.split('"')[1],
+								body: req.body.Body.replace('  ', ' ').trim().split('"')[1],
 								to: number,
 								from: '+12038946844'
 							})
@@ -288,9 +288,9 @@ app.post('/', (req, res) => {
 					if (sentAMessage) {
 						twiml.message('Sent ' + type + ' message.')
 						if (dorm == undefined) {
-							console.log('Sent all ' + type + ' orderers "' + req.body.Body.split('"')[1] + '"!')	
+							console.log('Sent all ' + type + ' orderers "' + req.body.Body.replace('  ', ' ').trim().split('"')[1] + '"!')	
 						} else {
-							console.log('Sent all ' + type + ' orderers  from ' + dorm + ' "' + req.body.Body.split('"')[1] + '"!')
+							console.log('Sent all ' + type + ' orderers  from ' + dorm + ' "' + req.body.Body.replace('  ', ' ').trim().split('"')[1] + '"!')
 						}
 					} else {
 						// Error logging
@@ -315,15 +315,15 @@ app.post('/', (req, res) => {
 		// DORM/STORE ORDERS COMMAND
 		// Shows orders for the given dorm or store
 		// Usage: 'DORM TYPE orders' i.e. 'North b orders' or 'Chipotle b orders'
-		} else if (req.body.Body.trim().split(" ").length == 3 && req.body.Body.toLowerCase().indexOf('orders') > -1) {
+		} else if (req.body.Body.replace('  ', ' ').trim().split(" ").length == 3 && req.body.Body.toLowerCase().indexOf('orders') > -1) {
 			// This command queries the dorm orders page in google sheets
 			if (VAULT.twilio.allowedNumbers.indexOf(req.body.From) > -1) {
 				// Get the type and convert it into the right format
-				let type = req.body.Body.split(" ")[1].toLowerCase()
+				let type = req.body.Body.replace('  ', ' ').trim().split(" ")[1].toLowerCase()
 				// Get the receipts for the specified time to retrieve phone numbers, dorm, etc.
 				googleapi.runAuthorizeFunction(googleapi.getReceipts, (type == 'b' ? 'Breakfast' : 'Afternoon'), (data) => {
 					// Get the dorm from the first section between split
-					let dorm = req.body.Body.split(" ")[0].toLowerCase()
+					let dorm = req.body.Body.replace('  ', ' ').trim().split(" ")[0].toLowerCase()
 					// Check if the dorm is actualy a store
 					let isStore = false
 					console.log(dorm.replace(/[^a-z]/gi, ''))
@@ -380,7 +380,7 @@ app.post('/', (req, res) => {
 			// Validate user
 			if (VAULT.twilio.allowedNumbers.indexOf(req.body.From) > -1) {
 				// Get the type and convert it into the right format
-				let type = req.body.Body.split(" ")[1].toLowerCase()
+				let type = req.body.Body.replace('  ', ' ').trim().split(" ")[1].toLowerCase()
 				// Get the receipts for the specified time to retrieve the stores
 				googleapi.runAuthorizeFunction(googleapi.getReceipts, (type == 'b' ? 'Breakfast' : 'Afternoon'), (data) => {
 					// Retrieve the ordered list of stores from the JSON
