@@ -50,7 +50,7 @@ class SQLInterface {
 			// If there isn't any data for the day, then do nothing
 			if (results.length > 0) {
 				// Otherwise, change the financials into the cell format
-				let cells = [[currDay, results[0]['revenue'], undefined, undefined, results[i]['expenditures'], undefined, undefined, results[i]['profit'], undefined, undefined, undefined, undefined, undefined, undefined, results[i]['venmo'], undefined, undefined, undefined, undefined, results[0]['card']]]
+				let cells = [[currDay, results[0]['revenue'], undefined, undefined, results[0]['expenditures'], undefined, undefined, results[0]['profit'], undefined, undefined, undefined, undefined, undefined, undefined, results[0]['venmo'], undefined, undefined, undefined, undefined, results[0]['card']]]
 				callback(cells)
 			} else {
 				console.log('Tried to update financials, but no data for ' + currDay + '.')
