@@ -147,19 +147,21 @@ function fillSingleOrderBookkeeping(auth, callback, data) {
     // With the range in hand, use the data to perform another query which updates the spreadsheet
     sheets.spreadsheets.values.update({
       spreadsheetId: '13Etz5yHco9C4x07RVSXboZ2j4sk8WK66Fw8CjbnfJoM',
-      range: range, valueInputOption: 'USER_ENTERED',
+      range: range, 
+      valueInputOption: 'USER_ENTERED',
       resource: {
         values: data
       }
     }, (err, result) => {
       if (err) return console.log('The API returned an error: ' + err)
       // Log the updated books
-      console.log('Updated single-order ifnancial tracking Google Sheet!')
+      console.log('Updated single-order financial tracking Google Sheet!')
       callback(result)
     })
   })
 }
 
+module.exports.fillSingleOrderBookkeeping = fillSingleOrderBookkeeping
 module.exports.fillFullDayBookkeeping = fillFullDayBookkeeping
 
 /**

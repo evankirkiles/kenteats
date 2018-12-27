@@ -50,7 +50,7 @@ class SQLInterface {
 			// If there isn't any data for the day, then do nothing
 			if (results.length > 0) {
 				// Otherwise, change the financials into the cell format
-				let cells = [[currDay, results[0]['revenue'], undefined, undefined, results[0]['expenditures'], undefined, undefined, results[0]['profit'], undefined, undefined, undefined, undefined, undefined, undefined, undefined, results[0]['venmo'], undefined, undefined, results[0]['card'], undefined]]
+				let cells = [[currDay, results[0]['revenue'], undefined, undefined, results[i]['expenditures'], undefined, undefined, results[i]['profit'], undefined, undefined, undefined, undefined, undefined, undefined, results[i]['venmo'], undefined, undefined, undefined, undefined, results[0]['card']]]
 				callback(cells)
 			} else {
 				console.log('Tried to update financials, but no data for ' + currDay + '.')
@@ -75,8 +75,9 @@ class SQLInterface {
 				// Build the cells data to return
 				let cells = []
 				// Iterate through the results and build a row for each (each one is an order)
-				for (let i = 0; i < results.length; i++) 
-					cells.push[currDay, results[i]['revenue'], undefined, undefined, results[i]['expenditures'], undefined, undefined, results[i]['profit'], undefined, undefined, undefined, undefined, undefined, undefined, undefined, results[i]['venmo'], undefined, undefined, results[0]['card'], undefined]
+				for (let i = 0; i < results.length; i++) {
+					cells.push([currDay, results[i]['revenue'], undefined, undefined, results[i]['expenditures'], undefined, undefined, results[i]['profit'], undefined, undefined, undefined, undefined, undefined, undefined, results[i]['venmo'], undefined, undefined, undefined, undefined, results[0]['card']])
+				}
 				callback(cells)
 			}
 		})
