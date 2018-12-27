@@ -166,13 +166,15 @@ class SQLInterface {
 
 		// Adds a row to represent the order
 		let expenditures = parseFloat(receipt[20][1].replace('$', '')) - parseFloat(receipt[18][1].replace('$', ''))
+		// Get the payment method first
+		let paymentMethod = receipt[10][0].toLowerCase().replace(' ', '')
 		this.con.query('INSERT INTO ' + table1 + '(`day`,`profit`, `revenue`,`expenditures`,`venmo`,`card`,`phone`) VALUES ("' + 
 			currDay + '",' +                                                         // The day
 			parseFloat(receipt[18][1].replace('$', '')).toFixed(2) + ',' +           // The profit
 			parseFloat(receipt[20][1].replace('$', '')).toFixed(2) + ',' +           // The total transaction
 			expenditures.toFixed(2) + ',' +                                          // The money spent on food
-			'0' + ',' +                                                              // TODO: Get the amount taxed in Venmo transacton
-			'0' + ',"+1' +                                                            // TODO: Get the amount taxed in Square transacton
+			(paymentMethod.indexOf('venmo') > -1 ? parseFloat(receipt[20][1].replace('$', '')).toFixed(2) : '') + ',' +
+			(paymentMethod.indexOf('square') > -1 || paymentMethod.indexOf('card') > -1 ? parseFloat(receipt[20][1].replace('$', '')).toFixed(2) : '') + ',' +
 			receipt[15][0].replace(/\D+/g, '') + '")',                               // The phone number of whoever placed order
 			(err, results) => {
 				// If there was an error, log it

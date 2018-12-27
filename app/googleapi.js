@@ -138,7 +138,7 @@ function fillSingleOrderBookkeeping(auth, callback, data) {
   if (data == undefined) { return }
   const sheets = google.sheets({version: 'v4', auth});
   sheets.spreadsheets.values.get({
-    spreadsheetId: 'FILL IN VALUE HERE',
+    spreadsheetId: '13Etz5yHco9C4x07RVSXboZ2j4sk8WK66Fw8CjbnfJoM',
     range: 'Sheet1!A1:A999'
   }, (err, result) => {
     if (err) return console.log('The API returned an error: ' + err)
@@ -146,7 +146,7 @@ function fillSingleOrderBookkeeping(auth, callback, data) {
     let range = 'Sheet1!A' + (result.data.values.length + 1) + ':T' + (result.data.values.length + 1 + data.length)
     // With the range in hand, use the data to perform another query which updates the spreadsheet
     sheets.spreadsheets.values.update({
-      spreadsheetId: 'FILL IN VALUE HERE',
+      spreadsheetId: '13Etz5yHco9C4x07RVSXboZ2j4sk8WK66Fw8CjbnfJoM',
       range: range, valueInputOption: 'USER_ENTERED',
       resource: {
         values: data
