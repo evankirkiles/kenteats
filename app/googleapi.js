@@ -1,6 +1,7 @@
 const fs = require('fs');
 const readline = require('readline');
 const {google} = require('googleapis');
+const VAULT = require('../config/vault.json')
 
 // If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
@@ -194,16 +195,31 @@ function getReceipts(auth, callback, type) {
       			}
       		}
           index++
-      	} else if (index == 22 || index == 45 || index == 68 || index == 91 || index == 114 || index == 137) {
+      	} else if (index == 22 || index == 45 || index == 68 || index == 91 || index == 114 || index == 137 || index == 160 || index == 183) {
           receiptStarts = []
           numreceits = messages.length
           index = 0
         } else {
+          // At this point the number of receipts is known
       		index++
-      		// At this point the number of receipts is known
-      		for (let j = 0; j < receiptStarts.length; j++) {
-              messages[numreceits+j].push([row[receiptStarts[j]], row[receiptStarts[j]+1], row[receiptStarts[j]+2]])
-      		}
+
+          // CAREFUL: VERY SPECIFIC CODE BASED ON THE POSITION OF EACH RECEIPT COMPONENT
+          // If the index is the profit or price index, make sure to add the fee correctly (not always 5)
+          if (index == 19) {
+            for (let j = 0; j < receiptStarts.length; j++) {
+              // The delivery fee needs to be set by the code
+                messages[numreceits+j].push([undefined, VAULT.deliveryfee, undefined])
+            }
+          } else if (index == 21) {
+            for (let j = 0; j < receiptStarts.length; j++) {
+              // Add the delivery fee difference with the 5 default
+                messages[numreceits+j].push([row[receiptStarts[j]], row[receiptStarts[j]+1] + VAULT.deliveryfee - 5, undefined])
+            }
+          } else {
+            for (let j = 0; j < receiptStarts.length; j++) {
+                messages[numreceits+j].push([row[receiptStarts[j]], row[receiptStarts[j]+1], row[receiptStarts[j]+2]])
+            }
+          }
       	}
       });
 	   callback(messages)

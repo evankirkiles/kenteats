@@ -27,7 +27,6 @@ class SQLInterface {
 		// On error, handle it
 		this.con.on('error', (err) => {
 			if (err.code === 'PROTOCOL_CONNECTION_LOST') {
-				console.log('Database error, restoring session.')
 				this.handleDisconnect()
 			} else {
 				throw err
