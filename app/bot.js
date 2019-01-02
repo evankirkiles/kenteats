@@ -271,7 +271,7 @@ app.post('/', (req, res) => {
 					// Check the dorm against all receipts. If there is a match, then send the message to that person
 					for (let i = 0; i < data.length; i++) {
 						triedToSend = true
-						if (dorm == undefined || data[i][11][0].toLowerCase().indexOf(dorm) > -1 || data[i][12][0].toLowerCase().indexOf(dorm) > -1) {
+						if (dorm == undefined || (data[i][11][0] != undefined && data[i][11][0].toLowerCase().indexOf(dorm) > -1) ||  (data[i][12][0] != undefined && data[i][12][0].toLowerCase().indexOf(dorm) > -1)) {
 							// Get the number without dashes or parentheses or spaces and add +1
 							let number = '+1' + data[i][15][0].replace(/\D+/g, '')
 							// Send the message now
@@ -446,15 +446,21 @@ app.post('/', (req, res) => {
 			res.writeHead(200, { 'Content-Type': 'text/xml' })
 			res.end(twiml.toString())
 
+		// QUIT COMMAND
+		// Removes this user's phone number from the database
+		// Usage: 'quit'
+	  //   } else if (req.body.Body.toLowerCase().indexOf('quit') > -1) {
+	  //   	// Make sure the number is not an admin number
+	  //   	if (VAULT.twilio.allowedNumbers.indexOf(req.body.From) == -1) {
+	  //   		// Perform the 
+	  //   	} 
+	  //   	// Add a content accepted header and send
+			// res.writeHead(200, { 'Content-Type': 'text/xml' })
+			// res.end(twiml.toString())
+
 		// EVERYTHING ELSE	
 		} else {
-			if (req.body.Body == 'hello') {
-				twiml.message('Hi!')
-			} else if (req.body.Body == 'bye') {
-				twiml.message('Goodbye!')
-			} else {
-				twiml.message('No parameter match. Respond "form" if you would like the link to the form to order!')
-			}
+			twiml.message('Text "form" if you would like the link to the form to order! Text "quit" if you would like to remove your number from the database (stop receiving announcements).')
 			// Add a content accepted header
 			res.writeHead(200, { 'Content-Type': 'text/xml' })
 			res.end(twiml.toString())
