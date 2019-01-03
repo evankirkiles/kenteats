@@ -2,6 +2,7 @@ const fs = require('fs');
 const readline = require('readline');
 const {google} = require('googleapis');
 const VAULT = require('../config/vault.json')
+const FuzzySet = require('fuzzyset')
 
 // If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
@@ -182,6 +183,7 @@ function getReceipts(auth, callback, type) {
       // This array keeps track of the starting points of each receipt
       let receiptStarts = []
       let numreceits = 0
+      let fuzzyStores = FuzzySet(Object.keys(VAULT.stores))
       // This index keeps track of which row is currently being read
       let index = 0
       rows.map((row) => {
@@ -205,7 +207,7 @@ function getReceipts(auth, callback, type) {
 
           // CAREFUL: VERY SPECIFIC CODE BASED ON THE POSITION OF EACH RECEIPT COMPONENT
           // If the index is the profit or price index, make sure to add the fee correctly (not always 5)
-          if (index == 19) {
+           if (index == 19) {
             for (let j = 0; j < receiptStarts.length; j++) {
               // The delivery fee needs to be set by the code
                 messages[numreceits+j].push([undefined, VAULT.deliveryfee, undefined])
@@ -222,6 +224,17 @@ function getReceipts(auth, callback, type) {
           }
       	}
       });
+
+      // Once all the receipts are built, reformat the stores
+      for (let i = 0; i < messages.length; i++) {
+        for (let j = 2; j < 10; j++) {
+          if (messages[i][j][0] != '#VALUE!') {
+            messages[i][j][1] = fuzzyStores.get(messages[i][j][0].match(/\(([^)]+)\)/)[1])[0][1]
+          } else {
+            break;
+          }
+        }
+      }
 	   callback(messages)
     } else {
       callback('No data found.')

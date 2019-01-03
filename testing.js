@@ -1,6 +1,12 @@
-let d = 2
-let toReturn = 'UPDATE kenteats.financials SET `profit`=`profit`/' + d + ',`revenue`=`revenue`/' + d + ',`expenditures`=`expenditures`/' + d + ',`cash`=`cash`/' + d + ',`card`=`card`/' + d + ',`venmo`=`venmo`/' + d + ',`studentid`=`studentid`/' + d + ','
-for (let j = 1; j < 58; j++) {
-	toReturn += '`order' + j + '`=`order' + j + '`/' + d + ','
-}
-console.log(toReturn)
+const googleapi = require('./app/googleapi')
+const SQLInterface = require('./app/analytics').SQLInterface
+const database = new SQLInterface()
+
+let ind = 1
+googleapi.runAuthorizeFunction(googleapi.getReceipts, 'Breakfast', (data) => {
+	for (let i = 0; i < data.length; i++) {
+		// Update the receipt database
+		database.processReceipt(data[i], ind, false, (returned) => {})
+		ind++
+	}
+})

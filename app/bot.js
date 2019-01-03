@@ -67,10 +67,16 @@ stdin.addListener("data", function(d) {
 		// Log the sent message
 		console.log('Sent text message.')
 	}
+
+	// CONSOLE COMMAND: Set the number of orders in the day
+	// USAGE: 'ordernums 9'
+	if (command.indexOf('ordernums') > -1) {
+		currentDayOrders = parseInt(command.split(' ')[1])
+	}
 });
 
-// Listen for messages sent to Twilio
-app.post('/', (req, res) => {
+// Entire chatbot function
+function chatBot(req, res) {
 	const twiml = new MessagingResponse()
 	const database = new SQLInterface()
 
@@ -528,7 +534,10 @@ app.post('/', (req, res) => {
 			res.end(twiml.toString())
 		} 
 	})
-})
+}
+
+// Listen for messages sent to Twilio
+app.post('/', (req, res) => { chatBot(req, res) })
 
 // Finally build the HTTP server for the bot
 http.createServer(app).listen(1337, () => {
