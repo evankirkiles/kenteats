@@ -101,12 +101,13 @@ app.post('/', (req, res) => {
 		// USAGE: '?' or '? get receipts'
 		if (req.body.Body.toLowerCase().indexOf('?') > -1) {
 			let toPrint = ''
+			let commands
 			// Separate admin commands from others
 			if (VAULT.twilio.allowedNumbers.indexOf(req.body.From) > -1) {
-				let commands = VAULT.admincommands
+				commands = VAULT.admincommands
 				toPrint = 'Admin Commands:\n'
 			} else {
-				let commands = VAULT.normiecommands
+				commands = VAULT.normiecommands
 				toPrint = 'Commands:\n'
 			}
 
