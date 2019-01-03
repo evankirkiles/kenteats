@@ -152,6 +152,17 @@ class SQLInterface {
 		})
 	}
 
+	// Removes a number from the database
+	removeNumber(number) {
+		// Remove the number from the database
+		this.con.query('DELETE FROM useranalytics WHERE phone="' + number + '"', (err, results) => {
+			// Make sure no error occurred
+			if (err) { return err }
+			// Otherwise notify that a user was dropped
+			console.log('Removed number from database: ' + number)
+		})
+	}
+
 	// Processes a receipt for the financial trackings. Needs to combine the stats of all the receipts so must retain
 	// an object over multiple calls, hence it being a separate function.
 	processFinancials(receipt, index, test) {

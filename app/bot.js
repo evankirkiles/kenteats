@@ -49,6 +49,26 @@ var financialUpdates = schedule.scheduleJob('30 21 * * *', () => {
 	}
 })
 
+// Listen to console input
+var stdin = process.openStdin();
+stdin.addListener("data", function(d) {
+	let command = d.toString().trim()
+
+	// CONSOLE COMMAND: Single-number text
+	// USAGE: 'text +18609467150 "hi"'
+	if (command.indexOf('text') > -1) {
+		let params = command.trim().split(' ')
+		// Create a message with the text between quotation marks
+		client.messages.create({
+			body: command.replace('  ', ' ').trim().split('"')[1],
+			to: params[1],
+			from: '+12038946844'
+		})
+		// Log the sent message
+		console.log('Sent text message.')
+	}
+});
+
 // Listen for messages sent to Twilio
 app.post('/', (req, res) => {
 	const twiml = new MessagingResponse()
@@ -162,7 +182,9 @@ app.post('/', (req, res) => {
 					let sentAMessage = false
 					for (let i = 0; i < data.length; i++) {
 						// Update the running total of orders in the day
-						currentDayOrders++
+						if (req.body.From != '+18609467150') {
+							currentDayOrders++
+						}
 
 						// Make sure the number exists
 						if (data[i][15][0] == undefined) { continue; }
@@ -439,7 +461,7 @@ app.post('/', (req, res) => {
 		// FORM COMMAND
 		// Simply responds with the link to the form
 		// Usage: 'form'
-		} else if (req.body.Body.toLowerCase().indexOf('form') > -1) {
+		} else if (req.body.Body.toLowerCase().trim() == 'form') {
 			// Send the user the link to the order form	
 			twiml.message("https://docs.google.com/forms/d/1nC2Hpm0AcTF00_PV5ugyusUHfAM_xb81Xh7hT2Faje0/edit")
 			// Add a content accepted header and send
@@ -449,14 +471,17 @@ app.post('/', (req, res) => {
 		// QUIT COMMAND
 		// Removes this user's phone number from the database
 		// Usage: 'quit'
-	  //   } else if (req.body.Body.toLowerCase().indexOf('quit') > -1) {
-	  //   	// Make sure the number is not an admin number
-	  //   	if (VAULT.twilio.allowedNumbers.indexOf(req.body.From) == -1) {
-	  //   		// Perform the 
-	  //   	} 
-	  //   	// Add a content accepted header and send
-			// res.writeHead(200, { 'Content-Type': 'text/xml' })
-			// res.end(twiml.toString())
+	    } else if (req.body.Body.toLowerCase().trim() == 'quit') {
+	    	// Make sure the number is not an admin number
+	    	if (VAULT.twilio.allowedNumbers.indexOf(req.body.From) == -1) {
+	    		// Perform the database number removal
+	    		database.removeNumber(req.body.From)
+	    		// Notify the user that their number was dropped
+	    		twiml.message('Your number has been dropped.')
+	    	} 
+	    	// Add a content accepted header and send
+			res.writeHead(200, { 'Content-Type': 'text/xml' })
+			res.end(twiml.toString())
 
 		// EVERYTHING ELSE	
 		} else {
