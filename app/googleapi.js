@@ -163,8 +163,71 @@ function fillSingleOrderBookkeeping(auth, callback, data) {
   })
 }
 
+/**
+ * Fills in the student ID google sheet
+ */
+function fillStudentIDOrders(auth, callback, data) {
+  // If the data is undefined, then do nothing
+  if (data == undefined) { return }
+  const sheets = google.sheets({version: 'v4', auth});
+  sheets.spreadsheets.values.get({
+    spreadsheetId: '1gRSSPxuDottfMmwAAiZsHdQYllU7RECJ7_XtGiFWeGY',
+    range: 'Sheet1!A1:A999'
+  }, (err, result) => {
+    if (err) return console.log('The API returned an error: ' + err)
+      // Cycle through the results to find the first empty cell to begin the range with
+    let range = 'Sheet1!A' + (result.data.values.length + 1) + ':F' + (result.data.values.length + 1 + data.length)
+    // With the range in hand, use the data to perform another query which updates the spreadsheet
+    sheets.spreadsheets.values.update({
+      spreadsheetId: '1gRSSPxuDottfMmwAAiZsHdQYllU7RECJ7_XtGiFWeGY',
+      range: range, 
+      valueInputOption: 'USER_ENTERED',
+      resource: {
+        values: data
+      }
+    }, (err, result) => {
+      if (err) return console.log('The API returned an error: ' + err)
+      // Log the updated books
+      console.log('Updated student ID financial tracking Google Sheet!')
+      callback(result)
+    })
+  })
+}
+
+/**
+ * Fills in the venmo google sheet
+ */
+function fillVenmoOrders(auth, callback, data) {
+  // If the data is undefined, then do nothing
+  if (data == undefined) { return }
+  const sheets = google.sheets({version: 'v4', auth});
+  sheets.spreadsheets.values.get({
+    spreadsheetId: '1-VbFlC6sim1r05HRW9TCWocWjGemq4mqeswXjqJ4RFc',
+    range: 'Sheet1!A1:A999'
+  }, (err, result) => {
+    if (err) return console.log('The API returned an error: ' + err)
+      // Cycle through the results to find the first empty cell to begin the range with
+    let range = 'Sheet1!A' + (result.data.values.length + 1) + ':F' + (result.data.values.length + 1 + data.length)
+    // With the range in hand, use the data to perform another query which updates the spreadsheet
+    sheets.spreadsheets.values.update({
+      spreadsheetId: '1-VbFlC6sim1r05HRW9TCWocWjGemq4mqeswXjqJ4RFc',
+      range: range, 
+      valueInputOption: 'USER_ENTERED',
+      resource: {
+        values: data
+      }
+    }, (err, result) => {
+      if (err) return console.log('The API returned an error: ' + err)
+      // Log the updated books
+      console.log('Updated Venmo financial tracking Google Sheet!')
+      callback(result)
+    })
+  })
+}
+
 module.exports.fillSingleOrderBookkeeping = fillSingleOrderBookkeeping
 module.exports.fillFullDayBookkeeping = fillFullDayBookkeeping
+module.exports.fillStudentIDOrders = fillStudentIDOrders
 
 /**
  * Returns the receipts for a given time

@@ -82,6 +82,52 @@ class SQLInterface {
 		})
 	}
 
+	// Function which pulls the data for student ID orders to enter into the student ID Google Sheet. Again, called
+	// at the same time as the other GetFinancials functions.
+	getStudentIDFinancials(callback) {
+		// Get the current day for which to pull the financials
+		let currDay = new Date();
+		currDay = currDay.getFullYear() + '-' + (currDay.getMonth() + 1) + '-' + currDay.getDate()
+		// Perform a MySQL query on the financials table to get the row of financial data
+		this.con.query('SELECT name,amount,phone FROM studentidorders WHERE date="' + currDay + '"', (err, results) => {
+			// If there was an error, return
+			if (err) { console.log(err); return }
+			// If there isn't any data for the day, then do nothing
+			if (results.length > 0) {
+				// Build the cells data to return
+				let cells = []
+				// Iterate through the results and build a row for each (each one is an order)
+				for (let i = 0; i < results.length; i++) {
+					cells.push([currDay, results[i]['name'], results['amount'], undefined, undefined, results['phone']])
+				}
+				callback(cells)
+			}
+		})
+	}
+
+	// Function which pulls the data for student ID orders to enter into the student ID Google Sheet. Again, called
+	// at the same time as the other GetFinancials functions.
+	getVenmoFinancials(callback) {
+		// Get the current day for which to pull the financials
+		let currDay = new Date();
+		currDay = currDay.getFullYear() + '-' + (currDay.getMonth() + 1) + '-' + currDay.getDate()
+		// Perform a MySQL query on the financials table to get the row of financial data
+		this.con.query('SELECT name,amount,phone FROM venmoorders WHERE date="' + currDay + '"', (err, results) => {
+			// If there was an error, return
+			if (err) { console.log(err); return }
+			// If there isn't any data for the day, then do nothing
+			if (results.length > 0) {
+				// Build the cells data to return
+				let cells = []
+				// Iterate through the results and build a row for each (each one is an order)
+				for (let i = 0; i < results.length; i++) {
+					cells.push([currDay, results[i]['name'], results['amount'], undefined, undefined, results['phone']])
+				}
+				callback(cells)
+			}
+		})
+	}
+
 	// Controller for analytics MySQL database which will keep track of data on each user.
 	// Data will include, but not be limited to:
 	// 	- name, dorm, phone number, aggregate spending, number of orders, number of orders at each different store
@@ -174,11 +220,27 @@ class SQLInterface {
 		// Get the date to eventually fill in
 		let currDay = new Date();
 		currDay = currDay.getFullYear() + '-' + (currDay.getMonth() + 1) + '-' + currDay.getDate()
+		// Get the payment method first
+		let paymentMethod = receipt[10][0].toLowerCase().replace(' ', '')
+
+		// Check if the receipt is a student id order, for which it is necessary to add it to student id database
+		if (paymentMethod.indexOf('stud') > -1) {
+			this.con.query('INSERT INTO studentidorders (`date`,`name`,`amount`,`phone`) VALUES ("' + 
+				currDay + '","' + receipt[1] + '",' + parseFloat(receipt[20][1].replace('$', '')).toFixed(2) + ',"+1' + receipt[15][0].replace(/\D+/g, '') + '")', (err, results) => {
+				// If there was an error, log it
+				if (err) { console.log(err); return err }
+			})
+		// Check if the receipt is a venmo order, for which it is necessary to add it to student id database
+		} else if (paymentMethod.indexOf('venmo') > -1) {
+			this.con.query('INSERT INTO venmoorders (`date`,`name`,`amount`,`phone`) VALUES ("' + 
+				currDay + '","' + receipt[1] + '",' + parseFloat(receipt[20][1].replace('$', '')).toFixed(2) + ',"+1' + receipt[15][0].replace(/\D+/g, '') + '")', (err, results) => {
+				// If there was an error, log it
+				if (err) { console.log(err); return err }
+			})
+		}
 
 		// Adds a row to represent the order
 		let expenditures = parseFloat(receipt[20][1].replace('$', '')) - parseFloat(receipt[18][1].replace('$', ''))
-		// Get the payment method first
-		let paymentMethod = receipt[10][0].toLowerCase().replace(' ', '')
 		this.con.query('INSERT INTO ' + table1 + '(`day`,`profit`, `revenue`,`expenditures`,`venmo`,`card`,`phone`) VALUES ("' + 
 			currDay + '",' +                                                         // The day
 			parseFloat(receipt[18][1].replace('$', '')).toFixed(2) + ',' +           // The profit

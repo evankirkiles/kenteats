@@ -37,15 +37,16 @@ var financialUpdates = schedule.scheduleJob('30 21 * * *', () => {
 		// Run the MySQL query to determine if any data is available
 		let financeData = new SQLInterface()
 
+		// GETFINANCIAL FUNCTIONS
+		// Each querys the MySQL database and uses the data it retrieves to fill their respective Google Sheets
 		financeData.getFinancials((data) => {
-			// With the data in hand, fill the books with it
-			googleapi.runAuthorizeFunction(googleapi.fillFullDayBookkeeping, data, () => {})
-		})
-
+			googleapi.runAuthorizeFunction(googleapi.fillFullDayBookkeeping, data, () => {}) })
 		financeData.getSingleOrderFinancials((data) => {
-			// With the data in hand, fill the books with it
-			googleapi.runAuthorizeFunction(googleapi.fillSingleOrderBookkeeping, data, () => {})
-		})
+			googleapi.runAuthorizeFunction(googleapi.fillSingleOrderBookkeeping, data, () => {}) })
+		financeData.getStudentIDFinancials((data) => {
+			googleapi.runAuthorizeFunction(googleapi.fillStudentIDOrders, data, () => {}) })
+		financeData.getStudentIDFinancials((data) => {
+			googleapi.runAuthorizeFunction(googleapi.fillVenmoOrders, data, () => {}) })
 	}
 })
 
@@ -262,6 +263,7 @@ function chatBot(req, res) {
 				// Perform MySQL request to get the list of numbers
 				database.pullNumbers((results) => {
 					// With the list of numbers, use the client to send the message to each
+					let someth = 0
 					for (let i = 0; i < results.length; i++) {
 						// If not muted, send the message
 						if (results[i]['muted'] == 0) {
@@ -270,11 +272,12 @@ function chatBot(req, res) {
 								to: results[i]['phone'],
 								from: '+12038946844'
 							})
+							someth++
 						}
 					}
 
 					// Respond with a message successful
-					twiml.message('Sent message to all ' + results.length + ' customers.')
+					twiml.message('Sent message to all ' + someth + ' unmuted customers.')
 					// Add a content accepted header and send
 					res.writeHead(200, { 'Content-Type': 'text/xml' })
 					res.end(twiml.toString())
