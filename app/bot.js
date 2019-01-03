@@ -88,7 +88,7 @@ app.post('/', (req, res) => {
 		if (!numExists) { 
 			database.addNumber(req.body.From) 
 			// Message the user that they are new and send them the link to the order form
-			twiml.message("Welcome to KentEats! If you would like to order, follow the link to the form:")
+			twiml.message("Welcome to KentEats! If you would like to order, please follow the link to the form:")
 			twiml.message("https://docs.google.com/forms/d/1nC2Hpm0AcTF00_PV5ugyusUHfAM_xb81Xh7hT2Faje0/edit")
 			// Add a content accepted header and send
 			res.writeHead(200, { 'Content-Type': 'text/xml' })
@@ -96,41 +96,47 @@ app.post('/', (req, res) => {
 			return
 		}
 
-		// HELP COMMAND
-		// Pass in the name of an argument or type just "help" to get a list of arguments
-		// USAGE: 'help' or 'help get receipts'
+		// ? COMMAND
+		// Pass in the name of an argument or type just "?" to get a list of arguments
+		// USAGE: '?' or '? get receipts'
 		if (req.body.Body.toLowerCase().indexOf('?') > -1) {
+			let toPrint = ''
 			// Separate admin commands from others
 			if (VAULT.twilio.allowedNumbers.indexOf(req.body.From) > -1) {
 				let commands = VAULT.admincommands
-				// If there is a command after 'help', then check to see if more help can be provided
-				if (req.body.Body.trim().toLowerCase() != '?') {
-					let keyword = req.body.Body.replace('? ', '').toLowerCase()
+				toPrint = 'Admin Commands:\n'
+			} else {
+				let commands = VAULT.normiecommands
+				toPrint = 'Commands:\n'
+			}
+
+			// If there is a command after 'help', then check to see if more help can be provided
+			if (req.body.Body.trim().toLowerCase() != '?') {
+				let keyword = req.body.Body.replace('? ', '').toLowerCase().trim()
+
+				// If they did '? COMMAND', tell them that COMMAND needs to be replaced with the command in question
+				if (keyword.indexOf('command') > -1) {
+					twiml.message('Replace COMMAND with the command you would like to learn more about!')
+				} else {
 					Object.keys(commands).forEach((key) => {
 						if (key.indexOf(keyword) > -1) {
 							twiml.message(commands[key])
 						}
 					})
-				} else {
-					let toPrint = ""
-					// Otherwise, just list out all of the commands
-					toPrint += "Admin commands:\n"
-					Object.keys(commands).forEach(function(key) {
-				  		toPrint += "- " + key + "\n"
-					})
-					toPrint += "Type '? [COMMAND]' to see more info.\n"
-					// Finally print the message
-					twiml.message(toPrint)
 				}
-				// Add a content accepted header and send
-				res.writeHead(200, { 'Content-Type': 'text/xml' })
-				res.end(twiml.toString())
+
 			} else {
-				twiml.message('No commands yet for non-admins! Sorry!')
-				// Add a content accepted header and send
-				res.writeHead(200, { 'Content-Type': 'text/xml' })
-				res.end(twiml.toString())
+				// Just list out all of the commands
+				Object.keys(commands).forEach(function(key) {
+			  		toPrint += "- " + key + "\n"
+				})
+				toPrint += "Type '? COMMAND' to see more info.\n"
+				// Finally print the message
+				twiml.message(toPrint)
 			}
+			// Add a content accepted header and send
+			res.writeHead(200, { 'Content-Type': 'text/xml' })
+			res.end(twiml.toString())
 
 		// GET RECEIPT COMMAND
 		// Gets the receipts for the given parameters
@@ -250,11 +256,14 @@ app.post('/', (req, res) => {
 				database.pullNumbers((results) => {
 					// With the list of numbers, use the client to send the message to each
 					for (let i = 0; i < results.length; i++) {
-						client.messages.create({
-							body: req.body.Body.replace('  ', ' ').trim().split('"')[1],
-							to: results[i]['phone'],
-							from: '+12038946844'
-						})
+						// If not muted, send the message
+						if (results[i]['muted'] == 0) {
+							client.messages.create({
+								body: req.body.Body.replace('  ', ' ').trim().split('"')[1],
+								to: results[i]['phone'],
+								from: '+12038946844'
+							})
+						}
 					}
 
 					// Respond with a message successful
@@ -468,16 +477,43 @@ app.post('/', (req, res) => {
 			res.writeHead(200, { 'Content-Type': 'text/xml' })
 			res.end(twiml.toString())
 
-		// QUIT COMMAND
+		// ABOUT COMMAND
+		// Provides more information about the business and the bot
+		// Usage: 'about'
+		} else if (req.body.Body.toLowerCase().trim() == 'about') {
+			// Send the user the pre-set message
+			twiml.message(VAULT.about)
+			// Add a content accepted header and send
+			res.writeHead(200, { 'Content-Type': 'text/xml' })
+			res.end(twiml.toString())
+
+		// MUTE COMMAND
 		// Removes this user's phone number from the database
-		// Usage: 'quit'
-	    } else if (req.body.Body.toLowerCase().trim() == 'quit') {
+		// Usage: 'mute'
+	    } else if (req.body.Body.toLowerCase().trim() == 'mute') {
 	    	// Make sure the number is not an admin number
 	    	if (VAULT.twilio.allowedNumbers.indexOf(req.body.From) == -1) {
 	    		// Perform the database number removal
-	    		database.removeNumber(req.body.From)
+	    		database.setNumberMuted(req.body.From, 1)
 	    		// Notify the user that their number was dropped
-	    		twiml.message('Your number has been dropped.')
+	    		twiml.message('Your number has been muted from global announcements.')
+	    		console.log('Muted ' + req.body.From + ' from global anouncements.')
+	    	} 
+	    	// Add a content accepted header and send
+			res.writeHead(200, { 'Content-Type': 'text/xml' })
+			res.end(twiml.toString())
+
+		// UNMUTE COMMAND
+		// Removes this user's phone number from the database
+		// Usage: 'unmute'
+	    } else if (req.body.Body.toLowerCase().trim() == 'unmute') {
+	    	// Make sure the number is not an admin number
+	    	if (VAULT.twilio.allowedNumbers.indexOf(req.body.From) == -1) {
+	    		// Perform the database number removal
+	    		database.setNumberMuted(req.body.From, 0)
+	    		// Notify the user that their number was dropped
+	    		twiml.message('You are no longer muted from global announcements.')
+	    		console.log('Unmuted ' + req.body.From + ' from global anouncements.')
 	    	} 
 	    	// Add a content accepted header and send
 			res.writeHead(200, { 'Content-Type': 'text/xml' })
@@ -485,7 +521,7 @@ app.post('/', (req, res) => {
 
 		// EVERYTHING ELSE	
 		} else {
-			twiml.message('Text "form" if you would like the link to the form to order! Text "quit" if you would like to remove your number from the database (stop receiving announcements).')
+			twiml.message('Text "form" if you would like the link to the form to order! To see commands, text "?".')
 			// Add a content accepted header
 			res.writeHead(200, { 'Content-Type': 'text/xml' })
 			res.end(twiml.toString())

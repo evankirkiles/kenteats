@@ -133,7 +133,7 @@ class SQLInterface {
 	// Retrieves all the numbers from the database and returns it in an array for the announce command to iterate through.
 	pullNumbers(callback) {
 		// Query all numbers
-		this.con.query('SELECT phone FROM useranalytics', (err, results) => {
+		this.con.query('SELECT phone, muted FROM useranalytics', (err, results) => {
 			// Make sure no error occured
 			if (err) { return err }
 			// Otherwise return the results
@@ -152,14 +152,14 @@ class SQLInterface {
 		})
 	}
 
-	// Removes a number from the database
-	removeNumber(number) {
+	// Mutes a number in the database
+	setNumberMuted(number, setting) {
 		// Remove the number from the database
-		this.con.query('DELETE FROM useranalytics WHERE phone="' + number + '"', (err, results) => {
+		this.con.query('UPDATE useranalytics SET muted=' + setting + ' WHERE phone="' + number + '"', (err, results) => {
 			// Make sure no error occurred
 			if (err) { return err }
 			// Otherwise notify that a user was dropped
-			console.log('Removed number from database: ' + number)
+			console.log('Muted ' + number + ' from global announcements')
 		})
 	}
 
