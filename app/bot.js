@@ -469,13 +469,13 @@ function chatBot(req, res) {
 			// Run the MySQL query to determine if any data is available
 			let financeData = new SQLInterface()
 			financeData.getFinancials((data) => {
-				// With the data in hand, fill the books with it
-				googleapi.runAuthorizeFunction(googleapi.fillFullDayBookkeeping, data, () => {})
-			})
+				googleapi.runAuthorizeFunction(googleapi.fillFullDayBookkeeping, data, () => {}) })
 			financeData.getSingleOrderFinancials((data) => {
-				// With the data in hand, fill the books with it
-				googleapi.runAuthorizeFunction(googleapi.fillSingleOrderBookkeeping, data, () => {})
-			})
+				googleapi.runAuthorizeFunction(googleapi.fillSingleOrderBookkeeping, data, () => {}) })
+			financeData.getStudentIDFinancials((data) => {
+				googleapi.runAuthorizeFunction(googleapi.fillStudentIDOrders, data, () => {}) })
+			financeData.getStudentIDFinancials((data) => {
+				googleapi.runAuthorizeFunction(googleapi.fillVenmoOrders, data, () => {}) })
 
 		// FORM COMMAND
 		// Simply responds with the link to the form

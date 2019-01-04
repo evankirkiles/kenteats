@@ -228,6 +228,7 @@ function fillVenmoOrders(auth, callback, data) {
 module.exports.fillSingleOrderBookkeeping = fillSingleOrderBookkeeping
 module.exports.fillFullDayBookkeeping = fillFullDayBookkeeping
 module.exports.fillStudentIDOrders = fillStudentIDOrders
+module.exports.fillVenmoOrders = fillVenmoOrders
 
 /**
  * Returns the receipts for a given time
