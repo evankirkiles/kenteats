@@ -219,7 +219,7 @@ function chatBot(req, res) {
 							// If the payment method is Venmo, then also send a Venmo payment request
 							if (data[i][10][0].toLowerCase() == 'venmo') {
 								client.messages.create({
-									body: 'Pay here: https://venmo.com/Brady_McGowan?txn=pay&amount=' + (parseFloat(data[i][20][1].replace('$','')) + VAULT.deliveryfee - 5).toFixed(2)
+									body: 'Pay here: https://venmo.com/Brady_McGowan?txn=pay&amount=' + (parseFloat(data[i][20][1].replace('$','')) + VAULT.deliveryfee - 5).toFixed(2),
 									to: number,
 									from: '+12038946844'
 								})
