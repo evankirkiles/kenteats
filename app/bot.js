@@ -26,29 +26,29 @@ let currentDay = undefined
 let lastFinanceUpdateDay = undefined
 
 // Schedule the financial trackings to update every day at 9:30 (if they exist)
-var financialUpdates = schedule.scheduleJob('30 21 * * *', () => {
-	// Get the current day
-	let currDay = new Date();
-	currDay = currDay.getFullYear() + '-' + (currDay.getMonth() + 1) + '-' + currDay.getDate()
-	// Check it against the last updated finance day, only continuing if they do not match
-	if (lastFinanceUpdateDay != currDay) {
-		lastFinanceUpdateDay = currDay
+// var financialUpdates = schedule.scheduleJob('30 21 * * *', () => {
+// 	// Get the current day
+// 	let currDay = new Date();
+// 	currDay = currDay.getFullYear() + '-' + (currDay.getMonth() + 1) + '-' + currDay.getDate()
+// 	// Check it against the last updated finance day, only continuing if they do not match
+// 	if (lastFinanceUpdateDay != currDay) {
+// 		lastFinanceUpdateDay = currDay
 
-		// Run the MySQL query to determine if any data is available
-		let financeData = new SQLInterface()
+// 		// Run the MySQL query to determine if any data is available
+// 		let financeData = new SQLInterface()
 
-		// GETFINANCIAL FUNCTIONS
-		// Each querys the MySQL database and uses the data it retrieves to fill their respective Google Sheets
-		financeData.getFinancials((data) => {
-			googleapi.runAuthorizeFunction(googleapi.fillFullDayBookkeeping, data, () => {}) })
-		financeData.getSingleOrderFinancials((data) => {
-			googleapi.runAuthorizeFunction(googleapi.fillSingleOrderBookkeeping, data, () => {}) })
-		financeData.getStudentIDFinancials((data) => {
-			googleapi.runAuthorizeFunction(googleapi.fillStudentIDOrders, data, () => {}) })
-		financeData.getStudentIDFinancials((data) => {
-			googleapi.runAuthorizeFunction(googleapi.fillVenmoOrders, data, () => {}) })
-	}
-})
+// 		// GETFINANCIAL FUNCTIONS
+// 		// Each querys the MySQL database and uses the data it retrieves to fill their respective Google Sheets
+// 		financeData.getFinancials((data) => {
+// 			googleapi.runAuthorizeFunction(googleapi.fillFullDayBookkeeping, data, () => {}) })
+// 		financeData.getSingleOrderFinancials((data) => {
+// 			googleapi.runAuthorizeFunction(googleapi.fillSingleOrderBookkeeping, data, () => {}) })
+// 		financeData.getStudentIDFinancials((data) => {
+// 			googleapi.runAuthorizeFunction(googleapi.fillStudentIDOrders, data, () => {}) })
+// 		financeData.getStudentIDFinancials((data) => {
+// 			googleapi.runAuthorizeFunction(googleapi.fillVenmoOrders, data, () => {}) })
+// 	}
+// })
 
 // Listen to console input
 var stdin = process.openStdin();
