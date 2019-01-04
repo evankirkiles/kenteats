@@ -219,7 +219,7 @@ function chatBot(req, res) {
 							// If the payment method is Venmo, then also send a Venmo payment request
 							if (data[i][10][0].toLowerCase() == 'venmo') {
 								client.messages.create({
-									body: 'Pay here: https://venmo.com/Brady_McGowan?txn=pay&amount=' + data[i][20][1].replace('$',''),
+									body: 'Pay here: https://venmo.com/Brady_McGowan?txn=pay&amount=' + (parseFloat(data[i][20][1].replace('$','')) + VAULT.deliveryfee - 5).toFixed(2)
 									to: number,
 									from: '+12038946844'
 								})
@@ -467,15 +467,14 @@ function chatBot(req, res) {
 			lastFinanceUpdateDay = currDay
 
 			// Run the MySQL query to determine if any data is available
-			let financeData = new SQLInterface()
 			financeData.getFinancials((data) => {
-				// With the data in hand, fill the books with it
-				googleapi.runAuthorizeFunction(googleapi.fillFullDayBookkeeping, data, () => {})
-			})
+				googleapi.runAuthorizeFunction(googleapi.fillFullDayBookkeeping, data, () => {}) })
 			financeData.getSingleOrderFinancials((data) => {
-				// With the data in hand, fill the books with it
-				googleapi.runAuthorizeFunction(googleapi.fillSingleOrderBookkeeping, data, () => {})
-			})
+				googleapi.runAuthorizeFunction(googleapi.fillSingleOrderBookkeeping, data, () => {}) })
+			financeData.getStudentIDFinancials((data) => {
+				googleapi.runAuthorizeFunction(googleapi.fillStudentIDOrders, data, () => {}) })
+			financeData.getStudentIDFinancials((data) => {
+				googleapi.runAuthorizeFunction(googleapi.fillVenmoOrders, data, () => {}) })
 
 		// FORM COMMAND
 		// Simply responds with the link to the form

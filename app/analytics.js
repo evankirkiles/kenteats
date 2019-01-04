@@ -98,7 +98,7 @@ class SQLInterface {
 				let cells = []
 				// Iterate through the results and build a row for each (each one is an order)
 				for (let i = 0; i < results.length; i++) {
-					cells.push([currDay, results[i]['name'], results['amount'], undefined, undefined, results['phone']])
+					cells.push([currDay, results[i]['name'], results[i]['amount'], undefined, undefined, results[i]['phone']])
 				}
 				callback(cells)
 			}
@@ -121,7 +121,7 @@ class SQLInterface {
 				let cells = []
 				// Iterate through the results and build a row for each (each one is an order)
 				for (let i = 0; i < results.length; i++) {
-					cells.push([currDay, results[i]['name'], results['amount'], undefined, undefined, results['phone']])
+					cells.push([currDay, results[i]['name'], results[i]['amount'], undefined, undefined, results[i]['phone']])
 				}
 				callback(cells)
 			}
@@ -226,14 +226,14 @@ class SQLInterface {
 		// Check if the receipt is a student id order, for which it is necessary to add it to student id database
 		if (paymentMethod.indexOf('stud') > -1) {
 			this.con.query('INSERT INTO studentidorders (`date`,`name`,`amount`,`phone`) VALUES ("' + 
-				currDay + '","' + receipt[1] + '",' + parseFloat(receipt[20][1].replace('$', '')).toFixed(2) + ',"+1' + receipt[15][0].replace(/\D+/g, '') + '")', (err, results) => {
+				currDay + '","' + receipt[0] + '",' + parseFloat(receipt[20][1].replace('$', '')).toFixed(2) + ',"' + receipt[15][0].replace(/\D+/g, '') + '")', (err, results) => {
 				// If there was an error, log it
 				if (err) { console.log(err); return err }
 			})
 		// Check if the receipt is a venmo order, for which it is necessary to add it to student id database
 		} else if (paymentMethod.indexOf('venmo') > -1) {
 			this.con.query('INSERT INTO venmoorders (`date`,`name`,`amount`,`phone`) VALUES ("' + 
-				currDay + '","' + receipt[1] + '",' + parseFloat(receipt[20][1].replace('$', '')).toFixed(2) + ',"+1' + receipt[15][0].replace(/\D+/g, '') + '")', (err, results) => {
+				currDay + '","' + receipt[0] + '",' + parseFloat(receipt[20][1].replace('$', '')).toFixed(2) + ',"' + receipt[15][0].replace(/\D+/g, '') + '")', (err, results) => {
 				// If there was an error, log it
 				if (err) { console.log(err); return err }
 			})
