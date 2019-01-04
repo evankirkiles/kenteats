@@ -467,13 +467,13 @@ function chatBot(req, res) {
 			lastFinanceUpdateDay = currDay
 
 			// Run the MySQL query to determine if any data is available
-			financeData.getFinancials((data) => {
+			database.getFinancials((data) => {
 				googleapi.runAuthorizeFunction(googleapi.fillFullDayBookkeeping, data, () => {}) })
-			financeData.getSingleOrderFinancials((data) => {
+			database.getSingleOrderFinancials((data) => {
 				googleapi.runAuthorizeFunction(googleapi.fillSingleOrderBookkeeping, data, () => {}) })
-			financeData.getStudentIDFinancials((data) => {
+			database.getStudentIDFinancials((data) => {
 				googleapi.runAuthorizeFunction(googleapi.fillStudentIDOrders, data, () => {}) })
-			financeData.getStudentIDFinancials((data) => {
+			database.getStudentIDFinancials((data) => {
 				googleapi.runAuthorizeFunction(googleapi.fillVenmoOrders, data, () => {}) })
 
 		// FORM COMMAND
