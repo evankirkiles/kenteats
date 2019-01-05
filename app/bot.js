@@ -205,9 +205,7 @@ function chatBot(req, res) {
 					let sentAMessage = false
 					for (let i = 0; i < data.length; i++) {
 						// Update the running total of orders in the day
-						if (req.body.From != '+18609467150') {
-							currentDayOrders++
-						}
+						currentDayOrders++
 
 						// Make sure the number exists
 						if (data[i][15][0] == undefined) { continue; }
