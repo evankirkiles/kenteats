@@ -284,6 +284,7 @@ class SQLInterface {
 							} else if (paymentMethod.indexOf('id') > -1) {
 								returnString += 'studentid`=`studentid`+' + parseFloat(receipt[20][1].replace('$', '')).toFixed(2)
 							}
+							console.log(paymentMethod + ' : $' + parseFloat(receipt[20][1].replace('$', '')).toFixed(2))
 							// Finish the return string
 							returnString += ' WHERE day="' + currDay + '"'
 							// Finally, run the query
