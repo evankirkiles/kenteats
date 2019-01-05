@@ -271,12 +271,12 @@ function getReceipts(auth, callback, type) {
            if (index == 19) {
             for (let j = 0; j < receiptStarts.length; j++) {
               // The delivery fee needs to be set by the code
-                messages[numreceits+j].push([undefined, Math.min(parseFloat(row[receiptStarts[j]+1].replace('$', '')), VAULT.deliveryfee), undefined])
+                messages[numreceits+j].push([undefined, Math.min(parseFloat(row[receiptStarts[j]+1].replace('$', '')), VAULT.deliveryfee).toFixed(2), undefined])
             }
           } else if (index == 21) {
             for (let j = 0; j < receiptStarts.length; j++) {
               // Add the delivery fee difference with the 5 default
-                messages[numreceits+j].push([row[receiptStarts[j]], parseFloat(row[receiptStarts[j]+1].replace('$', '')) + VAULT.deliveryfee - 5, undefined])
+                messages[numreceits+j].push([row[receiptStarts[j]], (parseFloat(row[receiptStarts[j]+1].replace('$', '')) + VAULT.deliveryfee - 5).toFixed(2), undefined])
             }
           } else {
             for (let j = 0; j < receiptStarts.length; j++) {
