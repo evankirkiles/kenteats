@@ -89,7 +89,7 @@ function announce(message, database, twiml, res) {
 			// If not muted, send the message
 			if (results[i]['muted'] == 0) {
 				client.messages.create({
-					body: message[1],
+					body: message,
 					to: results[i]['phone'],
 					from: '+12038946844'
 				})
@@ -98,7 +98,7 @@ function announce(message, database, twiml, res) {
 		}
 
 		// Respond with a message successful
-		twiml.message('Sent message to all ' + someth + ' unmuted customers. Estimated total cost: $' + (0.0075 * someth * Math.ceil(message[1].length / 140)).toFixed(4))
+		twiml.message('Sent message to all ' + someth + ' unmuted customers. Estimated total cost: $' + (0.0075 * someth * Math.ceil(message.length / 140)).toFixed(4))
 		// Add a content accepted header and send
 		res.writeHead(200, { 'Content-Type': 'text/xml' })
 		res.end(twiml.toString())
@@ -135,15 +135,21 @@ function chatBot(req, res) {
 		// Make sure any announcements being built are terminated with the exit string ("//") if they are nto wanted to send.
 		if (announcementHolder != '' && VAULT.twilio.allowedNumbers.indexOf(req.body.From) > -1) {
 
-			let message = req.body.Body.replace('  ', ' ').trim().split('"')
-			if (req.body.Body.toLowerCase().indexOf('//') > -1) {
+			let message1 = req.body.Body.replace('  ', ' ').trim().split(VAULT.messagedelim)
+			if (req.body.Body == '//') {
 				announcementHolder = ''
+				// Message that user is waiting for next part of announcement or "//" to cancel
+				twiml.message('Cancelled announcement.')
+				// Add a content accepted header
+				res.writeHead(200, { 'Content-Type': 'text/xml' })
+				res.end(twiml.toString())
+				return
 			}
 
 			// Check if it is a completed annoucement. If it is not, then wait for other segments (quotation mark).
 			if (announcementHolder != '') {
-				announcementHolder += message[0]
-				if (message.length == 2) {
+				announcementHolder += ' ' + message1[0]
+				if (message1.length == 2) {
 					announce(announcementHolder, database, twiml, res)
 					announcementHolder = ''
 				}
@@ -306,12 +312,20 @@ function chatBot(req, res) {
 		} else if (req.body.Body.toLowerCase().indexOf('announce') > -1) {
 			if (VAULT.twilio.allowedNumbers.indexOf(req.body.From) > -1) {
 
-				let message = req.body.Body.replace('  ', ' ').trim().split('"')
+				let message = req.body.Body.trim().split(VAULT.messagedelim)
 				if (message.length == 2) {
+					// Message that user is waiting for next part of announcement or "//" to cancel
+					twiml.message('Waiting for next segments of announcement... end announcement with // to cancel or ' + VAULT.messagedelim + ' to finish.')
+					// Add a content accepted header
+					res.writeHead(200, { 'Content-Type': 'text/xml' })
+					res.end(twiml.toString())
 					announcementHolder = message[1]
 				} else if (message.length == 1) {
-					console.log('No quotations in announcement, not doing anything.')
-					return
+					// Message that user is waiting for next part of announcement or "//" to cancel
+					twiml.message('Please use the accepted message delimiter: ' + VAULT.messagedelim)
+					// Add a content accepted header
+					res.writeHead(200, { 'Content-Type': 'text/xml' })
+					res.end(twiml.toString())
 				} else if (message.length == 3) {
 					announce(message[1], database, twiml, res)
 					announcementHolder = ''
@@ -330,12 +344,31 @@ function chatBot(req, res) {
 				googleapi.runAuthorizeFunction(googleapi.getReceipts, (type == 'b' ? 'Breakfast' : 'Afternoon'), (data) => {
 					// Get the dorm if the last character is not a quotation mark
 					let dorm = undefined
-					if (req.body.Body.trim().charAt(req.body.Body.length - 1) != '"') {
+					if (req.body.Body.trim().charAt(req.body.Body.length - 1) != VAULT.messagedelim) {
 						dorm = req.body.Body.replace('  ', ' ').trim().split(" ").pop().toLowerCase()
 					}
 
 					let sentAMessage = false
 					let triedToSend = false
+					
+					// Make sure the message is not too long
+					let message = req.body.Body.replace('  ', ' ').trim().split(VAULT.messagedelim)
+					if (message.length == 2) {
+						// Log the error
+						twiml.message('Error reading mass message! Probably too long, try shortening it.')
+						// Add a content accepted header
+						res.writeHead(200, { 'Content-Type': 'text/xml' })
+						res.end(twiml.toString())
+						return
+					} else if (message.length == 1) {
+						// Log the error
+						twiml.message('Error reading mass message! Delimiter was not found, make sure you use: ' + VAULT.messagedelim)
+						// Add a content accepted header
+						res.writeHead(200, { 'Content-Type': 'text/xml' })
+						res.end(twiml.toString())
+						return
+					}
+
 					// Check the dorm against all receipts. If there is a match, then send the message to that person
 					for (let i = 0; i < data.length; i++) {
 						triedToSend = true
@@ -356,7 +389,7 @@ function chatBot(req, res) {
 					if (sentAMessage) {
 						twiml.message('Sent ' + type + ' message.')
 						if (dorm == undefined) {
-							console.log('Sent all ' + type + ' orderers "' + req.body.Body.replace('  ', ' ').trim().split('"')[1] + '"!')	
+							console.log('Sent all ' + type + ' orderers "' + req.body.Body.replace('  ', ' ').trim().split(VAULT.messagedelim)[1] + '"!')	
 						} else {
 							console.log('Sent all ' + type + ' orderers  from ' + dorm + ' "' + req.body.Body.replace('  ', ' ').trim().split('"')[1] + '"!')
 						}
@@ -560,10 +593,12 @@ function chatBot(req, res) {
 
 		// EVERYTHING ELSE	
 		} else {
-			twiml.message('Text "form" if you would like the link to the form to order! To see commands, text "?".')
-			// Add a content accepted header
-			res.writeHead(200, { 'Content-Type': 'text/xml' })
-			res.end(twiml.toString())
+			if (VAULT.twilio.allowedNumbers.indexOf(req.body.From) == -1) {
+				twiml.message('Text "form" if you would like the link to the form to order! To see commands, text "?".')
+				// Add a content accepted header
+				res.writeHead(200, { 'Content-Type': 'text/xml' })
+				res.end(twiml.toString())
+			}
 		} 
 	})
 }
