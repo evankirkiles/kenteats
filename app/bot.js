@@ -79,6 +79,32 @@ stdin.addListener("data", function(d) {
 	}
 });
 
+// Function for solo announcing
+function announce(message, database, twiml, res) {
+	// Perform MySQL request to get the list of numbers
+	database.pullNumbers((results) => {
+		// With the list of numbers, use the client to send the message to each
+		let someth = 0
+		for (let i = 0; i < results.length; i++) {
+			// If not muted, send the message
+			if (results[i]['muted'] == 0) {
+				client.messages.create({
+					body: message[1],
+					to: results[i]['phone'],
+					from: '+12038946844'
+				})
+				someth++
+			}
+		}
+
+		// Respond with a message successful
+		twiml.message('Sent message to all ' + someth + ' unmuted customers. Estimated total cost: $' + (0.0075 * someth * Math.ceil(message[1].length / 140)).toFixed(4))
+		// Add a content accepted header and send
+		res.writeHead(200, { 'Content-Type': 'text/xml' })
+		res.end(twiml.toString())
+	})
+}
+
 // Entire chatbot function
 function chatBot(req, res) {
 	const twiml = new MessagingResponse()
@@ -107,8 +133,21 @@ function chatBot(req, res) {
 		}
 
 		// Make sure any announcements being built are terminated with the exit string ("//") if they are nto wanted to send.
-		if (announcementHolder != '' && VAULT.twilio.allowedNumbers.indexOf(req.body.From) > -1 && req.body.Body.toLowerCase().indexOf('//') > -1) {
-			announcementHolder = ''
+		if (announcementHolder != '' && VAULT.twilio.allowedNumbers.indexOf(req.body.From) > -1) {
+
+			let message = req.body.Body.replace('  ', ' ').trim().split('"')
+			if (req.body.Body.toLowerCase().indexOf('//') > -1) {
+				announcementHolder = ''
+			}
+
+			// Check if it is a completed annoucement. If it is not, then wait for other segments (quotation mark).
+			if (announcementHolder != '') {
+				announcementHolder += message[0]
+				if (message.length == 2) {
+					announce(announcementHolder, database, twiml, res)
+					announcementHolder = ''
+				}
+			} 
 		}
 
 
@@ -267,47 +306,16 @@ function chatBot(req, res) {
 		} else if (req.body.Body.toLowerCase().indexOf('announce') > -1) {
 			if (VAULT.twilio.allowedNumbers.indexOf(req.body.From) > -1) {
 
-				let shouldSend = true
 				let message = req.body.Body.replace('  ', ' ').trim().split('"')
-				// Make sure it is a completed annoucement. If it is not, then wait for other segments (quotation mark).
-				if (announcementHolder != '') {
-					shouldSend = false
-					announcementHolder += message[0]
-					if (message.length == 2) {
-						shouldSend = true
-						message[1] = announcementHolder
-						announcementHolder = ''
-					}
-				} else if (message.length == 2) {
+				if (message.length == 2) {
 					announcementHolder = message[1]
-					shouldSend = false
+				} else if (message.length == 1) {
+					console.log('No quotations in announcement, not doing anything.')
+					return
+				} else if (message.length == 3) {
+					announce(message[1], database, twiml, res)
+					announcementHolder = ''
 				}
-				
-				if (shouldSend) {
-					// Perform MySQL request to get the list of numbers
-					database.pullNumbers((results) => {
-						// With the list of numbers, use the client to send the message to each
-						let someth = 0
-						for (let i = 0; i < results.length; i++) {
-							// If not muted, send the message
-							if (results[i]['muted'] == 0) {
-								client.messages.create({
-									body: message[1],
-									to: results[i]['phone'],
-									from: '+12038946844'
-								})
-								someth++
-							}
-						}
-
-						// Respond with a message successful
-						twiml.message('Sent message to all ' + someth + ' unmuted customers. Estimated total cost: $' + (0.0075 * someth * Math.ceil(message[1].length / 140)).toFixed(4))
-						// Add a content accepted header and send
-						res.writeHead(200, { 'Content-Type': 'text/xml' })
-						res.end(twiml.toString())
-					})
-				}
-
 			}
 
 		// MASS MESSAGE COMMAND
