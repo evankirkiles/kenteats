@@ -22,6 +22,9 @@ app.use(bodyParser.urlencoded({ extended: false }))
 let currentDayOrders = 0
 let currentDay = undefined
 
+// Announcement placeholder to handle segmented SMS's
+let announcementHolder = ''
+
 // Keep track of the last updated financial day
 let lastFinanceUpdateDay = undefined
 
@@ -102,6 +105,12 @@ function chatBot(req, res) {
 			res.end(twiml.toString())
 			return
 		}
+
+		// Make sure any announcements being built are terminated with the exit string ("//") if they are nto wanted to send.
+		if (announcementHolder != '' && VAULT.twilio.allowedNumbers.indexOf(req.body.From) > -1 && req.body.Body.toLowerCase().indexOf('//') > -1) {
+			announcementHolder = ''
+		}
+
 
 		// ? COMMAND
 		// Pass in the name of an argument or type just "?" to get a list of arguments
@@ -260,35 +269,47 @@ function chatBot(req, res) {
 		} else if (req.body.Body.toLowerCase().indexOf('announce') > -1) {
 			if (VAULT.twilio.allowedNumbers.indexOf(req.body.From) > -1) {
 
-				// Perform MySQL request to get the list of numbers
-				database.pullNumbers((results) => {
-					// With the list of numbers, use the client to send the message to each
-					let someth = 0
-					for (let i = 0; i < results.length; i++) {
-						// If not muted, send the message
-						if (results[i]['muted'] == 0) {
-							client.messages.create({
-								body: req.body.Body.replace('  ', ' ').trim().split('"')[1],
-								to: results[i]['phone'],
-								from: '+12038946844'
-							})
-							someth++
-						}
+				let shouldSend = true
+				let message = req.body.Body.replace('  ', ' ').trim().split('"')
+				// Make sure it is a completed annoucement. If it is not, then wait for other segments (quotation mark).
+				if (announcementHolder != '') {
+					shouldSend = false
+					announcementHolder += message[0]
+					if (message.length == 2) {
+						shouldSend = true
+						message[1] = announcementHolder
+						announcementHolder = ''
 					}
+				} else if (message.length == 2) {
+					announcementHolder = message[1]
+					shouldSend = false
+				}
+				
+				if (shouldSend) {
+					// Perform MySQL request to get the list of numbers
+					database.pullNumbers((results) => {
+						// With the list of numbers, use the client to send the message to each
+						let someth = 0
+						for (let i = 0; i < results.length; i++) {
+							// If not muted, send the message
+							if (results[i]['muted'] == 0) {
+								client.messages.create({
+									body: message[1],
+									to: results[i]['phone'],
+									from: '+12038946844'
+								})
+								someth++
+							}
+						}
 
-					// Respond with a message successful
-					twiml.message('Sent message to all ' + someth + ' unmuted customers.')
-					// Add a content accepted header and send
-					res.writeHead(200, { 'Content-Type': 'text/xml' })
-					res.end(twiml.toString())
-				})
+						// Respond with a message successful
+						twiml.message('Sent message to all ' + someth + ' unmuted customers. Estimated total cost: $' + (0.0075 * someth * Math.ceil(message[1].length / 140)).toFixed(4))
+						// Add a content accepted header and send
+						res.writeHead(200, { 'Content-Type': 'text/xml' })
+						res.end(twiml.toString())
+					})
+				}
 
-			} else {
-				twiml.message('Invalid permission for this command!')
-
-				// Add a content accepted header
-				res.writeHead(200, { 'Content-Type': 'text/xml' })
-				res.end(twiml.toString())
 			}
 
 		// MASS MESSAGE COMMAND

@@ -303,7 +303,7 @@ class SQLInterface {
 						let returnString = 'UPDATE ' + table  + ' SET `'
 						// Choose payment type to increment based on the receipt
 						let paymentMethod = receipt[10][0].toLowerCase().replace(' ', '')
-						if (paymentMethod.indexOf('cash') > -1) {
+						if (paymentMethod.indexOf('cash') > -1 || paymentMethod.indexOf('square') > -1) {
 							returnString += 'cash`=`cash`+' + parseFloat(receipt[20][1].replace('$', '')).toFixed(2)
 						} else if (paymentMethod.indexOf('card') > -1) {
 							returnString += 'card`=`card`+' + parseFloat(receipt[20][1].replace('$', '')).toFixed(2)
@@ -311,8 +311,6 @@ class SQLInterface {
 							returnString += 'venmo`=`venmo`+' + parseFloat(receipt[20][1].replace('$', '')).toFixed(2)
 						} else if (paymentMethod.indexOf('id') > -1) {
 							returnString += 'studentid`=`studentid`+' + parseFloat(receipt[20][1].replace('$', '')).toFixed(2)
-						} else if (paymentMethod.indexOf('square') > -1) {
-							returnString += 'square`=`square`+' + parseFloat(receipt[20][1].replace('$', '')).toFixed(2)
 						}
 						// Finish the return string
 						returnString += ' WHERE day="' + currDay + '"'

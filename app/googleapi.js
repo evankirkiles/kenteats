@@ -266,26 +266,26 @@ function getReceipts(auth, callback, type) {
           numreceits = messages.length
           index = 0
         } else {
-          // At this point the number of receipts is known
-      		index++
-
           // CAREFUL: VERY SPECIFIC CODE BASED ON THE POSITION OF EACH RECEIPT COMPONENT
           // If the index is the profit or price index, make sure to add the fee correctly (not always 5)
            if (index == 19) {
             for (let j = 0; j < receiptStarts.length; j++) {
               // The delivery fee needs to be set by the code
-                messages[numreceits+j].push([undefined, VAULT.deliveryfee, undefined])
+                messages[numreceits+j].push([undefined, Math.min(parseFloat(row[receiptStarts[j]+1].replace('$', '')), VAULT.deliveryfee), undefined])
             }
           } else if (index == 21) {
             for (let j = 0; j < receiptStarts.length; j++) {
               // Add the delivery fee difference with the 5 default
-                messages[numreceits+j].push([row[receiptStarts[j]], row[receiptStarts[j]+1] + VAULT.deliveryfee - 5, undefined])
+                messages[numreceits+j].push([row[receiptStarts[j]], parseFloat(row[receiptStarts[j]+1].replace('$', '')) + VAULT.deliveryfee - 5, undefined])
             }
           } else {
             for (let j = 0; j < receiptStarts.length; j++) {
                 messages[numreceits+j].push([row[receiptStarts[j]], row[receiptStarts[j]+1], row[receiptStarts[j]+2]])
             }
           }
+
+          // At this point the number of receipts is known
+      		index++
       	}
       });
 
