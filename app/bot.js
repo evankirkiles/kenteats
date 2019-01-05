@@ -48,7 +48,7 @@ let lastFinanceUpdateDay = undefined
 // 			googleapi.runAuthorizeFunction(googleapi.fillSingleOrderBookkeeping, data, () => {}) })
 // 		financeData.getStudentIDFinancials((data) => {
 // 			googleapi.runAuthorizeFunction(googleapi.fillStudentIDOrders, data, () => {}) })
-// 		financeData.getStudentIDFinancials((data) => {
+// 		financeData.getVenmoFinancials((data) => {
 // 			googleapi.runAuthorizeFunction(googleapi.fillVenmoOrders, data, () => {}) })
 // 	}
 // })
@@ -480,20 +480,23 @@ function chatBot(req, res) {
 		// Updates the financials (used to manually do what the scheduled command does)
 		// Usage: 'update financials'
 		} else if (req.body.Body.toLowerCase().indexOf('update') > -1 && req.body.Body.toLowerCase().indexOf('financials') > -1) {
-			// Get the current day
-			let currDay = new Date();
-			currDay = currDay.getFullYear() + '-' + (currDay.getMonth() + 1) + '-' + currDay.getDate()
-			lastFinanceUpdateDay = currDay
+			// Validate user
+			if (VAULT.twilio.allowedNumbers.indexOf(req.body.From) > -1) {
+				// Get the current day
+				let currDay = new Date();
+				currDay = currDay.getFullYear() + '-' + (currDay.getMonth() + 1) + '-' + currDay.getDate()
+				lastFinanceUpdateDay = currDay
 
-			// Run the MySQL query to determine if any data is available
-			database.getFinancials((data) => {
-				googleapi.runAuthorizeFunction(googleapi.fillFullDayBookkeeping, data, () => {}) })
-			database.getSingleOrderFinancials((data) => {
-				googleapi.runAuthorizeFunction(googleapi.fillSingleOrderBookkeeping, data, () => {}) })
-			database.getStudentIDFinancials((data) => {
-				googleapi.runAuthorizeFunction(googleapi.fillStudentIDOrders, data, () => {}) })
-			database.getStudentIDFinancials((data) => {
-				googleapi.runAuthorizeFunction(googleapi.fillVenmoOrders, data, () => {}) })
+				// Run the MySQL query to determine if any data is available
+				database.getFinancials((data) => {
+					googleapi.runAuthorizeFunction(googleapi.fillFullDayBookkeeping, data, () => {}) })
+				database.getSingleOrderFinancials((data) => {
+					googleapi.runAuthorizeFunction(googleapi.fillSingleOrderBookkeeping, data, () => {}) })
+				database.getStudentIDFinancials((data) => {
+					googleapi.runAuthorizeFunction(googleapi.fillStudentIDOrders, data, () => {}) })
+				database.getVenmoFinancials((data) => {
+					googleapi.runAuthorizeFunction(googleapi.fillVenmoOrders, data, () => {}) })
+			}
 
 		// FORM COMMAND
 		// Simply responds with the link to the form

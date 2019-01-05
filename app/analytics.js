@@ -284,7 +284,6 @@ class SQLInterface {
 							} else if (paymentMethod.indexOf('id') > -1) {
 								returnString += 'studentid`=`studentid`+' + parseFloat(receipt[20][1].replace('$', '')).toFixed(2)
 							}
-							console.log(paymentMethod + ' : $' + parseFloat(receipt[20][1].replace('$', '')).toFixed(2))
 							// Finish the return string
 							returnString += ' WHERE day="' + currDay + '"'
 							// Finally, run the query
@@ -313,6 +312,7 @@ class SQLInterface {
 						} else if (paymentMethod.indexOf('id') > -1) {
 							returnString += 'studentid`=`studentid`+' + parseFloat(receipt[20][1].replace('$', '')).toFixed(2)
 						}
+
 						// Finish the return string
 						returnString += ' WHERE day="' + currDay + '"'
 						// Finally, run the query
@@ -332,15 +332,16 @@ class SQLInterface {
 		// If row doesn't exist, then simply insert this one
 		} else {
 			this.con.query('INSERT INTO ' + table + ' (`profit`,`revenue`,`expenditures`,`day`, `' + number + '`) VALUES (' + parseFloat(receipt[18][1].replace('$', '')).toFixed(2) + ',' + parseFloat(receipt[20][1].replace('$', '')).toFixed(2) + ',' + expenditures.toFixed(2) + ',"' + currDay + '", ' + parseFloat(receipt[20][1].replace('$', '')).toFixed(2) + ')', (err, result) => {
-				if (err) { 
+				if (err) {
 					// If the inputs got backed up, then just reroute the request again
 					if (err.code == 'ER_DUP_ENTRY') {
 						this.con.query('UPDATE ' + table + ' SET `profit`=`profit`+' + parseFloat(receipt[18][1].replace('$', '')).toFixed(2) + ',`revenue`=`revenue`+' + parseFloat(receipt[20][1].replace('$', '')).toFixed(2) + ',`expenditures`=`expenditures`+' + expenditures.toFixed(2) +  ',`' + number + '`=`' + number + '`+' + parseFloat(receipt[20][1].replace('$', '')).toFixed(2) + ' WHERE day="' + currDay + '"', callback())
 					} else {
 						console.log(err); return err 
 					}
+				} else {
+					callback()
 				}
-				callback()
 			})
 		}
 	}
