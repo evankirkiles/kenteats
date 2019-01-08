@@ -128,6 +128,18 @@ class SQLInterface {
 		})
 	}
 
+	// Pulls the coupons from the MySQL database for use in building the receipts (coupons will be applied in get receipts function).
+	// Can also be used to check validity of coupons or view complete list of coupons as well.
+	getCoupons(callback) {
+		// Perform the MYSQL query on the coupons table
+		this.con.query('SELECT * FROM coupons', (err, results) => {
+			// if there was an error, return
+			if (err) { console.log(err); return }
+			// Otherwise return the rows retrieved
+			callback(results)
+		})
+	}
+
 	// Controller for analytics MySQL database which will keep track of data on each user.
 	// Data will include, but not be limited to:
 	// 	- name, dorm, phone number, aggregate spending, number of orders, number of orders at each different store

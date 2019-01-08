@@ -233,11 +233,11 @@ module.exports.fillVenmoOrders = fillVenmoOrders
 /**
  * Returns the receipts for a given time
  */
-function getReceipts(auth, callback, type) {
+function getReceipts(auth, callback, datapack) {
   const sheets = google.sheets({version: 'v4', auth});
   sheets.spreadsheets.values.get({
     spreadsheetId: '13RBFxTLfO7bCwFgvyxp3K4QVDI82Y-JJXA6sJyEyBas',
-    range: 'Complete ' + type + ' Receipt!A1:AD137',
+    range: 'Complete ' + datapack[0] + ' Receipt!A1:AD137',
   }, (err, res) => {
     if (err) return console.log('The API returned an error: ' + err);
     // Build an array which will hold each message to be sent

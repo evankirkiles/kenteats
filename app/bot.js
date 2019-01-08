@@ -377,7 +377,7 @@ function chatBot(req, res) {
 							let number = '+1' + data[i][15][0].replace(/\D+/g, '')
 							// Send the message now
 							client.messages.create({
-								body: req.body.Body.replace('  ', ' ').trim().split('"')[1],
+								body: req.body.Body.replace('  ', ' ').trim().split(VAULT.messagedelim)[1],
 								to: number,
 								from: '+12038946844'
 							})
@@ -389,7 +389,7 @@ function chatBot(req, res) {
 					if (sentAMessage) {
 						twiml.message('Sent ' + type + ' message.')
 						if (dorm == undefined) {
-							console.log('Sent all ' + type + ' orderers "' + req.body.Body.replace('  ', ' ').trim().split(VAULT.messagedelim)[1] + '"!')	
+							console.log('Sent all ' + type + ' orderers "' + req.body.Body.replace('  ', ' ').trim().split(VAULT.messagedelim)[1] + '"!')
 						} else {
 							console.log('Sent all ' + type + ' orderers  from ' + dorm + ' "' + req.body.Body.replace('  ', ' ').trim().split('"')[1] + '"!')
 						}
