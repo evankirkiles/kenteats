@@ -391,7 +391,7 @@ function chatBot(req, res) {
 						if (dorm == undefined) {
 							console.log('Sent all ' + type + ' orderers "' + req.body.Body.replace('  ', ' ').trim().split(VAULT.messagedelim)[1] + '"!')
 						} else {
-							console.log('Sent all ' + type + ' orderers  from ' + dorm + ' "' + req.body.Body.replace('  ', ' ').trim().split('"')[1] + '"!')
+							console.log('Sent all ' + type + ' orderers  from ' + dorm + ' "' + req.body.Body.replace('  ', ' ').trim().split(VAULT.messagedelim)[1] + '"!')
 						}
 					} else {
 						// Error logging
