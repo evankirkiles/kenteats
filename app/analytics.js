@@ -216,8 +216,8 @@ class SQLInterface {
 		this.con.query('UPDATE useranalytics SET muted=' + setting + ' WHERE phone="' + number + '"', (err, results) => {
 			// Make sure no error occurred
 			if (err) { return err }
-			// Otherwise notify that a user was dropped
-			console.log('Muted ' + number + ' from global announcements')
+			// Notify admin about the mute
+    		console.log('Muted ' + req.body.From + ' from global announcements.')
 		})
 	}
 

@@ -15,7 +15,7 @@ const bodyParser = require('body-parser')
 const client = require('twilio')(VAULT.twilio.accountSid, VAULT.twilio.authToken)
 
 
-let database = new SQLInterface()
+// let database = new SQLInterface()
 // Run the MySQL query to determine if any data is available
 // database.getFinancials((data) => {
 // 	googleapi.runAuthorizeFunction(googleapi.fillFullDayBookkeeping, data, () => {}) })
@@ -25,3 +25,7 @@ let database = new SQLInterface()
 // 	googleapi.runAuthorizeFunction(googleapi.fillStudentIDOrders, data, () => {}) })
 // database.getVenmoFinancials((data) => {
 // 	googleapi.runAuthorizeFunction(googleapi.fillVenmoOrders, data, () => {}) })
+
+googleapi.runAuthorizeFunction(googleapi.getCoupons, undefined, (data) => {
+	console.log(data)
+})

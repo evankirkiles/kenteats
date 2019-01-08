@@ -569,7 +569,6 @@ function chatBot(req, res) {
 	    		database.setNumberMuted(req.body.From, 1)
 	    		// Notify the user that their number was dropped
 	    		twiml.message('Your number has been muted from global announcements.')
-	    		console.log('Muted ' + req.body.From + ' from global anouncements.')
 	    	} 
 	    	// Add a content accepted header and send
 			res.writeHead(200, { 'Content-Type': 'text/xml' })

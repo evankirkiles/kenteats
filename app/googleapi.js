@@ -3,6 +3,7 @@ const readline = require('readline');
 const {google} = require('googleapis');
 const VAULT = require('../config/vault.json')
 const FuzzySet = require('fuzzyset')
+const SQLInterface = require('./analytics').SQLInterface
 
 // If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
@@ -230,6 +231,58 @@ module.exports.fillFullDayBookkeeping = fillFullDayBookkeeping
 module.exports.fillStudentIDOrders = fillStudentIDOrders
 module.exports.fillVenmoOrders = fillVenmoOrders
 
+/*
+ * Gets the coupon codes for each receipt
+ */
+function getCoupons(auth, callback, data) {
+  const sheets = google.sheets({version: 'v4', auth});
+  // Perform a request to compose list of coupons
+    sheets.spreadsheets.values.get({
+      spreadsheetId: '1-Cf26GoPDBWRRScjm8xRJ5QZKDUe6sN8bwkBREO5X3U',
+      range: 'Form Responses 1!J3:L999'
+    }, (err, res) => {
+      if (err) return console.log('The API returned an error: ' + err);
+
+      // Get all the coupon codes for the receipts
+      const rows = res.data.values
+      let couponCodes = []
+      if (rows.length) {
+        rows.map((row) => {
+          if (row[0] != '' && row[0] != undefined) {
+            // FORMAT: code, value, percentage or no, order or delivery fee perentage, validated
+            couponCodes.push([row[2], 0, false, 'DELIVERYFEE', false])
+          }
+        })
+      }
+
+      // Perform a MySQL query to validate coupons
+      let database = new SQLInterface()
+      database.getCoupons((data) => {
+        // Iterate through the coupon codes and validate ones that match a database code
+        for (let i = 0; i < couponCodes.length; i++) {
+          // Iterate through the database coupons themelves to check the code
+          for (let j = 0; j < data.length; j++) {
+            if (couponCodes[i][0] ==  data[j]['code']) {
+              couponCodes[i][1] = data[j]['amount']
+              couponCodes[i][2] = data[j]['percent'] == 1
+              couponCodes[i][3] = data[j]['calcfrom']
+              // Decrement the number of each coupon there are each time
+              if (data[j]['uses'] > 0) {
+                couponCodes[i][4] = true
+                data[j]['uses'] -= 1
+              }
+            }
+          }
+        }
+
+        // Callback with the coupon codes
+        callback(couponCodes)
+      })
+    })
+}
+
+module.exports.getCoupons = getCoupons
+
 /**
  * Returns the receipts for a given time
  */
@@ -240,12 +293,6 @@ function getReceipts(auth, callback, type) {
     range: 'Complete ' + type + ' Receipt!A1:AD137',
   }, (err, res) => {
     if (err) return console.log('The API returned an error: ' + err);
-
-    // Perform a request to compose list of coupons
-    sheets.spreadsheets.values.get({
-      spreadsheetId: '1-Cf26GoPDBWRRScjm8xRJ5QZKDUe6sN8bwkBREO5X3U',
-      range: 'Form Responses 1!'
-    })
 
     // Build an array which will hold each message to be sent
     let messages = []
