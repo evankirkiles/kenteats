@@ -240,6 +240,13 @@ function getReceipts(auth, callback, type) {
     range: 'Complete ' + type + ' Receipt!A1:AD137',
   }, (err, res) => {
     if (err) return console.log('The API returned an error: ' + err);
+
+    // Perform a request to compose list of coupons
+    sheets.spreadsheets.values.get({
+      spreadsheetId: '1-Cf26GoPDBWRRScjm8xRJ5QZKDUe6sN8bwkBREO5X3U',
+      range: 'Form Responses 1!'
+    })
+
     // Build an array which will hold each message to be sent
     let messages = []
     const rows = res.data.values;

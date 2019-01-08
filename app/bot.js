@@ -200,112 +200,6 @@ function chatBot(req, res) {
 			res.writeHead(200, { 'Content-Type': 'text/xml' })
 			res.end(twiml.toString())
 
-		// GET RECEIPT COMMAND
-		// Gets the receipts for the given parameters
-		// Usage: 'Get b receipts' or 'Get b receipts for Starbucks'
-		} else if (req.body.Body.toLowerCase().indexOf('get') > -1 && req.body.Body.toLowerCase().indexOf('receipt') > -1) {
-			// Check if the phone number is a valid number
-			if (VAULT.twilio.allowedNumbers.indexOf(req.body.From) > -1) {
-				// Get the type and convert it into the right format
-				let type = req.body.Body.replace('  ', ' ').trim().split(" ")[1].toLowerCase()
-				googleapi.runAuthorizeFunction(googleapi.getReceipts, (type == 'b' ? 'Breakfast' : 'Afternoon'), (data) => {
-
-					for (let i = 0; i < data.length; i++) {
-						// Do some cleanup on the receipts and then send the normalized message without accents
-						twiml.message(googleapi.receiptToString(data[i], true, i+1).normalize('NFD').replace(/[\u0300-\u036f]/g, ""))
-					}
-
-					// Log this action to console
-					console.log('Retrieved all ' + type + ' receipts!')
-
-					// Add a content accepted header
-					res.writeHead(200, { 'Content-Type': 'text/xml' })
-					res.end(twiml.toString())
-				})
-			} else {
-				twiml.message('Invalid permission for this command!')
-			}
-
-		// SEND RECEIPT COMMAND
-		// Usage: 'Send b receipts NAME' or 'Send b receipts'
-		} else if (req.body.Body.toLowerCase().indexOf('send') > -1 && req.body.Body.toLowerCase().indexOf('receipt') > -1) {
-			// First validate the current day's orders
-			let currDayTemp = new Date();
-			currDayTemp = currDayTemp.getFullYear() + '-' + (currDayTemp.getMonth() + 1) + '-' + currDayTemp.getDate()
-			if (currDayTemp != currentDay) {
-				currentDayOrders = 0
-				currentDay = currDayTemp
-			}
-
-			// Check if the phone number is a valid number
-			if (VAULT.twilio.allowedNumbers.indexOf(req.body.From) > -1) {
-				// Get the type and convert it into the right format
-				let type = req.body.Body.replace('  ', ' ').trim().split(" ")[1].toLowerCase()
-				googleapi.runAuthorizeFunction(googleapi.getReceipts, (type == 'b' ? 'Breakfast' : 'Afternoon'), (data) => {
-					// If there is a name given after the 'Send TYPE receipt', use it in filtering
-					let name = req.body.Body.replace('  ', ' ').trim().split(" ")
-					if (name.length > 3) { name = name[3] } else { name = undefined }
-
-					// For each string, send a message to the recipient containing their receipt
-					let sentAMessage = false
-					for (let i = 0; i < data.length; i++) {
-						// Update the running total of orders in the day
-						currentDayOrders++
-
-						// Make sure the number exists
-						if (data[i][15][0] == undefined) { continue; }
-
-						// Update the receipt database
-						database.processReceipt(data[i], currentDayOrders, req.body.From == '+18609467150', (returned) => {})
-
-						// If name is specified, check it against each data
-						if ((name == undefined || data[i][0][0].toLowerCase().indexOf(name.toLowerCase()) > -1) && req.body.From != '+18609467150') {
-							// Get the number without dashes or parentheses or spaces and add +1
-							let number = '+1' + data[i][15][0].replace(/\D+/g, '')
-							// Do some cleanup on the receipts and then send the normalized messages to their corresponding recipients
-							client.messages.create({
-								body: googleapi.receiptToString(data[i], false),
-								to: number,
-								from: '+12038946844'
-							})
-							// If the payment method is Venmo, then also send a Venmo payment request
-							if (data[i][10][0].toLowerCase() == 'venmo') {
-								client.messages.create({
-									body: 'Pay here: https://venmo.com/Brady_McGowan?txn=pay&amount=' + (parseFloat(data[i][20][1].replace('$','')) + VAULT.deliveryfee - 5).toFixed(2),
-									to: number,
-									from: '+12038946844'
-								})
-							}
-
-							sentAMessage = true
-						}
-					}
-
-					// Log this action to console and notify sender
-					if (sentAMessage) {
-						twiml.message('Sent the ' + type + ' receipts.')
-						if (name == undefined) {
-							console.log('Sent all ' + type + ' receipts!')	
-						} else {
-							console.log('Sent ' + name + '\'s ' + type + ' receipt!')
-						}
-					} else {
-						// Error logging
-						twiml.message('No receipts were sent.')
-					}
-
-					// Add a content accepted header
-					res.writeHead(200, { 'Content-Type': 'text/xml' })
-					res.end(twiml.toString())
-				})
-			} else {
-				twiml.message('Invalid permission for this command!')
-
-				// Add a content accepted header
-				res.writeHead(200, { 'Content-Type': 'text/xml' })
-				res.end(twiml.toString())
-			}
-
 		// ANNOUNCE COMMAND
 		// Sends a text to everyone with a number registered in the database.
 		// Usage: 'announce "sale coming soon!"'
@@ -408,6 +302,112 @@ function chatBot(req, res) {
 				})
 			} else {
 				twiml.message('Invalid permission for this command!')
+				// Add a content accepted header
+				res.writeHead(200, { 'Content-Type': 'text/xml' })
+				res.end(twiml.toString())
+			}
+
+		// GET RECEIPT COMMAND
+		// Gets the receipts for the given parameters
+		// Usage: 'Get b receipts' or 'Get b receipts for Starbucks'
+		} else if (req.body.Body.toLowerCase().indexOf('get') > -1 && req.body.Body.toLowerCase().indexOf('receipt') > -1) {
+			// Check if the phone number is a valid number
+			if (VAULT.twilio.allowedNumbers.indexOf(req.body.From) > -1) {
+				// Get the type and convert it into the right format
+				let type = req.body.Body.replace('  ', ' ').trim().split(" ")[1].toLowerCase()
+				googleapi.runAuthorizeFunction(googleapi.getReceipts, (type == 'b' ? 'Breakfast' : 'Afternoon'), (data) => {
+
+					for (let i = 0; i < data.length; i++) {
+						// Do some cleanup on the receipts and then send the normalized message without accents
+						twiml.message(googleapi.receiptToString(data[i], true, i+1).normalize('NFD').replace(/[\u0300-\u036f]/g, ""))
+					}
+
+					// Log this action to console
+					console.log('Retrieved all ' + type + ' receipts!')
+
+					// Add a content accepted header
+					res.writeHead(200, { 'Content-Type': 'text/xml' })
+					res.end(twiml.toString())
+				})
+			} else {
+				twiml.message('Invalid permission for this command!')
+			}
+
+		// SEND RECEIPT COMMAND
+		// Usage: 'Send b receipts NAME' or 'Send b receipts'
+		} else if (req.body.Body.toLowerCase().indexOf('send') > -1 && req.body.Body.toLowerCase().indexOf('receipt') > -1) {
+			// First validate the current day's orders
+			let currDayTemp = new Date();
+			currDayTemp = currDayTemp.getFullYear() + '-' + (currDayTemp.getMonth() + 1) + '-' + currDayTemp.getDate()
+			if (currDayTemp != currentDay) {
+				currentDayOrders = 0
+				currentDay = currDayTemp
+			}
+
+			// Check if the phone number is a valid number
+			if (VAULT.twilio.allowedNumbers.indexOf(req.body.From) > -1) {
+				// Get the type and convert it into the right format
+				let type = req.body.Body.replace('  ', ' ').trim().split(" ")[1].toLowerCase()
+				googleapi.runAuthorizeFunction(googleapi.getReceipts, (type == 'b' ? 'Breakfast' : 'Afternoon'), (data) => {
+					// If there is a name given after the 'Send TYPE receipt', use it in filtering
+					let name = req.body.Body.replace('  ', ' ').trim().split(" ")
+					if (name.length > 3) { name = name[3] } else { name = undefined }
+
+					// For each string, send a message to the recipient containing their receipt
+					let sentAMessage = false
+					for (let i = 0; i < data.length; i++) {
+						// Update the running total of orders in the day
+						currentDayOrders++
+
+						// Make sure the number exists
+						if (data[i][15][0] == undefined) { continue; }
+
+						// Update the receipt database
+						database.processReceipt(data[i], currentDayOrders, req.body.From == '+18609467150', (returned) => {})
+
+						// If name is specified, check it against each data
+						if ((name == undefined || data[i][0][0].toLowerCase().indexOf(name.toLowerCase()) > -1) && req.body.From != '+18609467150') {
+							// Get the number without dashes or parentheses or spaces and add +1
+							let number = '+1' + data[i][15][0].replace(/\D+/g, '')
+							// Do some cleanup on the receipts and then send the normalized messages to their corresponding recipients
+							client.messages.create({
+								body: googleapi.receiptToString(data[i], false),
+								to: number,
+								from: '+12038946844'
+							})
+							// If the payment method is Venmo, then also send a Venmo payment request
+							if (data[i][10][0].toLowerCase() == 'venmo') {
+								client.messages.create({
+									body: 'Pay here: https://venmo.com/Brady_McGowan?txn=pay&amount=' + (parseFloat(data[i][20][1].replace('$','')) + VAULT.deliveryfee - 5).toFixed(2),
+									to: number,
+									from: '+12038946844'
+								})
+							}
+
+							sentAMessage = true
+						}
+					}
+
+					// Log this action to console and notify sender
+					if (sentAMessage) {
+						twiml.message('Sent the ' + type + ' receipts.')
+						if (name == undefined) {
+							console.log('Sent all ' + type + ' receipts!')	
+						} else {
+							console.log('Sent ' + name + '\'s ' + type + ' receipt!')
+						}
+					} else {
+						// Error logging
+						twiml.message('No receipts were sent.')
+					}
+
+					// Add a content accepted header
+					res.writeHead(200, { 'Content-Type': 'text/xml' })
+					res.end(twiml.toString())
+				})
+			} else {
+				twiml.message('Invalid permission for this command!')
+
 				// Add a content accepted header
 				res.writeHead(200, { 'Content-Type': 'text/xml' })
 				res.end(twiml.toString())
