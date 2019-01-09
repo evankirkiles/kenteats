@@ -234,7 +234,7 @@ class SQLInterface {
 			// Make sure no error occurred
 			if (err) { return err }
 			// Notify admin about the mute
-    		console.log('Muted ' + req.body.From + ' from global announcements.')
+    		console.log('Muted ' + number + ' from global announcements.')
 		})
 	}
 
