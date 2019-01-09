@@ -359,25 +359,30 @@ function getReceipts(auth, callback, type) {
             //         0     1           2                 3                   4
           // FORMAT: code, value, percentage or no, order or delivery fee, validated
           messages[i].push(coups[i])
-          // Perform total calculations based on the receipt
-          if (coups[i][2]) {
-            if (coups[i][3] == 'DELIVERYFEE') {
-              messages[i][21][1] = (1 - coups[i][1]) * messages[i][18][1]
+          // If the coupon is validated, allow the calculations to go through
+          if (coups[i][4]) {
+            // Perform total calculations based on the receipt
+            if (coups[i][2]) {
+              if (coups[i][3] == 'DELIVERYFEE') {
+                messages[i][21][1] = (1 - coups[i][1]) * messages[i][18][1]
+              } else {
+                messages[i][21][1] = (1 - coups[i][1]) * messages[i][20][1]
+              }
             } else {
-              messages[i][21][1] = (1 - coups[i][1]) * messages[i][20][1]
+              if (coups[i][3] == 'DELIVERYFEE') {
+                messages[i][21][1] = Math.min(messages[i][18][1], coups[i][1])
+              } else {
+                messages[i][21][1] = Math.min(messages[i][20][1], coups[i][1])
+              }
             }
           } else {
-            if (coups[i][3] == 'DELIVERYFEE') {
-              messages[i][21][1] = Math.min(messages[i][18][1], coups[i][1])
-            } else {
-              messages[i][21][1] = Math.min(messages[i][20][1], coups[i][1])
-            }
+            messages[i][21][1] = 0
           }
-        }
 
-        // Do some last calculations on the total
-        messages[i][20][1] -= messages[i][21][1]
-        messages[i].push(parseFloat(messages[i][18][1].replace('$', '')) - messages[i][21][1])
+          // Do some last calculations on the total
+          messages[i][20][1] -= messages[i][21][1]
+          messages[i].push(parseFloat(messages[i][18][1].replace('$', '')) - messages[i][21][1])
+        }
 
         // Final step is to check the receipts and recalculate 
         callback(messages)

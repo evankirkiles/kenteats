@@ -394,6 +394,16 @@ function chatBot(req, res) {
 								to: number,
 								from: '+12038946844'
 							})
+							// If the user used a coupon, then also send the information about the coupon
+							if (data[i][21][4]) {
+								client.messages.create({
+									body: 'You used coupon "' + data[i][21][0] + '" to save $' + data[i][21][1].toFixed(2) + '.',
+									to: number,
+									from: '+12038946844'
+								})
+								// Also decrement the uses in the database
+								database.useCoupon(data[i][21][0], data[i][0])
+							}
 							// If the payment method is Venmo, then also send a Venmo payment request
 							if (data[i][10][0].toLowerCase() == 'venmo') {
 								client.messages.create({
