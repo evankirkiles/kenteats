@@ -26,8 +26,10 @@ let database = new SQLInterface()
 // database.getVenmoFinancials((data) => {
 // 	googleapi.runAuthorizeFunction(googleapi.fillVenmoOrders, data, () => {}) })
 
-googleapi.runAuthorizeFunction(googleapi.getReceipts, 'Breakfast', (data) => {
-	console.log(data[0][20])
+googleapi.runAuthorizeFunction(googleapi.getReceipts, 'Afternoon', (data) => {
+	data.map((single) => {
+		console.log(googleapi.receiptToString(single))
+	})
 })
 
 // If it is, return a Twilio message containing all the coupons formatted nicely
