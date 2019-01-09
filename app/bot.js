@@ -307,6 +307,25 @@ function chatBot(req, res) {
 				res.end(twiml.toString())
 			}
 
+		// COUPONS COMMAND
+		// Gets all the existing coupons
+		// Usage: 'coupons'
+		} else if (req.body.Body.toLowerCase().trim() == 'coupons') {
+			// Check if the phone number is a valid number
+			if (VAULT.twilio.allowedNumbers.indexOf(req.body.From) > -1) {
+				// If it is, return a Twilio message containing all the coupons formatted nicely
+				database.getCoupons((data) => {
+					let index = 0
+					data.map((coupon) => {
+						index++
+						twiml.message('- COUPON ' + index + ' -\nCode: ' + coupon['code'] + '\nAmount: ' + (coupon['percent'] == 1 ? (coupon['amount'] * 100).toFixed(0) + '%' : '$' + coupon['amount'].toFixed(2)) + '\nFrom: ' + (coupon['calcfrom'] == 'DELIVERYFEE' ? 'Delivery Fee' : 'Total') + '\nUses: ' + coupon['uses'])
+					})
+					// Add a content accepted header
+					res.writeHead(200, { 'Content-Type': 'text/xml' })
+					res.end(twiml.toString())
+				})
+			}
+
 		// GET RECEIPT COMMAND
 		// Gets the receipts for the given parameters
 		// Usage: 'Get b receipts' or 'Get b receipts for Starbucks'

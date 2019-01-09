@@ -234,8 +234,7 @@ module.exports.fillVenmoOrders = fillVenmoOrders
 /*
  * Gets the coupon codes for each receipt
  */
-function getCoupons(auth, callback, data) {
-  const sheets = google.sheets({version: 'v4', auth});
+function getCoupons(sheets, callback) {
   // Perform a request to compose list of coupons
     sheets.spreadsheets.values.get({
       spreadsheetId: '1-Cf26GoPDBWRRScjm8xRJ5QZKDUe6sN8bwkBREO5X3U',
@@ -293,12 +292,11 @@ function getReceipts(auth, callback, type) {
     range: 'Complete ' + type + ' Receipt!A1:AD137',
   }, (err, res) => {
     if (err) return console.log('The API returned an error: ' + err);
-
-    // Build an array which will hold each message to be sent
-    let messages = []
+    // If there are orders in the responses
     const rows = res.data.values;
     if (rows.length) {
-      // This array keeps track of the starting points of each receipt
+      // Build an array which will hold each message to be sent
+      let messages = []
       let receiptStarts = []
       let numreceits = 0
       let fuzzyStores = FuzzySet(Object.keys(VAULT.stores))
@@ -343,17 +341,47 @@ function getReceipts(auth, callback, type) {
       	}
       });
 
-      // Once all the receipts are built, reformat the stores
-      for (let i = 0; i < messages.length; i++) {
-        for (let j = 2; j < 10; j++) {
-          if (messages[i][j][0] != '#VALUE!') {
-            messages[i][j][1] = fuzzyStores.get(messages[i][j][0].match(/\(([^)]+)\)/)[1])[0][1]
+      // Check the coupons against each receipt and add a row at the end for them
+      getCoupons(sheets, (coups) => {
+        // Once all the receipts are built, iterate through them
+        for (let i = 0; i < messages.length; i++) {
+
+          // Reformat the stores
+          for (let j = 2; j < 10; j++) {
+            if (messages[i][j][0] != '#VALUE!') {
+              messages[i][j][1] = fuzzyStores.get(messages[i][j][0].match(/\(([^)]+)\)/)[1])[0][1]
+            } else {
+              break;
+            }
+          }
+
+          // Add coupon to the receipt information (total)
+            //         0     1           2                 3                   4
+          // FORMAT: code, value, percentage or no, order or delivery fee, validated
+          messages[i].push(coups[i])
+          // Perform total calculations based on the receipt
+          if (coups[i][2]) {
+            if (coups[i][3] == 'DELIVERYFEE') {
+              messages[i][21][1] = (1 - coups[i][1]) * messages[i][18][1]
+            } else {
+              messages[i][21][1] = (1 - coups[i][1]) * messages[i][20][1]
+            }
           } else {
-            break;
+            if (coups[i][3] == 'DELIVERYFEE') {
+              messages[i][21][1] = Math.min(messages[i][18][1], coups[i][1])
+            } else {
+              messages[i][21][1] = Math.min(messages[i][20][1], coups[i][1])
+            }
           }
         }
-      }
-	   callback(messages)
+
+        // Do some last calculations on the total
+        messages[i][20][1] -= messages[i][21][1]
+        messages[i].push(parseFloat(messages[i][18][1].replace('$', '')) - messages[i][21][1])
+
+        // Final step is to check the receipts and recalculate 
+        callback(messages)
+      })
     } else {
       callback('No data found.')
     }
@@ -382,8 +410,8 @@ function receiptToString(receipt, admin, index) {
   } else {
     toReturn += "Payment Method: " + receipt[10][0] + (receipt[10][0] == 'Venmo' ? '\nPay to: Brady_McGowan' : '')
   }
-  toReturn += "\nLocation: " + receipt[11][0] + "\nPhone: " + receipt[15][0] +
-                "\nTotal Without Fee: " + receipt[17][1] + "\nFee: " + receipt[18][1] + "\nTotal: " + receipt[20][1]
+  toReturn += "\nLocation: " + (receipt[11][0] != '' ? receipt[11][0] : receipt[12][0]) + "\nPhone: " + receipt[15][0] +
+                "\nTotal Without Fee: " + receipt[17][1] + "\nFee: $" + receipt[18][1] + (receipt[21][4] ? ("\nCoupon: $" + receipt[21][1].toFixed(2)) : '') + "\nTotal: $" + receipt[20][1]
   // Finally return this string
   return toReturn
 }

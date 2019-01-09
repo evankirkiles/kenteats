@@ -15,7 +15,7 @@ const bodyParser = require('body-parser')
 const client = require('twilio')(VAULT.twilio.accountSid, VAULT.twilio.authToken)
 
 
-// let database = new SQLInterface()
+let database = new SQLInterface()
 // Run the MySQL query to determine if any data is available
 // database.getFinancials((data) => {
 // 	googleapi.runAuthorizeFunction(googleapi.fillFullDayBookkeeping, data, () => {}) })
@@ -26,6 +26,15 @@ const client = require('twilio')(VAULT.twilio.accountSid, VAULT.twilio.authToken
 // database.getVenmoFinancials((data) => {
 // 	googleapi.runAuthorizeFunction(googleapi.fillVenmoOrders, data, () => {}) })
 
-googleapi.runAuthorizeFunction(googleapi.getCoupons, undefined, (data) => {
-	console.log(data)
+// googleapi.runAuthorizeFunction(googleapi.getReceipts, 'Afternoon', (data) => {
+// 	console.log(googleapi.receiptToString(data[0], false, 1))
+// })
+
+// If it is, return a Twilio message containing all the coupons formatted nicely
+database.getCoupons((data) => {
+	let index = 0
+	data.map((coupon) => {
+		index++
+		console.log('- COUPON ' + index + ' -\nCode: ' + coupon['code'] + '\nAmount: ' + (coupon['percent'] == 1 ? (coupon['amount'] * 100).toFixed(0) + '%' : '$' + coupon['amount'].toFixed(2)) + '\nFrom: ' + (coupon['calcfrom'] == 'DELIVERYFEE' ? 'Delivery Fee' : 'Total') + '\nUses: ' + coupon['uses'])
+	})
 })

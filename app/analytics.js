@@ -252,10 +252,10 @@ class SQLInterface {
 		}
 
 		// Adds a row to represent the order
-		let expenditures = parseFloat(receipt[20][1].replace('$', '')) - parseFloat(receipt[18][1].replace('$', ''))
+		let expenditures = parseFloat(receipt[20][1].replace('$', '')) - receipt[22]
 		this.con.query('INSERT INTO ' + table1 + '(`day`,`profit`, `revenue`,`expenditures`,`venmo`,`card`,`phone`) VALUES ("' + 
 			currDay + '",' +                                                         // The day
-			parseFloat(receipt[18][1].replace('$', '')).toFixed(2) + ',' +           // The profit
+			receipt[22].toFixed(2) + ',' +           // The profit
 			parseFloat(receipt[20][1].replace('$', '')).toFixed(2) + ',' +           // The total transaction
 			expenditures.toFixed(2) + ',' +                                          // The money spent on food
 			(paymentMethod.indexOf('venmo') > -1 ? parseFloat(receipt[20][1].replace('$', '')).toFixed(2) : '0.00') + ',' +
@@ -337,17 +337,17 @@ class SQLInterface {
 
 	//  Updates financial table (necessary so don't repeat code much)
 	updateFinancials(receipt, table, number, currDay, returns, callback) {
-		let expenditures = parseFloat(receipt[20][1].replace('$', '')) - parseFloat(receipt[18][1].replace('$', ''))
+		let expenditures = parseFloat(receipt[20][1].replace('$', '')) - receipt[22]
 		// Otherwise perform check on the size of return, if 0 then row does not exist
 		if (returns.length > 0) {
-			this.con.query('UPDATE ' + table + ' SET `profit`=`profit`+' + parseFloat(receipt[18][1].replace('$', '')).toFixed(2) + ',`revenue`=`revenue`+' + parseFloat(receipt[20][1].replace('$', '')).toFixed(2) + ',`expenditures`=`expenditures`+' + expenditures.toFixed(2) +  ',`' + number + '`=`' + number + '`+' + parseFloat(receipt[20][1].replace('$', '')).toFixed(2) + ' WHERE day="' + currDay + '"', callback())
+			this.con.query('UPDATE ' + table + ' SET `profit`=`profit`+' + receipt[22].toFixed(2) + ',`revenue`=`revenue`+' + parseFloat(receipt[20][1].replace('$', '')).toFixed(2) + ',`expenditures`=`expenditures`+' + expenditures.toFixed(2) +  ',`' + number + '`=`' + number + '`+' + parseFloat(receipt[20][1].replace('$', '')).toFixed(2) + ' WHERE day="' + currDay + '"', callback())
 		// If row doesn't exist, then simply insert this one
 		} else {
-			this.con.query('INSERT INTO ' + table + ' (`profit`,`revenue`,`expenditures`,`day`, `' + number + '`) VALUES (' + parseFloat(receipt[18][1].replace('$', '')).toFixed(2) + ',' + parseFloat(receipt[20][1].replace('$', '')).toFixed(2) + ',' + expenditures.toFixed(2) + ',"' + currDay + '", ' + parseFloat(receipt[20][1].replace('$', '')).toFixed(2) + ')', (err, result) => {
+			this.con.query('INSERT INTO ' + table + ' (`profit`,`revenue`,`expenditures`,`day`, `' + number + '`) VALUES (' + receipt[22].toFixed(2) + ',' + parseFloat(receipt[20][1].replace('$', '')).toFixed(2) + ',' + expenditures.toFixed(2) + ',"' + currDay + '", ' + parseFloat(receipt[20][1].replace('$', '')).toFixed(2) + ')', (err, result) => {
 				if (err) {
 					// If the inputs got backed up, then just reroute the request again
 					if (err.code == 'ER_DUP_ENTRY') {
-						this.con.query('UPDATE ' + table + ' SET `profit`=`profit`+' + parseFloat(receipt[18][1].replace('$', '')).toFixed(2) + ',`revenue`=`revenue`+' + parseFloat(receipt[20][1].replace('$', '')).toFixed(2) + ',`expenditures`=`expenditures`+' + expenditures.toFixed(2) +  ',`' + number + '`=`' + number + '`+' + parseFloat(receipt[20][1].replace('$', '')).toFixed(2) + ' WHERE day="' + currDay + '"', callback())
+						this.con.query('UPDATE ' + table + ' SET `profit`=`profit`+' + receipt[22].toFixed(2) + ',`revenue`=`revenue`+' + parseFloat(receipt[20][1].replace('$', '')).toFixed(2) + ',`expenditures`=`expenditures`+' + expenditures.toFixed(2) +  ',`' + number + '`=`' + number + '`+' + parseFloat(receipt[20][1].replace('$', '')).toFixed(2) + ' WHERE day="' + currDay + '"', callback())
 					} else {
 						console.log(err); return err 
 					}
@@ -413,7 +413,7 @@ class SQLInterface {
 		// Finally add total orders and total spending, as well as profit
 		toReturn += 'itemsordered=itemsordered+' + totalOrders + 
 					',spending=spending+' + parseFloat(receipt[20][1].replace('$', '')).toFixed(2) + 
-					',profit=profit+' + parseFloat(receipt[18][1].replace('$', '')).toFixed(2) +
+					',profit=profit+' + receipt[22].toFixed(2) +
 					' WHERE phone=\'+1' + receipt[15][0].replace(/\D+/g, '') + '\''
 		return toReturn
 	}
