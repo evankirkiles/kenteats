@@ -146,7 +146,7 @@ class SQLInterface {
 		this.con.query('SELECT uses FROM coupons WHERE code="' + code + '" LIMIT 1', (err, results) => {
 			// Just query it quickly first to see if the coupon exists. If it doesn't then do not try to update the uses
 			if (err) { console.log(err); return err }
-			if (results.length > 0 && results[1]['uses'] > 0) {
+			if (results.length > 0 && results[0]['uses'] > 0) {
 				// Run another query that updates the column
 				this.con.query('UPDATE coupons SET `uses`=`uses`-1 WHERE code="' + code + '"', (err, results) => {
 					if (err) { console.log(err); return err }
