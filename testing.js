@@ -26,15 +26,15 @@ let database = new SQLInterface()
 // database.getVenmoFinancials((data) => {
 // 	googleapi.runAuthorizeFunction(googleapi.fillVenmoOrders, data, () => {}) })
 
-// googleapi.runAuthorizeFunction(googleapi.getReceipts, 'Afternoon', (data) => {
-// 	console.log(googleapi.receiptToString(data[0], false, 1))
-// })
+googleapi.runAuthorizeFunction(googleapi.getReceipts, 'Breakfast', (data) => {
+	console.log(data[0][20])
+})
 
 // If it is, return a Twilio message containing all the coupons formatted nicely
-database.getCoupons((data) => {
-	let index = 0
-	data.map((coupon) => {
-		index++
-		console.log('- COUPON ' + index + ' -\nCode: ' + coupon['code'] + '\nAmount: ' + (coupon['percent'] == 1 ? (coupon['amount'] * 100).toFixed(0) + '%' : '$' + coupon['amount'].toFixed(2)) + '\nFrom: ' + (coupon['calcfrom'] == 'DELIVERYFEE' ? 'Delivery Fee' : 'Total') + '\nUses: ' + coupon['uses'])
-	})
-})
+// database.getCoupons((data) => {
+// 	let index = 0
+// 	data.map((coupon) => {
+// 		index++
+// 		console.log('- COUPON ' + index + ' -\nCode: ' + coupon['code'] + '\nAmount: ' + (coupon['percent'] == 1 ? (coupon['amount'] * 100).toFixed(0) + '%' : '$' + coupon['amount'].toFixed(2)) + '\nFrom: ' + (coupon['calcfrom'] == 'DELIVERYFEE' ? 'Delivery Fee' : 'Total') + '\nUses: ' + coupon['uses'])
+// 	})
+// })
