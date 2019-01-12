@@ -1,2 +1,3 @@
-UPDATE kenteats.useranalytics SET profit=0,spending=0,itemsordered=0,starbucksorders=0,starbucksspending=0,chipotleorders=0,chipotlespending=0,tacobellorders=0,tacobellspending=0,fiveguysorders=0,fiveguysspending=0,chickaorders=0,chickaspending=0,paneraorders=0,paneraspending=0,wendysorders=0,wendysspending=0,mcdonaldsorders=0,mcdonaldsspending=0,dunkinorders=0,dunkinspending=0,dominosorders=0,dominosspending=0;
-#SELECT * from kenteats.useranalytics
+#SET SQL_SAFE_UPDATES=0;
+#UPDATE kenteats.useranalytics SET profit=0,spending=0,itemsordered=0,starbucksorders=0,starbucksspending=0,chipotleorders=0,chipotlespending=0,tacobellorders=0,tacobellspending=0,fiveguysorders=0,fiveguysspending=0,chickaorders=0,chickaspending=0,paneraorders=0,paneraspending=0,wendysorders=0,wendysspending=0,mcdonaldsorders=0,mcdonaldsspending=0,dunkinorders=0,dunkinspending=0,dominosorders=0,dominosspending=0;
+SELECT * from kenteats.useranalytics

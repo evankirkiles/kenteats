@@ -114,8 +114,17 @@ function fillFullDayBookkeeping(auth, callback, data) {
     range: 'Sheet1!A1:A999',
   }, (err, result) => {
     if (err) return console.log('The API returned an error: ' + err);
-    // Cycle through the results to find the first empty cell to begin the range with
-    let range = 'Sheet1!A' + (result.data.values.length + 1) + ':T'
+    // Get the current day in the format it is put in the google sheet
+    let currDay = new Date();
+    currDay = (currDay.getMonth() + 1) + '/' + currDay.getDate() + '/' +currDay.getFullYear() 
+
+    // Format the range to not add duplicate days
+    let range
+    if (result.data.values.length[result.data.values.length-1] == currDay) {
+      range = 'Sheet1!A' + (result.data.values.length) + ':T'
+    } else {
+      range = 'Sheet1!A' + (result.data.values.length + 1) + ':T'
+    }
     // With the range in hand, use the data to perform another query which updates the spreadsheet
     sheets.spreadsheets.values.update({
       spreadsheetId: '1Gxg4E_WcXnN-x21fIA3yr3msZ1XPEZm-RW4FoeKBRTg',
@@ -230,6 +239,36 @@ module.exports.fillSingleOrderBookkeeping = fillSingleOrderBookkeeping
 module.exports.fillFullDayBookkeeping = fillFullDayBookkeeping
 module.exports.fillStudentIDOrders = fillStudentIDOrders
 module.exports.fillVenmoOrders = fillVenmoOrders
+
+/*
+ * Clears the inputs
+ */
+function clearInputs(auth, callback, asdad) {
+  let data = []
+  // Create a ton of empty strings to fill in the spreadsheet with
+  for (let i = 0; i < 99; i++) {
+    data[i] = []
+    for (let j = 0; j < 12; j++) {
+      data[i].push('')
+    }
+  }
+  // Now use sheets to overwrite the current input data 
+  const sheets = google.sheets({version: 'v4', auth});
+  sheets.spreadsheets.values.update({
+    spreadsheetId: '1-Cf26GoPDBWRRScjm8xRJ5QZKDUe6sN8bwkBREO5X3U',
+    range: 'Form Responses 1!A2:L100',
+    valueInputOption: 'USER_ENTERED',
+    resource: {
+      values: data
+    }
+  }, (err, result) => {
+    if (err) return console.log('The API returned an error: ' + err)
+    console.log('Cleared the inputs!')
+    callback()
+  })
+}
+
+module.exports.clearInputs = clearInputs
 
 /*
  * Gets the coupon codes for each receipt

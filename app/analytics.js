@@ -66,7 +66,7 @@ class SQLInterface {
 		let currDay = new Date();
 		currDay = currDay.getFullYear() + '-' + (currDay.getMonth() + 1) + '-' + currDay.getDate()
 		// Perform a MySQL query on the financials table to get the row of financial data
-		this.con.query('SELECT profit,revenue,expenditures,venmo,card FROM financialorders WHERE day="' + currDay + '"', (err, results) => {
+		this.con.query('SELECT profit,revenue,expenditures,venmo,card FROM financialorders WHERE day="' + currDay + '" AND googlesheets=0', (err, results) => {
 			// If there was an error, return
 			if (err) { console.log(err); return }
 			// If there isn't any data for the day, then do nothing
@@ -89,7 +89,7 @@ class SQLInterface {
 		let currDay = new Date();
 		currDay = currDay.getFullYear() + '-' + (currDay.getMonth() + 1) + '-' + currDay.getDate()
 		// Perform a MySQL query on the financials table to get the row of financial data
-		this.con.query('SELECT name,amount,phone FROM studentidorders WHERE date="' + currDay + '"', (err, results) => {
+		this.con.query('SELECT name,amount,phone FROM studentidorders WHERE date="' + currDay + '" AND googlesheets=0', (err, results) => {
 			// If there was an error, return
 			if (err) { console.log(err); return }
 			// If there isn't any data for the day, then do nothing
@@ -112,7 +112,7 @@ class SQLInterface {
 		let currDay = new Date();
 		currDay = currDay.getFullYear() + '-' + (currDay.getMonth() + 1) + '-' + currDay.getDate()
 		// Perform a MySQL query on the financials table to get the row of financial data
-		this.con.query('SELECT name,amount,phone FROM venmoorders WHERE date="' + currDay + '"', (err, results) => {
+		this.con.query('SELECT name,amount,phone FROM venmoorders WHERE date="' + currDay + '" AND googlesheets=0', (err, results) => {
 			// If there was an error, return
 			if (err) { console.log(err); return }
 			// If there isn't any data for the day, then do nothing
@@ -126,6 +126,15 @@ class SQLInterface {
 				callback(cells)
 			}
 		})
+	}
+
+	// Function which is called after the Google Sheets are filled to set the googlesheets columns back to 1.
+	notifyFinancialsUpdated1(type, callback) {
+		// Get the current day for which to update the financials
+		let currDay = new Date();
+		currDay = currDay.getFullYear() + '-' + (currDay.getMonth() + 1) + '-' + currDay.getDate()
+		// Perform the MySQL queries all at once
+		this.con.query('UPDATE ' + type + ' SET googlesheets=1 WHERE date="' + currDay + '"')
 	}
 
 	// Pulls the coupons from the MySQL database for use in building the receipts (coupons will be applied in get receipts function).

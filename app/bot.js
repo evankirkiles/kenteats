@@ -42,14 +42,21 @@ let lastFinanceUpdateDay = undefined
 
 // 		// GETFINANCIAL FUNCTIONS
 // 		// Each querys the MySQL database and uses the data it retrieves to fill their respective Google Sheets
-// 		financeData.getFinancials((data) => {
-// 			googleapi.runAuthorizeFunction(googleapi.fillFullDayBookkeeping, data, () => {}) })
-// 		financeData.getSingleOrderFinancials((data) => {
-// 			googleapi.runAuthorizeFunction(googleapi.fillSingleOrderBookkeeping, data, () => {}) })
-// 		financeData.getStudentIDFinancials((data) => {
-// 			googleapi.runAuthorizeFunction(googleapi.fillStudentIDOrders, data, () => {}) })
-// 		financeData.getVenmoFinancials((data) => {
-// 			googleapi.runAuthorizeFunction(googleapi.fillVenmoOrders, data, () => {}) })
+// 		// Run the MySQL query to determine if any data is available
+		// database.getFinancials((data) => {
+		// 	googleapi.runAuthorizeFunction(googleapi.fillFullDayBookkeeping, data, () => {}) })
+		// database.getSingleOrderFinancials((data) => {
+		// 	googleapi.runAuthorizeFunction(googleapi.fillSingleOrderBookkeeping, data, () => {
+		// 		database.notifyFinancialsUpdated('financialorders')
+		// 	}) })
+		// database.getStudentIDFinancials((data) => {
+		// 	googleapi.runAuthorizeFunction(googleapi.fillStudentIDOrders, data, () => {
+		// 		database.notifyFinancialsUpdated('studentidorders')
+		// 	}) })
+		// database.getVenmoFinancials((data) => {
+		// 	googleapi.runAuthorizeFunction(googleapi.fillVenmoOrders, data, () => {
+		// 		database.notifyFinancialsUpdated('venmoorders')
+		// 	}) })
 // 	}
 // })
 
@@ -561,11 +568,33 @@ function chatBot(req, res) {
 				database.getFinancials((data) => {
 					googleapi.runAuthorizeFunction(googleapi.fillFullDayBookkeeping, data, () => {}) })
 				database.getSingleOrderFinancials((data) => {
-					googleapi.runAuthorizeFunction(googleapi.fillSingleOrderBookkeeping, data, () => {}) })
+					googleapi.runAuthorizeFunction(googleapi.fillSingleOrderBookkeeping, data, () => {
+						database.notifyFinancialsUpdated('financialorders')
+					}) })
 				database.getStudentIDFinancials((data) => {
-					googleapi.runAuthorizeFunction(googleapi.fillStudentIDOrders, data, () => {}) })
+					googleapi.runAuthorizeFunction(googleapi.fillStudentIDOrders, data, () => {
+						database.notifyFinancialsUpdated('studentidorders')
+					}) })
 				database.getVenmoFinancials((data) => {
-					googleapi.runAuthorizeFunction(googleapi.fillVenmoOrders, data, () => {}) })
+					googleapi.runAuthorizeFunction(googleapi.fillVenmoOrders, data, () => {
+						database.notifyFinancialsUpdated('venmoorders')
+					}) })
+			}
+
+		// CLEAR INPUT COMMAND
+		// Clears the input form for the Google Sheets, allowing new orders to be placed.
+		// Usage: 'clear input'
+		} else if (req.body.Body.toLowerCase().trim() == 'clear input') {
+			// Validate user
+			if (VAULT.twilio.allowedNumbers.indexOf(req.body.From) > -1) {
+				// Run the googleapi function to clear the sheets, and, upon doing so, notify the user
+				googleapi.runAuthorizeFunction(googleapi.clearInputs, undefined, () => {
+					// Add message
+					twiml.message('Cleared the input sheet.')
+					// Add a content accepted header
+					res.writeHead(200, { 'Content-Type': 'text/xml' })
+					res.end(twiml.toString())
+				})
 			}
 
 		// FORM COMMAND
