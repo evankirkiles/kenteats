@@ -388,7 +388,13 @@ function getReceipts(auth, callback, type) {
           // Reformat the stores
           for (let j = 2; j < 10; j++) {
             if (messages[i][j][0] != '#VALUE!') {
-              messages[i][j][1] = fuzzyStores.get(messages[i][j][0].match(/\(([^)]+)\)/)[1])[0][1]
+              let store = messages[i][j][0].match(/\(([^)]+)\)/)
+              if (store != null) {
+                messages[i][j][1] = fuzzyStores.get(store[1])[0][1]
+              } else {
+                messages[i][j][0] = '#VALUE!'
+                messages[i][j][1] = 'UNKNOWN'
+              }
             } else {
               break;
             }
@@ -403,9 +409,9 @@ function getReceipts(auth, callback, type) {
             // Perform total calculations based on the receipt
             if (coups[i][2]) {
               if (coups[i][3] == 'DELIVERYFEE') {
-                messages[i][21][1] = (1 - coups[i][1]) * messages[i][18][1]
+                messages[i][21][1] = coups[i][1] * messages[i][18][1]
               } else {
-                messages[i][21][1] = (1 - coups[i][1]) * messages[i][20][1]
+                messages[i][21][1] = coups[i][1] * messages[i][20][1]
               }
             } else {
               if (coups[i][3] == 'DELIVERYFEE') {
@@ -417,11 +423,10 @@ function getReceipts(auth, callback, type) {
           } else {
             messages[i][21][1] = 0
           }
-
           // Do some last calculations on the total
           messages[i][20][1] -= messages[i][21][1]
           // Convert the total to a string
-          messages[i][20][1] = '$' + messages[i][20][1]
+          messages[i][20][1] = '$' + messages[i][20][1].toFixed(2)
           messages[i].push(parseFloat(messages[i][18][1].replace('$', '')) - messages[i][21][1])
         }
 
@@ -456,7 +461,7 @@ function receiptToString(receipt, admin, index) {
   } else {
     toReturn += "Payment Method: " + receipt[10][0] + (receipt[10][0] == 'Venmo' ? '\nPay to: Brady_McGowan' : '')
   }
-  toReturn += "\nLocation: " + (receipt[11][0] != '' ? receipt[11][0] : receipt[12][0]) + "\nPhone: " + receipt[15][0] +
+  toReturn += "\nLocation: " + (receipt[11][0] != '' && receipt[11][0] != undefined ? receipt[11][0] : receipt[12][0]) + "\nPhone: " + receipt[15][0] +
                 "\nTotal Without Fee: " + receipt[17][1] + "\nFee: $" + receipt[18][1] + (receipt[21][4] ? ("\nCoupon: $" + receipt[21][1].toFixed(2)) : '') + "\nTotal: " + receipt[20][1]
   // Finally return this string
   return toReturn
