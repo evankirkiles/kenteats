@@ -129,7 +129,7 @@ class SQLInterface {
 	}
 
 	// Function which is called after the Google Sheets are filled to set the googlesheets columns back to 1.
-	notifyFinancialsUpdated1(type, callback) {
+	notifyFinancialsUpdated(type, callback) {
 		// Get the current day for which to update the financials
 		let currDay = new Date();
 		currDay = currDay.getFullYear() + '-' + (currDay.getMonth() + 1) + '-' + currDay.getDate()
