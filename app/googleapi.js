@@ -116,11 +116,11 @@ function fillFullDayBookkeeping(auth, callback, data) {
     if (err) return console.log('The API returned an error: ' + err);
     // Get the current day in the format it is put in the google sheet
     let firstDay = data[0][0].split('-')
-    firstDay = firstDay[1] + '/' + firstDay[2] + '/' + firstDay[0]
+    firstDay = parseInt(firstDay[1]) + '/' + parseInt(firstDay[2]) + '/' + firstDay[0]
 
     // Format the range to not add duplicate days
     let range
-    if (result.data.values[result.data.values.length-1] == firstday) {
+    if (result.data.values[result.data.values.length-1] == firstDay) {
       range = 'Sheet1!A' + (result.data.values.length) + ':T' + (result.data.values.length + data.length - 1)
     } else {
       range = 'Sheet1!A' + (result.data.values.length + 1) + ':T' + (result.data.values.length + data.length)
