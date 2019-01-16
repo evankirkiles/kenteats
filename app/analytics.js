@@ -263,14 +263,14 @@ class SQLInterface {
 
 		// Check if the receipt is a student id order, for which it is necessary to add it to student id database
 		if (paymentMethod.indexOf('stud') > -1) {
-			this.con.query('INSERT INTO studentidorders (`date`,`name`,`amount`,`phone`) VALUES ("' + 
+			this.con.query('INSERT INTO studentidorders (`day`,`name`,`amount`,`phone`) VALUES ("' + 
 				currDay + '","' + receipt[0] + '",' + parseFloat(receipt[20][1].replace('$', '')).toFixed(2) + ',"' + receipt[15][0].replace(/\D+/g, '') + '")', (err, results) => {
 				// If there was an error, log it
 				if (err) { console.log(err); return err }
 			})
 		// Check if the receipt is a venmo order, for which it is necessary to add it to student id database
 		} else if (paymentMethod.indexOf('venmo') > -1) {
-			this.con.query('INSERT INTO venmoorders (`date`,`name`,`amount`,`phone`) VALUES ("' + 
+			this.con.query('INSERT INTO venmoorders (`day`,`name`,`amount`,`phone`) VALUES ("' + 
 				currDay + '","' + receipt[0] + '",' + parseFloat(receipt[20][1].replace('$', '')).toFixed(2) + ',"' + receipt[15][0].replace(/\D+/g, '') + '")', (err, results) => {
 				// If there was an error, log it
 				if (err) { console.log(err); return err }
