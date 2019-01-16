@@ -62,3 +62,4 @@ typings/
 
 # MY CUSTOM GITIGNORES
 config/vault.js
+.DS_STORE

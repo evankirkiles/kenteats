@@ -1,2 +1,4 @@
-	// Require the express module for POST endpoints
-	const express = require('express')
+const Checkout = require('../scripts/checkout').Checkout
+
+let cr = new Checkout()
+cr.init()

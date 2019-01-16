@@ -1,7 +1,7 @@
 // Require selenium for checking out
 const {Builder, By, Capabilities, Key, until} = require('selenium-webdriver')
 // Import the vault for password/username
-var VAULT = require('../config/vault.json')
+var VAULT = require('../../config/vault.json')
 
 // Class to sleep execution
 function sleep(ms) {
