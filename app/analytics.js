@@ -39,20 +39,20 @@ class SQLInterface {
 	// The order of the columns goes as follows:
 	// A: ${DATE}, B: ${TOTAL REVENUE}, E: ${TOTAL SPENDING}, H: ${TOTAL PROFIT}, P: ${TOTAL VENMO}, T: ${TOTAL SQUARE}
 	getFinancials(callback) {
-		// Get the current day for which to update
-		let currDay = new Date();
-		currDay = currDay.getFullYear() + '-' + (currDay.getMonth() + 1) + '-' + currDay.getDate()
 		// Perform a MySQL query on the financials table to get the row of financial data
-		this.con.query('SELECT profit,revenue,expenditures,venmo,card FROM financials WHERE currDay="' + currDay + '" LIMIT 1', (err, results) => {
+		this.con.query('SELECT profit,revenue,expenditures,venmo,card,day FROM financials WHERE googlesheets=0', (err, results) => {
 			// If there was an error, return it
 			if (err) { console.log(err); return }
 			// If there isn't any data for the day, then do nothing
 			if (results.length > 0) {
 				// Otherwise, change the financials into the cell format
-				let cells = [[currDay, results[0]['revenue'], undefined, undefined, results[0]['expenditures'], undefined, undefined, results[0]['profit'], undefined, undefined, undefined, undefined, undefined, undefined, results[0]['venmo'], undefined, undefined, undefined, undefined, results[0]['card']]]
+				let cells = []
+				for (let i = 0; i < results.length; i++) {
+					cells.push([results[0]['day'], results[0]['revenue'], undefined, undefined, results[0]['expenditures'], undefined, undefined, results[0]['profit'], undefined, undefined, undefined, undefined, undefined, undefined, results[0]['venmo'], undefined, undefined, undefined, undefined, results[0]['card']])
+				}
 				callback(cells)
 			} else {
-				console.log('Tried to update financials, but no data for ' + currDay + '.')
+				console.log('Tried to update financials, but no un-financed data.')
 				callback(undefined)
 			}
 		})
@@ -66,7 +66,7 @@ class SQLInterface {
 		let currDay = new Date();
 		currDay = currDay.getFullYear() + '-' + (currDay.getMonth() + 1) + '-' + currDay.getDate()
 		// Perform a MySQL query on the financials table to get the row of financial data
-		this.con.query('SELECT profit,revenue,expenditures,venmo,card FROM financialorders WHERE day="' + currDay + '" AND googlesheets=0', (err, results) => {
+		this.con.query('SELECT profit,revenue,expenditures,venmo,card,day FROM financialorders WHERE googlesheets=0', (err, results) => {
 			// If there was an error, return
 			if (err) { console.log(err); return }
 			// If there isn't any data for the day, then do nothing
@@ -75,7 +75,7 @@ class SQLInterface {
 				let cells = []
 				// Iterate through the results and build a row for each (each one is an order)
 				for (let i = 0; i < results.length; i++) {
-					cells.push([currDay, results[i]['revenue'], undefined, undefined, results[i]['expenditures'], undefined, undefined, results[i]['profit'], undefined, undefined, undefined, undefined, undefined, undefined, results[i]['venmo'], undefined, undefined, undefined, undefined, results[0]['card']])
+					cells.push([results[i]['day'], results[i]['revenue'], undefined, undefined, results[i]['expenditures'], undefined, undefined, results[i]['profit'], undefined, undefined, undefined, undefined, undefined, undefined, results[i]['venmo'], undefined, undefined, undefined, undefined, results[0]['card']])
 				}
 				callback(cells)
 			}
@@ -85,11 +85,8 @@ class SQLInterface {
 	// Function which pulls the data for student ID orders to enter into the student ID Google Sheet. Again, called
 	// at the same time as the other GetFinancials functions.
 	getStudentIDFinancials(callback) {
-		// Get the current day for which to pull the financials
-		let currDay = new Date();
-		currDay = currDay.getFullYear() + '-' + (currDay.getMonth() + 1) + '-' + currDay.getDate()
 		// Perform a MySQL query on the financials table to get the row of financial data
-		this.con.query('SELECT name,amount,phone FROM studentidorders WHERE day="' + currDay + '" AND googlesheets=0', (err, results) => {
+		this.con.query('SELECT name,amount,phone,day FROM studentidorders WHERE googlesheets=0', (err, results) => {
 			// If there was an error, return
 			if (err) { console.log(err); return }
 			// If there isn't any data for the day, then do nothing
@@ -98,7 +95,7 @@ class SQLInterface {
 				let cells = []
 				// Iterate through the results and build a row for each (each one is an order)
 				for (let i = 0; i < results.length; i++) {
-					cells.push([currDay, results[i]['name'], results[i]['amount'], undefined, undefined, results[i]['phone']])
+					cells.push([results[i]['day'], results[i]['name'], results[i]['amount'], undefined, undefined, results[i]['phone']])
 				}
 				callback(cells)
 			}
@@ -108,11 +105,8 @@ class SQLInterface {
 	// Function which pulls the data for student ID orders to enter into the student ID Google Sheet. Again, called
 	// at the same time as the other GetFinancials functions.
 	getVenmoFinancials(callback) {
-		// Get the current day for which to pull the financials
-		let currDay = new Date();
-		currDay = currDay.getFullYear() + '-' + (currDay.getMonth() + 1) + '-' + currDay.getDate()
 		// Perform a MySQL query on the financials table to get the row of financial data
-		this.con.query('SELECT name,amount,phone FROM venmoorders WHERE googlesheets=0', (err, results) => {
+		this.con.query('SELECT name,amount,phone,day FROM venmoorders WHERE googlesheets=0', (err, results) => {
 			// If there was an error, return
 			if (err) { console.log(err); return }
 			// If there isn't any data for the day, then do nothing
@@ -121,7 +115,7 @@ class SQLInterface {
 				let cells = []
 				// Iterate through the results and build a row for each (each one is an order)
 				for (let i = 0; i < results.length; i++) {
-					cells.push([currDay, results[i]['name'], results[i]['amount'], undefined, undefined, results[i]['phone']])
+					cells.push([results[i]['day'], results[i]['name'], results[i]['amount'], undefined, undefined, results[i]['phone']])
 				}
 				callback(cells)
 			}

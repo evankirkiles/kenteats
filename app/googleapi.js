@@ -115,16 +115,17 @@ function fillFullDayBookkeeping(auth, callback, data) {
   }, (err, result) => {
     if (err) return console.log('The API returned an error: ' + err);
     // Get the current day in the format it is put in the google sheet
-    let currDay = new Date();
-    currDay = (currDay.getMonth() + 1) + '/' + currDay.getDate() + '/' +currDay.getFullYear() 
+    let firstDay = data[0][0].split('-')
+    firstDay = firstDay[1] + '/' + firstDay[2] + '/' + firstDay[0]
 
     // Format the range to not add duplicate days
     let range
-    if (result.data.values.length[result.data.values.length-1] == currDay) {
-      range = 'Sheet1!A' + (result.data.values.length) + ':T'
+    if (result.data.values[result.data.values.length-1] == firstday) {
+      range = 'Sheet1!A' + (result.data.values.length) + ':T' + (result.data.values.length + data.length - 1)
     } else {
-      range = 'Sheet1!A' + (result.data.values.length + 1) + ':T'
+      range = 'Sheet1!A' + (result.data.values.length + 1) + ':T' + (result.data.values.length + data.length)
     }
+
     // With the range in hand, use the data to perform another query which updates the spreadsheet
     sheets.spreadsheets.values.update({
       spreadsheetId: '1Gxg4E_WcXnN-x21fIA3yr3msZ1XPEZm-RW4FoeKBRTg',
