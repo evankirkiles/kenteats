@@ -43,7 +43,7 @@ class SQLInterface {
 		let currDay = new Date();
 		currDay = currDay.getFullYear() + '-' + (currDay.getMonth() + 1) + '-' + currDay.getDate()
 		// Perform a MySQL query on the financials table to get the row of financial data
-		this.con.query('SELECT profit,revenue,expenditures,venmo,card FROM financials WHERE day="' + currDay + '" LIMIT 1', (err, results) => {
+		this.con.query('SELECT profit,revenue,expenditures,venmo,card FROM financials WHERE currDay="' + currDay + '" LIMIT 1', (err, results) => {
 			// If there was an error, return it
 			if (err) { console.log(err); return }
 			// If there isn't any data for the day, then do nothing
@@ -112,7 +112,7 @@ class SQLInterface {
 		let currDay = new Date();
 		currDay = currDay.getFullYear() + '-' + (currDay.getMonth() + 1) + '-' + currDay.getDate()
 		// Perform a MySQL query on the financials table to get the row of financial data
-		this.con.query('SELECT name,amount,phone FROM venmoorders WHERE day="' + currDay + '" AND googlesheets=0', (err, results) => {
+		this.con.query('SELECT name,amount,phone FROM venmoorders WHERE googlesheets=0', (err, results) => {
 			// If there was an error, return
 			if (err) { console.log(err); return }
 			// If there isn't any data for the day, then do nothing
@@ -134,7 +134,7 @@ class SQLInterface {
 		let currDay = new Date();
 		currDay = currDay.getFullYear() + '-' + (currDay.getMonth() + 1) + '-' + currDay.getDate()
 		// Perform the MySQL queries all at once
-		this.con.query('UPDATE ' + type + ' SET googlesheets=1 WHERE day="' + currDay + '"')
+		this.con.query('UPDATE ' + type + ' SET googlesheets=1')
 	}
 
 	// Pulls the coupons from the MySQL database for use in building the receipts (coupons will be applied in get receipts function).
