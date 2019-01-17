@@ -408,7 +408,7 @@ function chatBot(req, res) {
 
 											// Add a flat X$ to the coupon field off
 											data[i][21][2] = VAULT.deals.referrals.referredtoval
-											data[i][20][1] = (parseFloat(messages[i][20][1].replace('$', '')) - parseFloat(VAULT.deals.referrals.referredtoval)).toFixed(2)
+											data[i][20][1] = (parseFloat(data[i][20][1].replace('$', '')) - parseFloat(VAULT.deals.referrals.referredtoval)).toFixed(2)
 											client.messages.create({
 												body: 'You saved $' + VAULT.deals.referrals.referredtoval + ' by being referred.',
 												to: number,
