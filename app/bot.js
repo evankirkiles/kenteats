@@ -447,7 +447,7 @@ function chatBot(req, res) {
 												}
 											}
 										})
-								}
+								})
 
 							} else {
 								// Update the receipt database
