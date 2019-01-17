@@ -128,6 +128,70 @@ class SQLInterface {
 		this.con.query('UPDATE ' + type + ' SET googlesheets=1')
 	}
 
+	// Pulls the usedreferral column from the useranalytics database for the given phone number, which is true or false
+	getReferralAvailability(phone, callback) {
+		// Perform the MySQL query on the analytics table
+		this.con.query('SELECT usedreferral,referredby FROM useranalytics WHERE phone="' + phone + '" LIMIT 1', (err, results) => {
+			// If there was an error, return
+			if (err) { console.log(err); return }
+			// Otherwise return a boolean of the availability
+			callback(VAULT.deals.referrals.active && results[0]['usedreferral'] == 0 && results[0]['referredby'] != '-', results[0]['referredby'])
+		})
+	}
+
+	// Sets the referral number for a user
+	setReferralNumber(for, to, callback) {
+		// Perform the MySQL query on the analytics table
+		this.con.query('UPDATE useranalytics SET `referredby`="' + to + '" WHERE phone="' + for + '"', (err, results) => {
+			// If there was an error, return
+			if (err) { console.log(err); return }
+			callback()
+		})
+	}
+
+	// Pulls the numreferred column from the useranalytics database for the given phone number.
+	getNumReferrals(phone, callback) {
+		// Perform the MySQL query
+		this.con.query('SELECT numreferred FROM useranalytics WHERE phone="' + phone + '" LIMIT 1', (err, results) => {
+			// If there was an error, return
+			if (err) { console.log(err); return }
+			// Otherwise return a boolean of the availability
+			callback(results[0]['numreferred'])
+		})
+	}
+
+	// 'Refers' someone by incrementing 1's numreferrals and setting 2's usedreferral to 1
+	performReferral(num1, referralsout, callback) {
+		// Perform the two successive MySQL queries
+		this.con.query('UPDATE useranalytics SET usedreferral=1 WHERE phone="' + num2 + '"', (err, results) => {
+			// If there was an error, return
+			if (err) { console.log(err); return }
+			if (!referralsout) {
+				this.con.query('UPDATE useranalytics SET `numreferred`=`numreferred`+1 WHERE phone="' + num1 + '"', (err, results) => {
+					// If there was an error, return
+					if (err) { console.log(err); return }
+					// Otherwise callback
+					callback()
+				})
+			} else {
+				callback()
+			}
+		})
+	}
+
+	// Adds credit to a user's analytics account to be used in place of coupons.
+	// THE AMOUNT PARAMETER SHOULD BE A STRING
+	giveCredit(phone, amount, callback) {
+		// Simply add the amount to the specific cell in the database.
+		this.con.query('UPDATE useranalytics SET `storedcredit`=`storedcredit`+' + amount + ' WHERE phone="' + phone + '"', (err, results) => {
+			// If there was an error, return
+			if (err) { console.log(err); return }
+			// Otherwise log the success
+			console.log('Added $' + amount + ' to the credit of ' + phone + '.')
+			callback()
+		})
+	}
+
 	// Pulls the coupons from the MySQL database for use in building the receipts (coupons will be applied in get receipts function).
 	// Can also be used to check validity of coupons or view complete list of coupons as well.
 	getCoupons(callback) {
