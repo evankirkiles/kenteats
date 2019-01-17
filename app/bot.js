@@ -210,6 +210,8 @@ function chatBot(req, res) {
 					announcementHolder = ''
 				}
 			} 
+
+			return
 		}
 
 
