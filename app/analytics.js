@@ -140,9 +140,9 @@ class SQLInterface {
 	}
 
 	// Sets the referral number for a user
-	setReferralNumber(for, to, callback) {
+	setReferralNumber(p_for, p_to, callback) {
 		// Perform the MySQL query on the analytics table
-		this.con.query('UPDATE useranalytics SET `referredby`="' + to + '" WHERE phone="' + for + '"', (err, results) => {
+		this.con.query('UPDATE useranalytics SET `referredby`="' + p_to + '" WHERE phone="' + p_for + '"', (err, results) => {
 			// If there was an error, return
 			if (err) { console.log(err); return }
 			callback()
