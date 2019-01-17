@@ -161,7 +161,7 @@ class SQLInterface {
 	}
 
 	// 'Refers' someone by incrementing 1's numreferrals and setting 2's usedreferral to 1
-	performReferral(num1, referralsout, callback) {
+	performReferral(num1, num2, referralsout, callback) {
 		// Perform the two successive MySQL queries
 		this.con.query('UPDATE useranalytics SET usedreferral=1 WHERE phone="' + num2 + '"', (err, results) => {
 			// If there was an error, return
