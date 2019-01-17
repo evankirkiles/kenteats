@@ -397,12 +397,12 @@ function chatBot(req, res) {
 								database.getNumReferrals(referrer, (numrefs) => {
 									if (numrefs < VAULT.deals.referrals.maxreferrals || numrefs < 0) {
 										// If valid, then perform the referral
-										database.performReferral(referree, req.body.From, () => {
+										database.performReferral(referrer, req.body.From, () => {
 											// Give credit to the referree and tell them that the person referred them
-											database.giveCredit(referree, VAULT.deals.referrals.referredtoval, () => {
+											database.giveCredit(referrer, VAULT.deals.referrals.referredtoval, () => {
 												client.messages.create({
 													body: 'You received $' + VAULT.deals.referrals.referredtoval + ' in credit from referring ' + req.body.From + '.',
-													to: referree,
+													to: referrer,
 													from: '+12038946844'
 												})
 											})
