@@ -112,6 +112,55 @@ function announce(message, database, twiml, res) {
 	})
 }
 
+// Function for texting a receipt
+function textReceipt(data, database, req, name, number) {
+	// Update the receipt database
+	database.processReceipt(data, currentDayOrders, req.body.From == '+18609467150', (returned) => {})
+
+	// If name is specified, check it against each data
+	// if ((name == undefined || data[i][0][0].toLowerCase().indexOf(name.toLowerCase()) > -1) && req.body.From != '+18609467150') {
+	if ((name == undefined || data[0][0].toLowerCase().indexOf(name.toLowerCase()) > -1)) {
+		// Do some cleanup on the receipts and then send the normalized messages to their corresponding recipients
+		client.messages.create({
+			body: googleapi.receiptToString(data, false),
+			to: number,
+			from: '+12038946844'
+		})
+		// If the user used a coupon, then also send the information about the coupon
+		if (data[21][4]) {
+			// This handles both credit and coupons, so swap between them
+			if (data[21][0].toLowerCase().trim() == 'credit') {
+				database.getCredit(number, (cred) => {
+					client.messages.create({
+						body: 'You used $' + data[21][1].toFixed(2) + ' of credit. You have $' + (cred - data[21][1]).toFixed(2) + ' of credit left.',
+						to: number,
+						from: '+12038946844'
+					})
+					// Use the credit in the database
+					database.takeCredit(data[21][1], number)
+				})
+			} else {
+				// Coupons
+				client.messages.create({
+					body: 'You used coupon "' + data[21][0] + '" to save $' + data[21][1].toFixed(2) + '.',
+					to: number,
+					from: '+12038946844'
+				})
+				// Also decrement the uses in the database
+				database.useCoupon(data[21][0], data[0])
+			}
+		}
+		// If the payment method is Venmo, then also send a Venmo payment request
+		if (data[10][0].toLowerCase() == 'venmo') {
+			client.messages.create({
+				body: 'Pay here: https://venmo.com/Brady_McGowan?txn=pay&amount=' + (parseFloat(data[20][1].replace('$','')) + VAULT.deliveryfee - 5).toFixed(2),
+				to: number,
+				from: '+12038946844'
+			})
+		}
+	}
+}
+
 // Entire chatbot function
 function chatBot(req, res) {
 	const twiml = new MessagingResponse()
@@ -396,7 +445,7 @@ function chatBot(req, res) {
 								// Check how many referrals the person has left
 								database.getNumReferrals(referrer, (numrefs) => {
 										// If valid, then perform the referral
-										database.performReferral(referrer, req.body.From, (numrefs < VAULT.deals.referrals.maxreferrals || numrefs < 0), () => {
+										database.performReferral(referrer, req.body.From, !(numrefs < VAULT.deals.referrals.maxreferrals || numrefs < 0), () => {
 											// Give credit to the referree and tell them that the person referred them
 											database.giveCredit(referrer, VAULT.deals.referrals.referredtoval, () => {
 												client.messages.create({
@@ -408,121 +457,23 @@ function chatBot(req, res) {
 
 											// Add a flat X$ to the coupon field off
 											data[i][21][2] = VAULT.deals.referrals.referredtoval
-											data[i][20][1] = (parseFloat(data[i][20][1].replace('$', '')) - parseFloat(VAULT.deals.referrals.referredtoval)).toFixed(2)
+											data[i][20][1] = '$' + (parseFloat(data[i][20][1].replace('$', '')) - parseFloat(VAULT.deals.referrals.referredtoval)).toFixed(2)
+											// Text the receipts
+											textReceipt(data[i], database, req, name, number)
+											// Add a message about how much was saved from referral
 											client.messages.create({
 												body: 'You saved $' + VAULT.deals.referrals.referredtoval + ' by being referred.',
 												to: number,
 												from: '+12038946844'
 											})
-
-											// Update the receipt database
-											database.processReceipt(data[i], currentDayOrders, req.body.From == '+18609467150', (returned) => {})
-
-											// If name is specified, check it against each data
-											// if ((name == undefined || data[i][0][0].toLowerCase().indexOf(name.toLowerCase()) > -1) && req.body.From != '+18609467150') {
-											if ((name == undefined || data[i][0][0].toLowerCase().indexOf(name.toLowerCase()) > -1)) {
-												// Do some cleanup on the receipts and then send the normalized messages to their corresponding recipients
-												client.messages.create({
-													body: googleapi.receiptToString(data[i], false),
-													to: number,
-													from: '+12038946844'
-												})
-												// If the user used a coupon, then also send the information about the coupon
-												if (data[i][21][4]) {
-													client.messages.create({
-														body: 'You used coupon "' + data[i][21][0] + '" to save $' + data[i][21][1].toFixed(2) + '.',
-														to: number,
-														from: '+12038946844'
-													})
-													// Also decrement the uses in the database
-													database.useCoupon(data[i][21][0], data[i][0])
-												}
-												// If the payment method is Venmo, then also send a Venmo payment request
-												if (data[i][10][0].toLowerCase() == 'venmo') {
-													client.messages.create({
-														body: 'Pay here: https://venmo.com/Brady_McGowan?txn=pay&amount=' + (parseFloat(data[i][20][1].replace('$','')) + VAULT.deliveryfee - 5).toFixed(2),
-														to: number,
-														from: '+12038946844'
-													})
-												}
-											}
 										})
 								})
-
 							} else {
-								// Update the receipt database
-								database.processReceipt(data[i], currentDayOrders, req.body.From == '+18609467150', (returned) => {})
-
-								// If name is specified, check it against each data
-								if ((name == undefined || data[i][0][0].toLowerCase().indexOf(name.toLowerCase()) > -1) && req.body.From != '+18609467150') {
-									// Do some cleanup on the receipts and then send the normalized messages to their corresponding recipients
-									client.messages.create({
-										body: googleapi.receiptToString(data[i], false),
-										to: number,
-										from: '+12038946844'
-									})
-									// If the user used a coupon, then also send the information about the coupon
-									if (data[i][21][4]) {
-										client.messages.create({
-											body: 'You used coupon "' + data[i][21][0] + '" to save $' + data[i][21][1].toFixed(2) + '.',
-											to: number,
-											from: '+12038946844'
-										})
-										// Also decrement the uses in the database
-										database.useCoupon(data[i][21][0], data[i][0])
-									}
-									// If the payment method is Venmo, then also send a Venmo payment request
-									if (data[i][10][0].toLowerCase() == 'venmo') {
-										client.messages.create({
-											body: 'Pay here: https://venmo.com/Brady_McGowan?txn=pay&amount=' + (parseFloat(data[i][20][1].replace('$','')) + VAULT.deliveryfee - 5).toFixed(2),
-											to: number,
-											from: '+12038946844'
-										})
-									}
-								}
+								// Text the receipts
+								textReceipt(data[i], database, req, name, number)
 							}
 						})
-
-						
-
-
-					// // If not, then add credit to both the numbers' accounts: 1$ to the referred, and 1$ to the person who referred them
-					// if (availability) {
-					// 	// Get the other user's number as simply all the numbers in the initial message
-					// 	let referree = '+1' + req.body.Body.replace(/\D+/g, '')
-					// 	database.getNumReferrals(referree, (numrefers) => {
-					// 		// Check if the number has done the maximum number of referrals
-					// 		if (numrefers < VAULT.deals.referrals.maxreferrals) {
-					// 			// If valid, then perform the referral
-					// 			database.performReferral(referree, req.body.From, () => {
-					// 				// Give credit to the referree and tell them that the person referred them
-					// 				database.giveCredit(referree, VAULT.deals.referrals.referredtoval, () => {
-					// 					client.messages.create({
-					// 						body: 'You received $' + VAULT.deals.referrals.referredtoval + ' in credit from referring ' + req.body.From + '. Referrals left: ' + (VAULT.deals.referrals.maxreferrals - numrefers),
-					// 						to: referree,
-					// 						from: '+12038946844'
-					// 					})
-					// 				})
-					// 			})
-								
-					// 		}
-					// 		// Always update the credit of the person who got referred as well.
-					// 		database.giveCredit(req.body.From, VAULT.deals.referrals.referredbyval, () => {})
-					// 		// Notify the user of their participation
-					// 		twiml.message('You have received $' + VAULT.deals.referrals.referredbyval + ' in credit.')
-					// 		// Add a content accepted header and send
-					// 		res.writeHead(200, { 'Content-Type': 'text/xml' })
-					// 		res.end(twiml.toString())
-					// 	})
-					// } else {
-					// 	// Notify the user of their ineligibility
-					// 	twiml.message('You have already used your referred-by token.')
-					// 	// Add a content accepted header and send
-					// 	res.writeHead(200, { 'Content-Type': 'text/xml' })
-					// 	res.end(twiml.toString())
-					// }
-
-							sentAMessage = true
+						sentAMessage = true
 					}
 
 					// Log this action to console and notify sender
@@ -756,7 +707,7 @@ function chatBot(req, res) {
 		// Usage: 'referred 8609467150'
 		} else if (req.body.Body.toLowerCase().indexOf('refer') > -1) {
 			// Make sure that the referral system is currently active right now
-			if (VAULT.deals.referrals) {
+			if (VAULT.deals.referrals.active) {
 				// Check if the user has already done their referral
 				database.getReferralAvailability(req.body.From, (availability) => {
 					// If they have, then notify them. Otherwise, set the phone number of who referred them
@@ -784,6 +735,19 @@ function chatBot(req, res) {
 				res.writeHead(200, { 'Content-Type': 'text/xml' })
 				res.end(twiml.toString())
 			}
+
+		// CREDIT COMMAND
+		// Checks how much credit a user has and returns it.
+		// Usage: 'credit'
+		} else if (req.body.Body.toLowerCase().indexOf('credit') > -1) {
+			// Perform the MySQL request to get the credit amount
+			database.getCredit(req.body.From, (num) => {
+				// Notify user that referral code system is not active at the moment
+				twiml.message('You currently have $' + parseFloat(num).toFixed(2) + ' in credit. To use credit, type CREDIT into the coupon field on your next order.')
+				// Add a content accepted header and send
+				res.writeHead(200, { 'Content-Type': 'text/xml' })
+				res.end(twiml.toString())
+			})
 
 		// EVERYTHING ELSE	
 		} else {

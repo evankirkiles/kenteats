@@ -297,8 +297,10 @@ function getCoupons(sheets, callback) {
       // Perform a MySQL query to validate coupons
       let database = new SQLInterface()
       database.getCoupons((data) => {
+        let numCredits = 0
         // Iterate through the coupon codes and validate ones that match a database code
         for (let i = 0; i < couponCodes.length; i++) {
+          if (couponCodes[i][0].toLowerCase().trim() == 'credit') { numCredits++ }
           // Iterate through the database coupons themelves to check the code
           for (let j = 0; j < data.length; j++) {
             if (couponCodes[i][0] ==  data[j]['code']) {
@@ -314,8 +316,30 @@ function getCoupons(sheets, callback) {
           }
         }
 
+        let finished = true
+        // Do a final iteration over the coupons to check for credit requests
+        for (let i = 0; i < couponCodes.length; i++) {
+          if (couponCodes[i][0].toLowerCase().trim() == 'credit') {
+            finished = false
+            // Get the credit and put the maximum value into the coupon
+            database.getCredit('+1'+rows[i][0].replace(/\D+/g, ''), (credit) => {
+              couponCodes[i][1] = credit
+              couponCodes[i][2] = false
+              couponCodes[i][3] = 'TOTALPRICE'
+              couponCodes[i][4] = true
+
+              numCredits--
+              if (numCredits == 0) {
+                callback(couponCodes)
+              }
+            })
+          }
+        }
+
         // Callback with the coupon codes
-        callback(couponCodes)
+        if (finished) {
+          callback(couponCodes)
+        }
       })
     })
 }

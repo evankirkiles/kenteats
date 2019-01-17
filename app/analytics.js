@@ -167,7 +167,7 @@ class SQLInterface {
 			// If there was an error, return
 			if (err) { console.log(err); return }
 			if (!referralsout) {
-				this.con.query('UPDATE useranalytics SET `numreferred`=`numreferred`+1 WHERE phone="' + num1 + '"', (err, results) => {
+				this.con.query('UPDATE useranalytics SET numreferred=numreferred+1 WHERE phone="' + num1 + '"', (err, results) => {
 					// If there was an error, return
 					if (err) { console.log(err); return }
 					// Otherwise callback
@@ -218,6 +218,26 @@ class SQLInterface {
 					console.log('Coupon "' + code + '" used by ' + name)
 				})
 			}
+		})
+	}
+
+	// Takes money out of someone's credit.
+	takeCredit(amount, phone) {
+		// Perform the MySQL query on the analytics table
+		this.con.query('UPDATE useranalytics SET `storedcredit`=`storedcredit`-' + amount.toFixed(2) + ' WHERE phone="' + phone + '"', (err, results) => {
+			// If there was an error, log it
+			if (err) { console.log(err); return err }
+		})
+	}
+
+	// Pulls the credit of a user from the database
+	getCredit(phone, callback) {
+		// Perform the MySQL query on the useranalytics table
+		this.con.query('SELECT storedcredit FROM useranalytics WHERE phone="' + phone + '"', (err, results) => {
+			// If there was an error, return
+			if (err) { console.log(err); return }
+			// Otherwise return the stored credit
+			callback(results[0]['storedcredit'])
 		})
 	}
 
