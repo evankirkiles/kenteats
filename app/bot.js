@@ -420,7 +420,8 @@ function chatBot(req, res) {
 											database.processReceipt(data[i], currentDayOrders, req.body.From == '+18609467150', (returned) => {})
 
 											// If name is specified, check it against each data
-											if ((name == undefined || data[i][0][0].toLowerCase().indexOf(name.toLowerCase()) > -1) && req.body.From != '+18609467150') {
+											// if ((name == undefined || data[i][0][0].toLowerCase().indexOf(name.toLowerCase()) > -1) && req.body.From != '+18609467150') {
+											if ((name == undefined || data[i][0][0].toLowerCase().indexOf(name.toLowerCase()) > -1)) {
 												// Do some cleanup on the receipts and then send the normalized messages to their corresponding recipients
 												client.messages.create({
 													body: googleapi.receiptToString(data[i], false),
