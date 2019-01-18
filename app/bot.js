@@ -115,12 +115,10 @@ function announce(message, database, twiml, res) {
 // Function for texting a receipt
 function textReceipt(data, database, req, name, number) {
 	// Update the receipt database
-	//database.processReceipt(data, currentDayOrders, (VAULT.evancansendreceipts || !req.body.From == '+18609467150'), (returned) => {})
-	database.processReceipt(data, currentDayOrders, false, (returned) => {})
+	database.processReceipt(data, currentDayOrders, (!VAULT.evancansendreceipts && !(req.body.From == '+18609467150')), (returned) => {})
 
 	// If name is specified, check it against each data
-	// if ((name == undefined || data[i][0][0].toLowerCase().indexOf(name.toLowerCase()) > -1) && (req.body.From != '+18609467150' || VAULT.evancansendreceipts)) {
-	if ((name == undefined || data[i][0][0].toLowerCase().indexOf(name.toLowerCase()) > -1) && (req.body.From != '+18609467150')) {
+	if ((name == undefined || data[i][0][0].toLowerCase().indexOf(name.toLowerCase()) > -1) && (req.body.From != '+18609467150' || VAULT.evancansendreceipts)) {
 		// Do some cleanup on the receipts and then send the normalized messages to their corresponding recipients
 		client.messages.create({
 			body: googleapi.receiptToString(data, false),
