@@ -135,7 +135,7 @@ class SQLInterface {
 			// If there was an error, return
 			if (err) { console.log(err); return }
 			// Otherwise return a boolean of the availability
-			if (results.length > 1) {
+			if (results.length > 0) {
 				callback(VAULT.deals.referrals.active && results[0]['usedreferral'] == 0 && results[0]['referredby'] != '-', results[0]['referredby'])
 			} else {
 				callback(false, 'asdasd')
