@@ -138,7 +138,7 @@ class SQLInterface {
 			if (results.length > 1) {
 				callback(VAULT.deals.referrals.active && results[0]['usedreferral'] == 0 && results[0]['referredby'] != '-', results[0]['referredby'])
 			} else {
-				return false
+				callback(false, 'asdasd')
 			}
 		})
 	}
