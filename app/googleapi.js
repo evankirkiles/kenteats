@@ -300,7 +300,7 @@ function getCoupons(sheets, callback) {
         let numCredits = 0
         // Iterate through the coupon codes and validate ones that match a database code
         for (let i = 0; i < couponCodes.length; i++) {
-          if (couponCodes[i][0].toLowerCase().trim() == 'credit') { numCredits++ }
+          if (couponCodes[i][0] != undefined && couponCodes[i][0].toLowerCase().trim() == 'credit') { numCredits++ }
           // Iterate through the database coupons themelves to check the code
           for (let j = 0; j < data.length; j++) {
             if (couponCodes[i][0] ==  data[j]['code']) {
@@ -319,7 +319,7 @@ function getCoupons(sheets, callback) {
         let finished = true
         // Do a final iteration over the coupons to check for credit requests
         for (let i = 0; i < couponCodes.length; i++) {
-          if (couponCodes[i][0].toLowerCase().trim() == 'credit') {
+          if (couponCodes[i][0] != undefined && couponCodes[i][0].toLowerCase().trim() == 'credit') {
             finished = false
             // Get the credit and put the maximum value into the coupon
             database.getCredit('+1'+rows[i][0].replace(/\D+/g, ''), (credit) => {
