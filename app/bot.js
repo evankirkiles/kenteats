@@ -182,10 +182,6 @@ function chatBot(req, res) {
 			// Message the user that they are new and send them the link to the order form
 			twiml.message("Welcome to KentEats! If you would like to order, please follow the link to the form:")
 			twiml.message("https://docs.google.com/forms/d/1nC2Hpm0AcTF00_PV5ugyusUHfAM_xb81Xh7hT2Faje0/edit")
-			// Add a content accepted header and send
-			res.writeHead(200, { 'Content-Type': 'text/xml' })
-			res.end(twiml.toString())
-			return
 		}
 
 		// Make sure any announcements being built are terminated with the exit string ("//") if they are nto wanted to send.
