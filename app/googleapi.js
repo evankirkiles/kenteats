@@ -428,31 +428,36 @@ function getReceipts(auth, callback, type) {
           // Add coupon to the receipt information (total)
             //         0     1           2                 3                   4
           // FORMAT: code, value, percentage or no, order or delivery fee, validated
-          messages[i].push(coups[i])
-          // If the coupon is validated, allow the calculations to go through
-          if (coups[i] != undefined && (coups[i][4])) {
-            // Perform total calculations based on the receipt
-            if (coups[i][2]) {
-              if (coups[i][3] == 'DELIVERYFEE') {
-                messages[i][21][1] = coups[i][1] * messages[i][18][1]
+          if (coups[i] == undefined) {
+            messages[i][20][1] = '$' + messages[i][20][1].toFixed(2)
+            messages[i].push(['', 0, false, '', false])
+          } else {
+            messages[i].push(coups[i])
+            // If the coupon is validated, allow the calculations to go through
+            if (coups[i][4]) {
+              // Perform total calculations based on the receipt
+              if (coups[i][2]) {
+                if (coups[i][3] == 'DELIVERYFEE') {
+                  messages[i][21][1] = coups[i][1] * messages[i][18][1]
+                } else {
+                  messages[i][21][1] = coups[i][1] * messages[i][20][1]
+                }
               } else {
-                messages[i][21][1] = coups[i][1] * messages[i][20][1]
+                if (coups[i][3] == 'DELIVERYFEE') {
+                  messages[i][21][1] = Math.min(messages[i][18][1], coups[i][1])
+                } else {
+                  messages[i][21][1] = Math.min(messages[i][20][1], coups[i][1])
+                }
               }
             } else {
-              if (coups[i][3] == 'DELIVERYFEE') {
-                messages[i][21][1] = Math.min(messages[i][18][1], coups[i][1])
-              } else {
-                messages[i][21][1] = Math.min(messages[i][20][1], coups[i][1])
-              }
+              messages[i][21][1] = 0
             }
-          } else {
-            messages[i][21][1] = 0
+            // Do some last calculations on the total
+            messages[i][20][1] -= messages[i][21][1]
+            // Convert the total to a string
+            messages[i][20][1] = '$' + messages[i][20][1].toFixed(2)
+            messages[i].push(parseFloat(messages[i][18][1].replace('$', '')) - messages[i][21][1])
           }
-          // Do some last calculations on the total
-          messages[i][20][1] -= messages[i][21][1]
-          // Convert the total to a string
-          messages[i][20][1] = '$' + messages[i][20][1].toFixed(2)
-          messages[i].push(parseFloat(messages[i][18][1].replace('$', '')) - messages[i][21][1])
         }
 
         // Final step is to check the receipts and recalculate 
