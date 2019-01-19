@@ -429,7 +429,6 @@ function getReceipts(auth, callback, type) {
             //         0     1           2                 3                   4
           // FORMAT: code, value, percentage or no, order or delivery fee, validated
           if (coups[i] == undefined) {
-            messages[i][20][1] = '$' + messages[i][20][1].toFixed(2)
             messages[i].push(['', 0, false, '', false])
           } else {
             messages[i].push(coups[i])
