@@ -605,7 +605,7 @@ function chatBot(req, res) {
 		// MILES COMMANDS
 		// Start and end the miles counter (records for tax deductible)
 		// Usage: 'miles start 12389' or 'miles end 39808'
-		} else if (req.body.Body.toLowerCase().indexOf('miles') > -1 && ) {
+		// } else if (req.body.Body.toLowerCase().indexOf('miles') > -1 && ) {
 
 		// UPDATE FINANCIALS COMMAND
 		// Updates the financials (used to manually do what the scheduled command does)
