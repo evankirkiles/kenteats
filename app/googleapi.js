@@ -430,7 +430,7 @@ function getReceipts(auth, callback, type) {
           // FORMAT: code, value, percentage or no, order or delivery fee, validated
           messages[i].push(coups[i])
           // If the coupon is validated, allow the calculations to go through
-          if (coups[i][4]) {
+          if (coups[i] != undefined && coups[i][4]) {
             // Perform total calculations based on the receipt
             if (coups[i][2]) {
               if (coups[i][3] == 'DELIVERYFEE') {
