@@ -319,7 +319,7 @@ function chatBot(req, res) {
 					// Check the dorm against all receipts. If there is a match, then send the message to that person
 					for (let i = 0; i < data.length; i++) {
 						triedToSend = true
-						if (dorm == undefined || (data[i][11][0] != undefined && data[i][11][0].toLowerCase().indexOf(dorm) > -1) ||  (data[i][12][0] != undefined && data[i][12][0].toLowerCase().indexOf(dorm) > -1)) {
+						if ((dorm == undefined || (data[i][11][0] != undefined && data[i][11][0].toLowerCase().indexOf(dorm) > -1) ||  (data[i][12][0] != undefined && data[i][12][0].toLowerCase().indexOf(dorm) > -1)) && data[i][15][0] != undefined) {
 							// Get the number without dashes or parentheses or spaces and add +1
 							let number = '+1' + data[i][15][0].replace(/\D+/g, '')
 							// Send the message now

@@ -489,7 +489,7 @@ class SQLInterface {
 				// Only update for items which have a price
 				updateObj[receipt[i][1]].orders += 1
 				totalOrders += 1
-				updateObj[receipt[i][1]].spending += parseFloat(receipt[i][2]) * 1.06
+				updateObj[receipt[i][1]].spending += (parseFloat(receipt[i][2]) == NaN ? 0 : parseFloat(receipt[i][2])) * 1.06
 			}
 		}
 
