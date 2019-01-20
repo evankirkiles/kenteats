@@ -442,7 +442,7 @@ function chatBot(req, res) {
 								// Check how many referrals the person has left
 								database.getNumReferrals(referrer, (numrefs) => {
 										// If valid, then perform the referral
-										database.performReferral(referrer, req.body.From, !(numrefs < VAULT.deals.referrals.maxreferrals || VAULT.deals.referrals.maxreferrals < 0), () => {
+										database.performReferral(referrer, number, !(numrefs < VAULT.deals.referrals.maxreferrals || VAULT.deals.referrals.maxreferrals < 0), () => {
 											// Give credit to the referree and tell them that the person referred them
 											database.giveCredit(referrer, VAULT.deals.referrals.referredtoval, () => {
 												client.messages.create({

@@ -42,7 +42,7 @@ let database = new SQLInterface()
 // })
 
 // Get the receipts for the specified time to retrieve phone numbers, dorm, etc.
-googleapi.runAuthorizeFunction(googleapi.getReceipts, 'Breakfast', (data) => {
+googleapi.runAuthorizeFunction(googleapi.getReceipts, 'Afternoon', (data) => {
 	// Get the dorm from the first section between split
 	let currentDayOrders = 0
 	for (let i = 0; i < data.length; i++) {

@@ -402,7 +402,7 @@ class SQLInterface {
 								returnString += 'studentid`=`studentid`+' + parseFloat(receipt[20][1].replace('$', '')).toFixed(2)
 							}
 							// Finish the return string
-							returnString += ' WHERE day="' + currDay + '"'
+							returnString += ',`googlesheets`=0 WHERE day="' + currDay + '"'
 							// Finally, run the query
 							this.con.query(returnString)
 						})
@@ -431,7 +431,7 @@ class SQLInterface {
 						}
 
 						// Finish the return string
-						returnString += ' WHERE day="' + currDay + '"'
+						returnString += ',`googlesheets`=0 WHERE day="' + currDay + '"'
 						// Finally, run the query
 						this.con.query(returnString)
 					})
