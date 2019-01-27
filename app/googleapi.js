@@ -113,7 +113,7 @@ function pushMiles(auth, callback, data) {
   }, (err, result) => {
     if (err) return console.log('The API returned an error: ' + err);
     // Find the range to be updated 
-    let range = 'Mileage!A' + (result.data.values.length) + ':E'
+    let range = 'Mileage!A' + (result.data.values.length + 1) + ':E'
 
     // With the range in hand, perform another query to update the spreadsheet
     sheets.spreadsheets.values.update({
@@ -121,7 +121,7 @@ function pushMiles(auth, callback, data) {
       range: range,
       valueInputOption: 'USER_ENTERED',
       resource: {
-        values: [data['starttime'].replace('-', '/'), data['start'], undefined, data['endtime'].replace('-', '/'), data['end']]
+        values: [[data['starttime'], data['start'], undefined, data['endtime'], data['end']]]
       }
     }, (err, result) => {
       if (err) return console.log('The API returned an error: ' + err)

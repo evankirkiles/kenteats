@@ -578,7 +578,7 @@ function chatBot(req, res) {
 		// MILES COMMANDS
 		// Start and end the miles counter (records for tax deductible)
 		// Usage: 'miles start 12389' or 'miles end 39808'
-		} else if (req.body.Body.toLowerCase().indexOf('miles') && req.body.Body.trim().split(' ').length == 3) {
+		} else if (req.body.Body.toLowerCase().indexOf('mile') > -1) {
 			// Validate user
 			if (VAULT.twilio.allowedNumbers.indexOf(req.body.From) > -1) {
 				// Make sure that there is a valid number
@@ -596,7 +596,7 @@ function chatBot(req, res) {
 							// Push it to MySQL database
 							database.pushMiles(mileHolder, () => {
 								// Once in the MySQL database, push it to the Google Sheets
-								googleapi.runAuthorizeFunction(googleApi.pushMiles, mileHolder, () => {
+								googleapi.runAuthorizeFunction(googleapi.pushMiles, mileHolder, () => {
 									// Tell Brady that the miles were logged
 									twiml.message('Pushed miles to Google Sheets.')
 									// Add a content accepted header
@@ -615,7 +615,7 @@ function chatBot(req, res) {
 						} else {
 							// Otherwise just pull in the data of the start
 							mileHolder['start'] = parseInt(req.body.Body.trim().split(' ')[2])
-							mileHolder['startime'] = getStringDateTime(new Date())
+							mileHolder['starttime'] = getStringDateTime(new Date())
 						}
 					} else {
 						// Simply push the current mile holder object and then clear it
@@ -625,7 +625,7 @@ function chatBot(req, res) {
 						// Push it to MySQL database
 						database.pushMiles(mileHolder, () => {
 							// Once in the MySQL database, push it to the Google Sheets
-							googleapi.runAuthorizeFunction(googleApi.pushMiles, mileHolder, () => {
+							googleapi.runAuthorizeFunction(googleapi.pushMiles, mileHolder, () => {
 								// Tell Brady that the miles were logged
 								twiml.message('Pushed miles to Google Sheets.')
 								// Add a content accepted header
@@ -816,12 +816,10 @@ function getStringDateTime(date) {
     let year = date.getFullYear();
 
     let month = date.getMonth() + 1;
-    month = (month < 10 ? "0" : "") + month;
 
     let day  = date.getDate();
-    day = (day < 10 ? "0" : "") + day;
 
-    return year + "-" + month + "-" + day + " " + hour + ":" + min + ":" + sec;
+    return month + "/" + day + "/" + year + " " + hour + ":" + min + ":" + sec;
 }
 
 // Listen for messages sent to Twilio
