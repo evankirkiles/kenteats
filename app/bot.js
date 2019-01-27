@@ -4,8 +4,6 @@ var VAULT = require('../config/vault.json')
 var googleapi = require('./googleapi')
 // Analytics for user data
 var SQLInterface = require('./analytics').SQLInterface
-// Scheduling of functions for financial updates
-var schedule = require('node-schedule')
 // Twilio / http imports
 const http = require('http')
 const express = require('express')
@@ -24,41 +22,16 @@ let currentDay = undefined
 
 // Announcement placeholder to handle segmented SMS's
 let announcementHolder = ''
+// Miles holder to hold mile start and mile end
+let mileHolder = {
+	'start': '',
+	'starttime': '',
+	'end': '',
+	'endtime': ''
+}
 
 // Keep track of the last updated financial day
 let lastFinanceUpdateDay = undefined
-
-// Schedule the financial trackings to update every day at 9:30 (if they exist)
-// var financialUpdates = schedule.scheduleJob('30 21 * * *', () => {
-// 	// Get the current day
-// 	let currDay = new Date();
-// 	currDay = currDay.getFullYear() + '-' + (currDay.getMonth() + 1) + '-' + currDay.getDate()
-// 	// Check it against the last updated finance day, only continuing if they do not match
-// 	if (lastFinanceUpdateDay != currDay) {
-// 		lastFinanceUpdateDay = currDay
-
-// 		// Run the MySQL query to determine if any data is available
-// 		let financeData = new SQLInterface()
-
-// 		// GETFINANCIAL FUNCTIONS
-// 		// Each querys the MySQL database and uses the data it retrieves to fill their respective Google Sheets
-// 		// Run the MySQL query to determine if any data is available
-		// database.getFinancials((data) => {
-		// 	googleapi.runAuthorizeFunction(googleapi.fillFullDayBookkeeping, data, () => {}) })
-		// database.getSingleOrderFinancials((data) => {
-		// 	googleapi.runAuthorizeFunction(googleapi.fillSingleOrderBookkeeping, data, () => {
-		// 		database.notifyFinancialsUpdated('financialorders')
-		// 	}) })
-		// database.getStudentIDFinancials((data) => {
-		// 	googleapi.runAuthorizeFunction(googleapi.fillStudentIDOrders, data, () => {
-		// 		database.notifyFinancialsUpdated('studentidorders')
-		// 	}) })
-		// database.getVenmoFinancials((data) => {
-		// 	googleapi.runAuthorizeFunction(googleapi.fillVenmoOrders, data, () => {
-		// 		database.notifyFinancialsUpdated('venmoorders')
-		// 	}) })
-// 	}
-// })
 
 // Listen to console input
 var stdin = process.openStdin();
@@ -605,7 +578,72 @@ function chatBot(req, res) {
 		// MILES COMMANDS
 		// Start and end the miles counter (records for tax deductible)
 		// Usage: 'miles start 12389' or 'miles end 39808'
-		// } else if (req.body.Body.toLowerCase().indexOf('miles') > -1 && ) {
+		} else if (req.body.Body.toLowerCase().indexOf('miles') && req.body.Body.trim().split(' ').length == 3) {
+			// Validate user
+			if (VAULT.twilio.allowedNumbers.indexOf(req.body.From) > -1) {
+				// Make sure that there is a valid number
+				if (isNaN(req.body.Body.trim().split(' ')[2])) { 
+					// Add message
+					twiml.message('Could not parse mile number.')
+					// Add a content accepted header
+					res.writeHead(200, { 'Content-Type': 'text/xml' })
+					res.end(twiml.toString())
+				} else {
+					// Check if logging a start or an end
+					if (req.body.Body.toLowerCase().indexOf('start') > -1) {
+						// In the case of a start, create a new row for the MySQL database and push any existing records
+						if (mileHolder['start'] != '') {
+							// Push it to MySQL database
+							database.pushMiles(mileHolder, () => {
+								// Once in the MySQL database, push it to the Google Sheets
+								googleapi.runAuthorizeFunction(googleApi.pushMiles, mileHolder, () => {
+									// Tell Brady that the miles were logged
+									twiml.message('Pushed miles to Google Sheets.')
+									// Add a content accepted header
+									res.writeHead(200, { 'Content-Type': 'text/xml' })
+									res.end(twiml.toString())
+
+									// Clar the mileHolder object
+									mileHolder = {
+										'start': parseInt(req.body.Body.trim().split(' ')[2]),
+										'starttime': getStringDateTime(new Date()),
+										'end': '',
+										'endtime': ''
+									}
+								})
+							})
+						} else {
+							// Otherwise just pull in the data of the start
+							mileHolder['start'] = parseInt(req.body.Body.trim().split(' ')[2])
+							mileHolder['startime'] = getStringDateTime(new Date())
+						}
+					} else {
+						// Simply push the current mile holder object and then clear it
+						mileHolder['end'] = parseInt(req.body.Body.trim().split(' ')[2])
+						mileHolder['endtime'] = getStringDateTime(new Date())
+
+						// Push it to MySQL database
+						database.pushMiles(mileHolder, () => {
+							// Once in the MySQL database, push it to the Google Sheets
+							googleapi.runAuthorizeFunction(googleApi.pushMiles, mileHolder, () => {
+								// Tell Brady that the miles were logged
+								twiml.message('Pushed miles to Google Sheets.')
+								// Add a content accepted header
+								res.writeHead(200, { 'Content-Type': 'text/xml' })
+								res.end(twiml.toString())
+
+								// Clear the mile holder
+								mileHolder = {
+									'start': '',
+									'starttime': '',
+									'end': '',
+									'endtime': ''
+								}
+							})
+						})
+					}
+				}
+			}
 
 		// UPDATE FINANCIALS COMMAND
 		// Updates the financials (used to manually do what the scheduled command does)
@@ -763,6 +801,27 @@ function chatBot(req, res) {
 			}
 		} 
 	})
+}
+
+function getStringDateTime(date) {
+    let hour = date.getHours();
+    hour = (hour < 10 ? "0" : "") + hour;
+
+    let min  = date.getMinutes();
+    min = (min < 10 ? "0" : "") + min;
+
+    let sec  = date.getSeconds();
+    sec = (sec < 10 ? "0" : "") + sec;
+
+    let year = date.getFullYear();
+
+    let month = date.getMonth() + 1;
+    month = (month < 10 ? "0" : "") + month;
+
+    let day  = date.getDate();
+    day = (day < 10 ? "0" : "") + day;
+
+    return year + "-" + month + "-" + day + " " + hour + ":" + min + ":" + sec;
 }
 
 // Listen for messages sent to Twilio
