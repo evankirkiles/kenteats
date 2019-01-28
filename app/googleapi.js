@@ -109,7 +109,7 @@ function pushMiles(auth, callback, data) {
   const sheets = google.sheets({version: 'v4', auth});
   sheets.spreadsheets.values.get({
     spreadsheetId: '1C6uFvnrxGJnNCQjBDocvXVCtt7lbvsBXIdiNuon5uvU',
-    range: 'Mileage!A1:E999',
+    range: 'Mileage!A1:A999',
   }, (err, result) => {
     if (err) return console.log('The API returned an error: ' + err);
     // Find the range to be updated 
