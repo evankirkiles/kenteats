@@ -128,7 +128,7 @@ class SQLInterface {
 	// The database has columns start_time, miles_start, end_time, miles_end, and googlesheets
 	pushMiles(object, callback) {
 	  	// Perform the MySQL query on the miles table
-	  	this.con.query('INSERT INTO miles (`start_time`,`miles_start`,`end_time`,`miles_end`) VALUES ("' + object['startime'] + '",' + object['start'] + ',"' + object['endtime'] + '",' + object['end'] + ')', (err, results) => {
+	  	this.con.query('INSERT INTO miles (`start_time`,`miles_start`,`end_time`,`miles_end`) VALUES ("' + object['starttime'] + '",' + object['start'] + ',"' + object['endtime'] + '",' + object['end'] + ')', (err, results) => {
 	  		// If there was an error, return
 	  		if (err) { console.log(err); return }
 	  		// Otherwise perform callback
