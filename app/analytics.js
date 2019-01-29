@@ -95,7 +95,9 @@ class SQLInterface {
 				let cells = []
 				// Iterate through the results and build a row for each (each one is an order)
 				for (let i = 0; i < results.length; i++) {
-					cells.push([results[i]['day'], results[i]['name'], results[i]['amount'], undefined, undefined, results[i]['phone']])
+					// Reformat the student name to put the first name last
+					let name = results[i]['name'].substr(results[i]['name'].indexOf(' ') + 1) + ', ' + results[i]['name'].substr(0, results[i]['name'].indexOf(' '))
+					cells.push([results[i]['day'], name, results[i]['amount'], undefined, undefined, results[i]['phone']])
 				}
 				callback(cells)
 			}
