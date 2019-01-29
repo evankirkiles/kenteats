@@ -102,6 +102,38 @@ function asdasd(auth) {
 
 module.exports.asdasd = asdasd
 
+/*
+ * Fills in the miles sheet with a row of mile information.
+ */
+function pushMiles(auth, callback, data) {
+  const sheets = google.sheets({version: 'v4', auth});
+  sheets.spreadsheets.values.get({
+    spreadsheetId: '1C6uFvnrxGJnNCQjBDocvXVCtt7lbvsBXIdiNuon5uvU',
+    range: 'Mileage!A1:A999',
+  }, (err, result) => {
+    if (err) return console.log('The API returned an error: ' + err);
+    // Find the range to be updated 
+    let range = 'Mileage!A' + (result.data.values.length + 1) + ':E'
+
+    // With the range in hand, perform another query to update the spreadsheet
+    sheets.spreadsheets.values.update({
+      spreadsheetId: '1C6uFvnrxGJnNCQjBDocvXVCtt7lbvsBXIdiNuon5uvU',
+      range: range,
+      valueInputOption: 'USER_ENTERED',
+      resource: {
+        values: [[data['starttime'], data['start'], undefined, data['endtime'], data['end']]]
+      }
+    }, (err, result) => {
+      if (err) return console.log('The API returned an error: ' + err)
+        // Log the updated miles
+      console.log('Updated mileage log.')
+      callback()
+    })
+  })
+}
+
+module.exports.pushMiles = pushMiles
+
 /**
  * Fills in the bookkeeping sheet with the necessary information at the end of the day. (FULL-DAY ORDER STATISTICS)
  */

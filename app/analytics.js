@@ -124,6 +124,21 @@ class SQLInterface {
 		})
 	}
 
+
+	
+	// Pushes a mileholder object into the MySQL database.
+	// The database has columns start_time, miles_start, end_time, miles_end, and googlesheets
+	pushMiles(object, callback) {
+	  	// Perform the MySQL query on the miles table
+	  	this.con.query('INSERT INTO miles (`start_time`,`miles_start`,`end_time`,`miles_end`) VALUES ("' + object['starttime'] + '",' + object['start'] + ',"' + object['endtime'] + '",' + object['end'] + ')', (err, results) => {
+	  		// If there was an error, return
+	  		if (err) { console.log(err); return }
+	  		// Otherwise perform callback
+	  		callback()
+	  	})
+	}
+
+
 	// Function which is called after the Google Sheets are filled to set the googlesheets columns back to 1.
 	notifyFinancialsUpdated(type, callback) {
 		// Perform the MySQL queries all at once
