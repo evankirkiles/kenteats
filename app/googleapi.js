@@ -565,7 +565,7 @@ function receiptToString(receipt, admin, index) {
     toReturn += "Payment Method: " + receipt[10][0] + (receipt[10][0] == 'Venmo' ? '\nPay to: Brady_McGowan' : '')
   }
   toReturn += "\nLocation: " + (receipt[11][0] != '' && receipt[11][0] != undefined ? receipt[11][0] : receipt[12][0]) + "\nPhone: " + receipt[15][0] +
-                "\nTotal Without Fee: " + receipt[17][1] + "\nFee: $" + receipt[18][1] + (receipt[21][4] ? ("\nCoupon: $" + receipt[21][1].toFixed(2)) : '') + "\nTotal: " + receipt[20][1]
+                "\nTotal Without Fee: " + receipt[17][1] + "\nFee: $" + receipt[18][1] + (receipt[21][4] ? ("\nCoupon: $" + (typeof receipt[21][1] == "number" ? receipt[21][1].toFixed(2) : "idk") ) : '') + "\nTotal: " + receipt[20][1]
   // Finally return this string
   return toReturn
 }
