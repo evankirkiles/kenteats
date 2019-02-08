@@ -26,11 +26,11 @@ let database = new SQLInterface()
 // database.getVenmoFinancials((data) => {
 // 	googleapi.runAuthorizeFunction(googleapi.fillVenmoOrders, data, () => {}) })
 
-// googleapi.runAuthorizeFunction(googleapi.getReceipts, 'Afternoon', (data) => {
-// 	data.map((single) => {
-// 		console.log(googleapi.receiptToString(single))
-// 	})
-// })
+googleapi.runAuthorizeFunction(googleapi.getReceipts, 'Afternoon', (data) => {
+	googleapi.runAuthorizeFunction(googleapi.fillReceiptHistory, data, () => {
+		console.log('done')
+	})
+})
 
 // If it is, return a Twilio message containing all the coupons formatted nicely
 // database.getCoupons((data) => {
@@ -42,7 +42,11 @@ let database = new SQLInterface()
 // })
 
 // Get the receipts for the specified time to retrieve phone numbers, dorm, etc.
-googleapi.runAuthorizeFunction(googleapi.pushMiles, [0], (data) => {
-	// Get the dorm from the first section between split
+// googleapi.runAuthorizeFunction(googleapi.pushMiles, [0], (data) => {
+// 	// Get the dorm from the first section between split
 	
-})
+// })
+
+
+
+

@@ -135,6 +135,48 @@ function pushMiles(auth, callback, data) {
 module.exports.pushMiles = pushMiles
 
 /**
+ * Fills in the receipt history sheet with all the receipt information
+ */
+ function fillReceiptHistory(auth, callback, receipts) {
+  if (receipts == undefined || receipts.size == 0) { return }
+  const sheets = google.sheets({version: 'v4', auth});
+  sheets.spreadsheets.values.get({
+    spreadsheetId: '1ilCB4It_asxRSxpvsfirCOueTjqKhr8yaMhVyxWoH-Q',
+    range: 'Sheet1!A1:A999'
+  }, (err, result) => {
+    if (err) return console.log('The API returned an error: ' + err);
+    // Get the range
+    let range = 'Sheet1!A' + (result.data.values.length) + ':W' + (result.data.values.length + receipts.length - 1)
+
+    // Reformat the receipts to be safe for input
+    for (let i = 0; i < receipts.length; i++) {
+      for (let j = 0; j < 22; j++) {
+        if (Array.isArray(receipts[i][j])) {
+          receipts[i][j] = receipts[i][j].join(' ').trim()
+        }
+      }
+    }
+
+    // With the range in hand, perform the update query
+    sheets.spreadsheets.values.update({
+      spreadsheetId: '1ilCB4It_asxRSxpvsfirCOueTjqKhr8yaMhVyxWoH-Q',
+      range: range,
+      valueInputOption: 'USER_ENTERED',
+      resource: {
+        values: receipts
+      }
+    }, (err, result) => {
+      if (err) { return console.log('The API returned an error: ' + err) }
+      // Log the updated receipts
+      console.log('Added ' + receipts.length + ' receipts to history sheet.')
+      callback()
+    })
+  })
+ }
+
+module.exports.fillReceiptHistory = fillReceiptHistory
+
+/**
  * Fills in the bookkeeping sheet with the necessary information at the end of the day. (FULL-DAY ORDER STATISTICS)
  */
 function fillFullDayBookkeeping(auth, callback, data) {

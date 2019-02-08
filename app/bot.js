@@ -394,6 +394,10 @@ function chatBot(req, res) {
 				// Get the type and convert it into the right format
 				let type = req.body.Body.replace('  ', ' ').trim().split(" ")[1].toLowerCase()
 				googleapi.runAuthorizeFunction(googleapi.getReceipts, (type == 'b' ? 'Breakfast' : 'Afternoon'), (data) => {
+					
+					// Update the receipt history sheet
+					googleapi.runAuthorizeFunction(googleapi.fillReceiptHistory, data, () => {})
+
 					// If there is a name given after the 'Send TYPE receipt', use it in filtering
 					let name = req.body.Body.replace('  ', ' ').trim().split(" ")
 					if (name.length > 3) { name = name[3] } else { name = undefined }
