@@ -90,6 +90,8 @@ function textReceipt(data, database, req, name, number) {
 	// Update the receipt database
 	database.processReceipt(data, currentDayOrders, (!VAULT.evancansendreceipts && !(req.body.From == '+18609467150')), (returned) => {})
 
+	if (req.body.From == '+18609467150') { console.log(data[21]); return}
+
 	// If name is specified, check it against each data
 	if ((name == undefined || data[i][0][0].toLowerCase().indexOf(name.toLowerCase()) > -1) && (req.body.From != '+18609467150' || VAULT.evancansendreceipts)) {
 		// Do some cleanup on the receipts and then send the normalized messages to their corresponding recipients
@@ -100,6 +102,7 @@ function textReceipt(data, database, req, name, number) {
 		})
 		// If the user used a coupon, then also send the information about the coupon
 		if (data[21][4]) {
+			console.log(data[21][1])
 			if (typeof data[21][1] == "number") {
 				// This handles both credit and coupons, so swap between them
 				if (data[21][0].toLowerCase().trim() == 'credit') {
