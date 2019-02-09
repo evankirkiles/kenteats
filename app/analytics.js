@@ -459,6 +459,7 @@ class SQLInterface {
 
 	//  Updates financial table (necessary so don't repeat code much)
 	updateFinancials(receipt, table, number, currDay, returns, callback) {
+		console.log(receipt[22] + ' : ' + receipt[20][1])
 		let expenditures = parseFloat(receipt[20][1].replace('$', '')) - receipt[22]
 		// Otherwise perform check on the size of return, if 0 then row does not exist
 		if (returns.length > 0) {
