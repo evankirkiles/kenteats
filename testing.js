@@ -28,11 +28,7 @@ let database = new SQLInterface()
 
 googleapi.runAuthorizeFunction(googleapi.getReceipts, 'Afternoon', (data) => {
 	data.map((receipt) => {
-		for (let i = 2; i < 10; i++) {
-			if (receipt[i][0] != '#VALUE!' && receipt[i][0] != '#REF!' && receipt[i][2] != '' && receipt[i][1] != 'UNKNOWN') {
-				console.log(receipt[i][1])
-			}
-		}
+		console.log(receipt[15])
 	})
 })
 

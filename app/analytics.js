@@ -295,17 +295,17 @@ class SQLInterface {
 						if (err) { console.log(err); return }
 
 					// Now that new unique row was created with the phone number, update the orders/spending
-					this.con.query(this.interpretOrdersFromReceipt(receipt, table), (err, results) => {
-						// If there was en error, return it
-						if (err) { console.log(err); return }	
-					})
+					// this.con.query(this.interpretOrdersFromReceipt(receipt, table), (err, results) => {
+					// 	// If there was en error, return it
+					// 	if (err) { console.log(err); return }	
+					// })
 				})
 			} else {
 				// Update spending and orders from the receipt
-				this.con.query(this.interpretOrdersFromReceipt(receipt, table), (err, results) => {
-					// If there was en error, return it
-					if (err) { console.log(err); return }	
-				})
+				// this.con.query(this.interpretOrdersFromReceipt(receipt, table), (err, results) => {
+				// 	// If there was en error, return it
+				// 	if (err) { console.log(err); return }	
+				// })
 			}
 		})
 	}
