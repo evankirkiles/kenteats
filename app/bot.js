@@ -420,37 +420,37 @@ function chatBot(req, res) {
 						let number = '+1' + data[i][15][0].replace(/\D+/g, '')
 						// If the user has not yet claimed their referral, do it now and give them X$ off first order
 						database.getReferralAvailability(number, (availability, referrer) => {
-							if (availability) {
-								// Check how many referrals the person has left
-								database.getNumReferrals(referrer, (numrefs) => {
-										// If valid, then perform the referral
-										database.performReferral(referrer, number, !(numrefs < VAULT.deals.referrals.maxreferrals || VAULT.deals.referrals.maxreferrals < 0), () => {
-											// Give credit to the referree and tell them that the person referred them
-											database.giveCredit(referrer, VAULT.deals.referrals.referredtoval, () => {
-												client.messages.create({
-													body: 'You received $' + VAULT.deals.referrals.referredtoval + ' in credit from referring ' + req.body.From + '.',
-													to: referrer,
-													from: '+12038946844'
-												})
-											})
+							// if (availability) {
+							// 	// Check how many referrals the person has left
+							// 	database.getNumReferrals(referrer, (numrefs) => {
+							// 			// If valid, then perform the referral
+							// 			database.performReferral(referrer, number, !(numrefs < VAULT.deals.referrals.maxreferrals || VAULT.deals.referrals.maxreferrals < 0), () => {
+							// 				// Give credit to the referree and tell them that the person referred them
+							// 				database.giveCredit(referrer, VAULT.deals.referrals.referredtoval, () => {
+							// 					client.messages.create({
+							// 						body: 'You received $' + VAULT.deals.referrals.referredtoval + ' in credit from referring ' + req.body.From + '.',
+							// 						to: referrer,
+							// 						from: '+12038946844'
+							// 					})
+							// 				})
 
-											// Add a flat X$ to the coupon field off
-											data[i][21][2] = VAULT.deals.referrals.referredtoval
-											data[i][20][1] = '$' + (parseFloat(data[i][20][1].replace('$', '')) - parseFloat(VAULT.deals.referrals.referredtoval)).toFixed(2)
-											// Text the receipts
-											textReceipt(data[i], database, req, name, number)
-											// Add a message about how much was saved from referral
-											client.messages.create({
-												body: 'You saved $' + VAULT.deals.referrals.referredtoval + ' by being referred.',
-												to: number,
-												from: '+12038946844'
-											})
-										})
-								})
-							} else {
+							// 				// Add a flat X$ to the coupon field off
+							// 				data[i][21][2] = VAULT.deals.referrals.referredtoval
+							// 				data[i][20][1] = '$' + (parseFloat(data[i][20][1].replace('$', '')) - parseFloat(VAULT.deals.referrals.referredtoval)).toFixed(2)
+							// 				// Text the receipts
+							// 				textReceipt(data[i], database, req, name, number)
+							// 				// Add a message about how much was saved from referral
+							// 				client.messages.create({
+							// 					body: 'You saved $' + VAULT.deals.referrals.referredtoval + ' by being referred.',
+							// 					to: number,
+							// 					from: '+12038946844'
+							// 				})
+							// 			})
+							// 	})
+							// } else {
 								// Text the receipts
 								textReceipt(data[i], database, req, name, number)
-							}
+							// }
 						})
 						sentAMessage = true
 					}

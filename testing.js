@@ -28,7 +28,7 @@ let database = new SQLInterface()
 
 googleapi.runAuthorizeFunction(googleapi.getReceipts, 'Afternoon', (data) => {
 	data.map((receipt) => {
-		console.log(receipt[22])
+		console.log(receipt[20][1])
 	})
 })
 
