@@ -100,27 +100,28 @@ function textReceipt(data, database, req, name, number) {
 		})
 		// If the user used a coupon, then also send the information about the coupon
 		if (data[21][4]) {
-			// This handles both credit and coupons, so swap between them
-			if (data[21][0].toLowerCase().trim() == 'credit') {
-				database.getCredit(number, (cred) => {
-					if (typeof receipt[21][1] != "number") { return }
+			if (typeof data[21][1] != "number") {
+				// This handles both credit and coupons, so swap between them
+				if (data[21][0].toLowerCase().trim() == 'credit') {
+					database.getCredit(number, (cred) => {
+						client.messages.create({
+							body: 'You used $' + data[21][1].toFixed(2) + ' of credit. You have $' + (cred - data[21][1]).toFixed(2) + ' of credit left.',
+							to: number,
+							from: '+12038946844'
+						})
+						// Use the credit in the database
+						database.takeCredit(data[21][1], number)
+					})
+				} else {
+					// Coupons
 					client.messages.create({
-						body: 'You used $' + data[21][1].toFixed(2) + ' of credit. You have $' + (cred - data[21][1]).toFixed(2) + ' of credit left.',
+						body: 'You used coupon "' + data[21][0] + '" to save $' + (data[21][1].toFixed(2)) + '.',
 						to: number,
 						from: '+12038946844'
 					})
-					// Use the credit in the database
-					database.takeCredit(data[21][1], number)
-				})
-			} else {
-				// Coupons
-				client.messages.create({
-					body: 'You used coupon "' + data[21][0] + '" to save $' + (data[21][1].toFixed(2)) + '.',
-					to: number,
-					from: '+12038946844'
-				})
-				// Also decrement the uses in the database
-				database.useCoupon(data[21][0], data[0])
+					// Also decrement the uses in the database
+					database.useCoupon(data[21][0], data[0])
+				}
 			}
 		}
 		// If the payment method is Venmo, then also send a Venmo payment request
