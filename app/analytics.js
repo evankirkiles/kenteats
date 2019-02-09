@@ -502,7 +502,7 @@ class SQLInterface {
 		let totalOrders = 0
 		for (let i = 2; i < 10; i++) {
 			// If the item exists, add its spending and order to the updateObject
-			if (receipt[i][0] != '#VALUE!' && receipt[i][0] != '#REF!' && receipt[i][2] != '' && receipt[i][1] != 'UNKNOWN') {
+			if (receipt[i][0] != '#VALUE!' && receipt[i][0] != '#REF!' && receipt[i][2] != '' && updateObj[receipt[i][1]] != undefined) {
 				// Only update for items which have a price
 				updateObj[receipt[i][1]].orders += 1
 				totalOrders += 1
