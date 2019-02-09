@@ -346,6 +346,7 @@ class SQLInterface {
 	// Processes a receipt for the financial trackings. Needs to combine the stats of all the receipts so must retain
 	// an object over multiple calls, hence it being a separate function.
 	processFinancials(receipt, index, test) {
+		console.log("CHECKPOINT 1: " + receipt[20][1])
 		// Set the table name to test if using test
 		let table = test ? 'testfinancials' : 'financials'
 		let table1 = test ? 'testfinancialorders' : 'financialorders'
