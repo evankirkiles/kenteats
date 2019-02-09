@@ -100,7 +100,7 @@ function textReceipt(data, database, req, name, number) {
 		})
 		// If the user used a coupon, then also send the information about the coupon
 		if (data[21][4]) {
-			if (typeof data[21][1] != "number") {
+			if (typeof data[21][1] == "number") {
 				// This handles both credit and coupons, so swap between them
 				if (data[21][0].toLowerCase().trim() == 'credit') {
 					database.getCredit(number, (cred) => {

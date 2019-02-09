@@ -27,8 +27,8 @@ let database = new SQLInterface()
 // 	googleapi.runAuthorizeFunction(googleapi.fillVenmoOrders, data, () => {}) })
 
 googleapi.runAuthorizeFunction(googleapi.getReceipts, 'Afternoon', (data) => {
-	googleapi.runAuthorizeFunction(googleapi.fillReceiptHistory, data, () => {
-		console.log('done')
+	data.map((receipt) => {
+		console.log(receipt[21])
 	})
 })
 
