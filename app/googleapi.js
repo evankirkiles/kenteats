@@ -149,10 +149,11 @@ module.exports.pushMiles = pushMiles
     let range = 'Sheet1!A' + (result.data.values.length) + ':W' + (result.data.values.length + receipts.length - 1)
 
     // Reformat the receipts to be safe for input
+    let newreciepts = []
     for (let i = 0; i < receipts.length; i++) {
       for (let j = 0; j < 22; j++) {
         if (Array.isArray(receipts[i][j])) {
-          receipts[i][j] = receipts[i][j].join(' ').trim()
+          newreciepts[i][j] = receipts[i][j].join(' ').trim()
         }
       }
     }
@@ -163,12 +164,12 @@ module.exports.pushMiles = pushMiles
       range: range,
       valueInputOption: 'USER_ENTERED',
       resource: {
-        values: receipts
+        values: newreciepts
       }
     }, (err, result) => {
       if (err) { return console.log('The API returned an error: ' + err) }
       // Log the updated receipts
-      console.log('Added ' + receipts.length + ' receipts to history sheet.')
+      console.log('Added ' + newreciepts.length + ' receipts to history sheet.')
       callback()
     })
   })

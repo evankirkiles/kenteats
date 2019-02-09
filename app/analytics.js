@@ -346,7 +346,6 @@ class SQLInterface {
 	// Processes a receipt for the financial trackings. Needs to combine the stats of all the receipts so must retain
 	// an object over multiple calls, hence it being a separate function.
 	processFinancials(receipt, index, test) {
-		console.log("CHECKPOINT 1: " + receipt[20][1])
 		// Set the table name to test if using test
 		let table = test ? 'testfinancials' : 'financials'
 		let table1 = test ? 'testfinancialorders' : 'financialorders'
@@ -405,6 +404,7 @@ class SQLInterface {
 						// If there was an error, say it
 						if (err) { console.log(err); return err }
 						// Update the financials
+						console.log('WTF: ' + receipt[20])
 						this.updateFinancials(receipt, table, number, currDay, returns, (err, returns2) => {
 							// Update the running totals for type of transaction
 							let returnString = 'UPDATE ' + table  + ' SET `'
@@ -460,7 +460,6 @@ class SQLInterface {
 
 	//  Updates financial table (necessary so don't repeat code much)
 	updateFinancials(receipt, table, number, currDay, returns, callback) {
-		console.log(receipt[22] + ' : ' + receipt[20][1])
 		let expenditures = parseFloat(receipt[20][1].replace('$', '')) - receipt[22]
 		// Otherwise perform check on the size of return, if 0 then row does not exist
 		if (returns.length > 0) {
