@@ -34,7 +34,9 @@ const imessage = require('osa-imessage')
 // 	})
 // })
 
-imessage.send('+18609467150', 'asdasasdtyfagushijodjauhskgdykhaisjokpdijluhaksygjdftiaoyiugsdgasodfiyogaisuhodhyouatfsudgyihuoasjduhygaukslhiodauhkygjdkuahilsdhgyjfdtkgauylshidsd')
+imessage.send('+1236879809', 'a').catch((error) => {
+	console.log('asdasdsd')
+})
 
 // If it is, return a Twilio message containing all the coupons formatted nicely
 // database.getCoupons((data) => {

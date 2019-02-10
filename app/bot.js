@@ -80,13 +80,14 @@ function announce(message, database, twiml, res) {
 					})
 					someth++
 				} else {
-					try { 
-						imessage.send(results[i]['phone'], message)
-						someth++
-					} catch (error) {
+					let error = imessage.send(results[i]['phone'], message).catch((error) => {
 						console.log('Conversation not started with ' + number + ' so they did not receive text.')
 						failed++
-					}
+						if (i == results.length - 1) {
+							console.log('Number failed: ' + failed)
+						}
+					})
+					someth++
 				}
 			}
 		}
@@ -96,8 +97,8 @@ function announce(message, database, twiml, res) {
 			twiml.message('Sent message with Twilio to all ' + someth + ' unmuted customers. Estimated total cost: $' + (0.0075 * someth * Math.ceil(message.length / 140)).toFixed(4))
 			console.log('Sent message with Twilio to all ' + someth + ' unmuted customers. Estimated total cost: $' + (0.0075 * someth * Math.ceil(message.length / 140)).toFixed(4))
 		} else {
-			twiml.message('Sent message with iMessage to all ' + someth + ' unmuted customers. No cost. ' + failed + ' failed because of no conversation.')
-			console.log('Sent message with iMessage to all ' + someth + ' unmuted customers. No cost. ' + failed + ' failed because of no conversation.')
+			twiml.message('Tried to send message with iMessage to all ' + someth + ' unmuted customers. No cost.')
+			console.log('Tried to send message with iMessage to all ' + someth + ' unmuted customers. No cost.')
 		}
 		// Add a content accepted header and send
 		res.writeHead(200, { 'Content-Type': 'text/xml' })
@@ -330,11 +331,9 @@ function chatBot(req, res) {
 									from: '+12038946844'
 								})	
 							} else {
-								try { 
-									imessage.send(number, req.body.Body.replace('  ', ' ').trim().split(VAULT.messagedelim)[1])
-								} catch (error) {
+								let error = imessage.send(number, req.body.Body.replace('  ', ' ').trim().split(VAULT.messagedelim)[1]).catch((error) => {
 									console.log('Conversation not started with ' + number + ' so they did not receive text.')
-								}
+								})
 							}
 							sentAMessage = true
 						} 
