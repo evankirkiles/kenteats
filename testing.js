@@ -34,8 +34,8 @@ const imessage = require('osa-imessage')
 // 	})
 // })
 
-imessage.send('+1236879809', 'a').catch((error) => {
-	console.log('asdasdsd')
+imessage.send('+123234', 'IDK').catch((error) => {
+	console.log('Conversation not started with ' + '+123234' + ' so they did not receive text.')
 })
 
 // If it is, return a Twilio message containing all the coupons formatted nicely

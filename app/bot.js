@@ -80,7 +80,7 @@ function announce(message, database, twiml, res) {
 					})
 					someth++
 				} else {
-					let error = imessage.send(results[i]['phone'], message).catch((error) => {
+					imessage.send(results[i]['phone'], message).catch((error) => {
 						console.log('Conversation not started with ' + number + ' so they did not receive text.')
 						failed++
 						if (i == results.length - 1) {
@@ -331,7 +331,7 @@ function chatBot(req, res) {
 									from: '+12038946844'
 								})	
 							} else {
-								let error = imessage.send(number, req.body.Body.replace('  ', ' ').trim().split(VAULT.messagedelim)[1]).catch((error) => {
+								imessage.send(number, req.body.Body.replace('  ', ' ').trim().split(VAULT.messagedelim)[1]).catch((error) => {
 									console.log('Conversation not started with ' + number + ' so they did not receive text.')
 								})
 							}
