@@ -11,6 +11,8 @@ const MessagingResponse = require('twilio').twiml.MessagingResponse
 const bodyParser = require('body-parser')
 // Twilio number-specific messaging
 const client = require('twilio')(VAULT.twilio.accountSid, VAULT.twilio.authToken)
+// Imessage module
+const imessage = require('osa-imessage')
 
 // Initialize the application
 const app = express();
@@ -65,20 +67,38 @@ function announce(message, database, twiml, res) {
 	database.pullNumbers((results) => {
 		// With the list of numbers, use the client to send the message to each
 		let someth = 0
+		let failed = 0
 		for (let i = 0; i < results.length; i++) {
 			// If not muted, send the message
 			if (results[i]['muted'] == 0) {
-				client.messages.create({
-					body: message,
-					to: results[i]['phone'],
-					from: '+12038946844'
-				})
-				someth++
+				// Depending on which number to use, send the messages
+				if (VAULT.announcewithtwilio) {
+					client.messages.create({
+						body: message,
+						to: results[i]['phone'],
+						from: '+12038946844'
+					})
+					someth++
+				} else {
+					try { 
+						imessage.send(results[i]['phone'], message)
+						someth++
+					} catch (error) {
+						console.log('Conversation not started with ' + number + ' so they did not receive text.')
+						failed++
+					}
+				}
 			}
 		}
 
 		// Respond with a message successful
-		twiml.message('Sent message to all ' + someth + ' unmuted customers. Estimated total cost: $' + (0.0075 * someth * Math.ceil(message.length / 140)).toFixed(4))
+		if (VAULT.announcewithtwilio) {
+			twiml.message('Sent message with Twilio to all ' + someth + ' unmuted customers. Estimated total cost: $' + (0.0075 * someth * Math.ceil(message.length / 140)).toFixed(4))
+			console.log('Sent message with Twilio to all ' + someth + ' unmuted customers. Estimated total cost: $' + (0.0075 * someth * Math.ceil(message.length / 140)).toFixed(4))
+		} else {
+			twiml.message('Sent message with iMessage to all ' + someth + ' unmuted customers. No cost. ' + failed + ' failed because of no conversation.')
+			console.log('Sent message with iMessage to all ' + someth + ' unmuted customers. No cost. ' + failed + ' failed because of no conversation.')
+		}
 		// Add a content accepted header and send
 		res.writeHead(200, { 'Content-Type': 'text/xml' })
 		res.end(twiml.toString())
@@ -159,6 +179,7 @@ function chatBot(req, res) {
 			// Message the user that they are new and send them the link to the order form
 			twiml.message("Welcome to KentEats! If you would like to order, please follow the link to the form:")
 			twiml.message("https://docs.google.com/forms/d/1nC2Hpm0AcTF00_PV5ugyusUHfAM_xb81Xh7hT2Faje0/edit")
+			twiml.message("All order time announcements come through 12035868752, so text it anything to begin listening.")
 		}
 
 		// Make sure any announcements being built are terminated with the exit string ("//") if they are nto wanted to send.
@@ -300,12 +321,21 @@ function chatBot(req, res) {
 						if ((dorm == undefined || (data[i][11][0] != undefined && data[i][11][0].toLowerCase().indexOf(dorm) > -1) ||  (data[i][12][0] != undefined && data[i][12][0].toLowerCase().indexOf(dorm) > -1)) && data[i][15][0] != undefined) {
 							// Get the number without dashes or parentheses or spaces and add +1
 							let number = '+1' + data[i][15][0].replace(/\D+/g, '')
-							// Send the message now
-							client.messages.create({
-								body: req.body.Body.replace('  ', ' ').trim().split(VAULT.messagedelim)[1],
-								to: number,
-								from: '+12038946844'
-							})
+							// Depending on which number to use, send the messages
+							if (VAULT.announcewithtwilio) {
+								// Send the message now
+								client.messages.create({
+									body: req.body.Body.replace('  ', ' ').trim().split(VAULT.messagedelim)[1],
+									to: number,
+									from: '+12038946844'
+								})	
+							} else {
+								try { 
+									imessage.send(number, req.body.Body.replace('  ', ' ').trim().split(VAULT.messagedelim)[1])
+								} catch (error) {
+									console.log('Conversation not started with ' + number + ' so they did not receive text.')
+								}
+							}
 							sentAMessage = true
 						} 
 					}
@@ -716,6 +746,16 @@ function chatBot(req, res) {
 		} else if (req.body.Body.toLowerCase().trim() == 'about') {
 			// Send the user the pre-set message
 			twiml.message(VAULT.about)
+			// Add a content accepted header and send
+			res.writeHead(200, { 'Content-Type': 'text/xml' })
+			res.end(twiml.toString())
+
+		// SUPPORT COMMAND
+		// Provides Brady's number so the user can begin listening to announcements or ask Brady for something.
+		// Usage: 'support'
+		} else if (req.body.Body.toLowerCase.trim().indexOf('support') > -1) {
+			// Send the user the pre-set message
+			twiml.message(VAULT.support)
 			// Add a content accepted header and send
 			res.writeHead(200, { 'Content-Type': 'text/xml' })
 			res.end(twiml.toString())

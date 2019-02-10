@@ -13,9 +13,11 @@ const MessagingResponse = require('twilio').twiml.MessagingResponse
 const bodyParser = require('body-parser')
 // Twilio number-specific messaging
 const client = require('twilio')(VAULT.twilio.accountSid, VAULT.twilio.authToken)
+// Imessage library
+const imessage = require('osa-imessage')
 
 
-let database = new SQLInterface()
+// let database = new SQLInterface()
 // Run the MySQL query to determine if any data is available
 // database.getFinancials((data) => {
 // 	googleapi.runAuthorizeFunction(googleapi.fillFullDayBookkeeping, data, () => {}) })
@@ -26,11 +28,13 @@ let database = new SQLInterface()
 // database.getVenmoFinancials((data) => {
 // 	googleapi.runAuthorizeFunction(googleapi.fillVenmoOrders, data, () => {}) })
 
-googleapi.runAuthorizeFunction(googleapi.getReceipts, 'Afternoon', (data) => {
-	data.map((receipt) => {
-		console.log(receipt[20][1])
-	})
-})
+// googleapi.runAuthorizeFunction(googleapi.getReceipts, 'Afternoon', (data) => {
+// 	data.map((receipt) => {
+// 		console.log(receipt[20][1])
+// 	})
+// })
+
+imessage.send('+18609467150', 'asdasasdtyfagushijodjauhskgdykhaisjokpdijluhaksygjdftiaoyiugsdgasodfiyogaisuhodhyouatfsudgyihuoasjduhygaukslhiodauhkygjdkuahilsdhgyjfdtkgauylshidsd')
 
 // If it is, return a Twilio message containing all the coupons formatted nicely
 // database.getCoupons((data) => {
