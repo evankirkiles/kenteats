@@ -81,11 +81,11 @@ function announce(message, database, twiml, res) {
 					someth++
 				} else {
 					imessage.send(results[i]['phone'], message).catch((error) => {
-						console.log('Conversation not started with ' + results[i]['phone'] + ' so they did not receive text.')
-						failed++
-						if (i == results.length - 1) {
-							console.log('Number failed: ' + failed)
-						}
+						client.messages.create({
+							body: message,
+							to: results[i]['phone'],
+							from: '+12038946844'
+						})
 					})
 					someth++
 				}
@@ -332,7 +332,11 @@ function chatBot(req, res) {
 								})	
 							} else {
 								imessage.send(number, req.body.Body.replace('  ', ' ').trim().split(VAULT.messagedelim)[1]).catch((error) => {
-									console.log('Conversation not started with ' + number + ' so they did not receive text.')
+									client.messages.create({
+										body: req.body.Body.replace('  ', ' ').trim().split(VAULT.messagedelim)[1],
+										to: number,
+										from: '+12038946844'
+									})
 								})
 							}
 							sentAMessage = true
