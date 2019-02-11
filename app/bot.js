@@ -81,7 +81,7 @@ function announce(message, database, twiml, res) {
 					someth++
 				} else {
 					imessage.send(results[i]['phone'], message).catch((error) => {
-						console.log('Conversation not started with ' + number + ' so they did not receive text.')
+						console.log('Conversation not started with ' + results[i]['phone'] + ' so they did not receive text.')
 						failed++
 						if (i == results.length - 1) {
 							console.log('Number failed: ' + failed)
