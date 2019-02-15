@@ -687,6 +687,26 @@ function chatBot(req, res) {
 				}
 			}
 
+		// TOGGLE TWILIO COMAND
+		// Toggles on/off Twilio support. If this is off, then announcements will only send through iMessage.
+		// Usage: 'toggle twilio'
+		} else if (req.body.Body.toLowerCase().indexOf('toggle') > -1 && req.body.Body.toLowerCase().indexOf('twilio') > -1) {
+			// Validate user
+			if (VAULT.twilio.allowedNumbers.indexOf(req.body.From) > -1) {
+				// Toggle on and off the VAULT setting
+				if (VAULT.onlyuseimessage) {
+					twiml.message('Announcements can now send to non-iMessage users as well.')
+					VAULT.onlyuseimessage = false
+				} else {
+					twiml.message('Announcements can now only send to iMessage users.')
+					VAULT.onlyuseimessage = true
+				}
+			}
+
+			// Add a content accepted header
+			res.writeHead(200, { 'Content-Type': 'text/xml' })
+			res.end(twiml.toString())
+
 		// UPDATE FINANCIALS COMMAND
 		// Updates the financials (used to manually do what the scheduled command does)
 		// Usage: 'update financials'
