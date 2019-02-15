@@ -81,11 +81,14 @@ function announce(message, database, twiml, res) {
 					someth++
 				} else {
 					imessage.send(results[i]['phone'], message).catch((error) => {
-						client.messages.create({
-							body: message,
-							to: results[i]['phone'],
-							from: '+12038946844'
-						})
+						// If we want to send to users without iMessage, do so
+						if (!VAULT.onlyuseimessage) {
+							client.messages.create({
+								body: message,
+								to: results[i]['phone'],
+								from: '+12038946844'
+							})
+						}
 					})
 					someth++
 				}
