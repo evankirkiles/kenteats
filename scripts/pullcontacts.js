@@ -12,4 +12,5 @@ database.getContacts((results) => {
 		stream.write(row['name'] + ',' + row['phone'].replace(/\D+/g, '') + '\n')
 	})
 	stream.end()
+	console.log('done')
 })
