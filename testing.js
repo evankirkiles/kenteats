@@ -2,6 +2,7 @@
 var VAULT = require('./config/vault.json')
 // Google API for getting receipts and other data
 var googleapi = require('./app/googleapi')
+const {google} = require('googleapis');
 // Analytics for user data
 var SQLInterface = require('./app/analytics').SQLInterface
 // Scheduling of functions for financial updates
@@ -14,7 +15,7 @@ const bodyParser = require('body-parser')
 // Twilio number-specific messaging
 const client = require('twilio')(VAULT.twilio.accountSid, VAULT.twilio.authToken)
 // Imessage library
-const imessage = require('osa-imessage')
+// const imessage = require('osa-imessage')
 
 
 // let database = new SQLInterface()
@@ -28,15 +29,13 @@ const imessage = require('osa-imessage')
 // database.getVenmoFinancials((data) => {
 // 	googleapi.runAuthorizeFunction(googleapi.fillVenmoOrders, data, () => {}) })
 
-// googleapi.runAuthorizeFunction(googleapi.getReceipts, 'Afternoon', (data) => {
-// 	data.map((receipt) => {
-// 		console.log(receipt[20][1])
-// 	})
-// })
-
-imessage.send('+123234', 'IDK').catch((error) => {
-	console.log('Conversation not started with ' + '+123234' + ' so they did not receive text.')
+googleapi.runAuthorizeFunction(googleapi.getReceipts, 'Afternoon', (data) => {
+	// console.log(data)
 })
+
+// imessage.send('+123234', 'IDK').catch((error) => {
+// 	console.log('Conversation not started with ' + '+123234' + ' so they did not receive text.')
+// })
 
 // If it is, return a Twilio message containing all the coupons formatted nicely
 // database.getCoupons((data) => {

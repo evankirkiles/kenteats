@@ -378,7 +378,7 @@ function getCoupons(sheets, callback) {
           if (couponCodes[i][0] != undefined && couponCodes[i][0].toLowerCase().trim() == 'credit') { numCredits++ }
           // Iterate through the database coupons themelves to check the code
           for (let j = 0; j < data.length; j++) {
-            if (couponCodes[i][0] ==  data[j]['code']) {
+            if (couponCodes[i][0] != undefined && couponCodes[i][0].trim() ==  data[j]['code']) {
               couponCodes[i][1] = data[j]['amount']
               couponCodes[i][2] = data[j]['percent'] == 1
               couponCodes[i][3] = data[j]['calcfrom']
@@ -482,6 +482,7 @@ function getReceipts(auth, callback, type) {
 
       // Check the coupons against each receipt and add a row at the end for them
       getCoupons(sheets, (coups) => {
+        console.log(coups)
         // Once all the receipts are built, iterate through them
         for (let i = 0; i < messages.length; i++) {
 
