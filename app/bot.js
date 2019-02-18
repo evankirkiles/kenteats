@@ -779,7 +779,7 @@ function chatBot(req, res) {
 		// SUPPORT COMMAND
 		// Provides Brady's number so the user can begin listening to announcements or ask Brady for something.
 		// Usage: 'support'
-		} else if (req.body.Body.toLowerCase.trim().indexOf('support') > -1) {
+		} else if (req.body.Body.toLowerCase().trim().indexOf('support') > -1) {
 			// Send the user the pre-set message
 			twiml.message(VAULT.support)
 			// Add a content accepted header and send
