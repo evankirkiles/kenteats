@@ -34,6 +34,21 @@ class SQLInterface {
 		})
 	}
 
+	// Pulls all contacts from useranalytics which (1) have a name associated with them and (2) have not been pulled before  
+	getContacts(callback) {
+		// Perform the MySQL query 
+		this.con.query('SELECT name,phone FROM useranalytics WHERE name!="" AND contactmade=0', (err, results) => {
+			// If there was an error, return it
+			if (err) { console.log(err); return }
+			// Set contactmade to 1 for all retrieved
+			for (let i = 0; i < results.length; i++) {
+				this.con.query('UPDATE useranalytics SET contactmade=1 WHERE phone="' + results[i]['phone'] + '"')
+			}
+			// Return the results
+			callback(results)
+		})
+	}
+
 	// Function which pulls the financial data from the MySQL database and enters it into the Bookkeeping Google Sheet. 
 	// Will be called every night at 9:30 P.M., although will only update the Google Sheet if orders existed that day.
 	// The order of the columns goes as follows:
