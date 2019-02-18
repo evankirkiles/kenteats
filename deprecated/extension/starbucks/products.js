@@ -3,7 +3,7 @@ const request = require('request')
 // Prompt for requesting from the user
 const prompt = require('prompt-sync')()
 // Require configuration for store number
-const CONFIG = require('../../config/config.json')
+const CONFIG = require('../../../config/config.json')
 
 // Log function which can be repurposed to go to a file
 function syslog(message) {
@@ -30,9 +30,11 @@ class ProductRetriever {
 	}
 
 	// Initialize pulls the menu first
-	async initialize() {
+	async initialize(callback) {
 		syslog('Retrieving menu...')
 		await this.pullMenu()
+		callback()
+
 	}
 
 	// Get request to pull the menu
@@ -57,7 +59,9 @@ class ProductRetriever {
 
 	// Prints the products object
 	printProducts() {
-		console.log(this.fullproducts.menus)
+		for (let i = 0; i < this.parsedproducts.length; i++) {
+			console.log(this.parsedproducts[i]['name'])
+		}
 	}
 
 	// Traverses the level of the tree and prints out all products below it

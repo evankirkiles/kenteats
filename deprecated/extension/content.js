@@ -1,12 +1,6 @@
-// Add a listener for messages from the backgorund script
-chrome.runtime.onMessage.addListener(
-  function(request, sender, sendResponse) {
-    if( request.message === "clicked_browser_action" ) {
-      var firstHref = $("a[href^='http']").eq(0).attr("href");
+const ProductRetriever = require('./starbucks/products.js').ProductRetriever
 
-      console.log(firstHref);
-    } else {
-    	console.log(request.message)
-    }
-  }
-);
+let pr = new ProductRetriever()
+pr.initialize(() => {
+	pr.askForProduct()
+})
