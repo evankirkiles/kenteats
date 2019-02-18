@@ -866,12 +866,12 @@ function chatBot(req, res) {
 
 		// EVERYTHING ELSE	
 		} else {
-			if (VAULT.twilio.allowedNumbers.indexOf(req.body.From) == -1) {
+			// if (VAULT.twilio.allowedNumbers.indexOf(req.body.From) == -1) {
 				twiml.message('Text "form" if you would like the link to the form to order! To see commands, text "?".')
 				// Add a content accepted header
 				res.writeHead(200, { 'Content-Type': 'text/xml' })
 				res.end(twiml.toString())
-			}
+			// }
 		} 
 	})
 }
