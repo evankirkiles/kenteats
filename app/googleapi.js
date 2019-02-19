@@ -482,7 +482,6 @@ function getReceipts(auth, callback, type) {
 
       // Check the coupons against each receipt and add a row at the end for them
       getCoupons(sheets, (coups) => {
-        console.log(coups)
         // Once all the receipts are built, iterate through them
         for (let i = 0; i < messages.length; i++) {
 
