@@ -766,6 +766,18 @@ function chatBot(req, res) {
 			res.writeHead(200, { 'Content-Type': 'text/xml' })
 			res.end(twiml.toString())
 
+		// MENUS COMMAND
+		// Returns the menus for the most popular locations
+		// Usage: 'menu'
+		} else if (req.body.Body.toLowerCase().indexOf("menu") > -1) {
+			// Iterate through the stores and send a menu for each
+			VAULT.menus.map((menu) => {
+				twiml.message(menu)
+			})
+			// Add a content accepted header and send
+			res.writeHead(200, { 'Content-Type': 'text/xml' })
+			res.end(twiml.toString())
+
 		// ABOUT COMMAND
 		// Provides more information about the business and the bot
 		// Usage: 'about'

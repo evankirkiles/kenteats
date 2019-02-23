@@ -16,6 +16,8 @@ const bodyParser = require('body-parser')
 const client = require('twilio')(VAULT.twilio.accountSid, VAULT.twilio.authToken)
 // Imessage library
 // const imessage = require('osa-imessage')
+// Deprecated
+const Checkout = require('./deprecated/scripts/checkout').Checkout
 
 
 // let database = new SQLInterface()
@@ -29,8 +31,16 @@ const client = require('twilio')(VAULT.twilio.accountSid, VAULT.twilio.authToken
 // database.getVenmoFinancials((data) => {
 // 	googleapi.runAuthorizeFunction(googleapi.fillVenmoOrders, data, () => {}) })
 
-googleapi.runAuthorizeFunction(googleapi.getReceipts, 'Afternoon', (data) => {
-	// console.log(data)
+// googleapi.runAuthorizeFunction(googleapi.getReceipts, 'Breakfast', (data) => {
+// 	data.map((row) => {
+// 		console.log(googleapi.receiptToString(row))
+// 	})
+// })
+
+
+let ch = new Checkout()
+ch.init().then(() => {
+	
 })
 
 // imessage.send('+123234', 'IDK').catch((error) => {
