@@ -37,11 +37,39 @@ const Checkout = require('./deprecated/scripts/checkout').Checkout
 // 	})
 // })
 
+let stringin = "sdsdhsdh_assd YshdshdsjdsdSasdsahd"
 
-let ch = new Checkout()
-ch.init().then(() => {
-	
-})
+function convertSnake(stringin) {
+    let current = ''
+    let convertToUppercase = false
+    let toggleableWord = 0   // 0: no word, 1: ignorable word, 2: toggleable word
+    for (let i = 0; i < stringin.length; i++) {
+        if (stringin[i] == ' ') { toggleableWord = 0; current += ' '; continue }
+        
+        if (toggleableWord == 0) {
+            current += stringin[i];
+            if (stringin[i] == stringin[i].toUpperCase()) {
+                toggleableWord = 1
+            } else {
+                toggleableWord = 2
+            }
+        } else if (toggleableWord == 2) {
+            if (stringin[i] == stringin[i].toUpperCase()) {
+                current += '_' + stringin[i].toUpperCase()
+            } else if (stringin[i] == '_') {
+                convertToUppercase = true
+            } else {
+                if (convertToUppercase) {
+                    current += stringin[i].toUpperCase()
+                    convertToUppercase = false
+                } else {
+                    current += stringin[i]
+                }
+            }
+        }  
+    }
+    return current
+}
 
 // imessage.send('+123234', 'IDK').catch((error) => {
 // 	console.log('Conversation not started with ' + '+123234' + ' so they did not receive text.')

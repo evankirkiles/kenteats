@@ -81,6 +81,8 @@ function announce(message, database, twiml, res) {
 					someth++
 				} else {
 					imessage.send(results[i]['phone'], message).catch((error) => {
+						// Tell of the failure
+						console.log('Failed to send to ' + results[i]['phone'])
 						// If we want to send to users without iMessage, do so
 						if (!VAULT.onlyuseimessage) {
 							client.messages.create({
