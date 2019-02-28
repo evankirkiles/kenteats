@@ -82,7 +82,7 @@ function announce(message, database, twiml, res) {
 				} else {
 					imessage.send(results[i]['phone'], message).catch((error) => {
 						// Tell of the failure
-						console.log('Failed to send to ' + results[i]['phone'])
+						// console.log('Failed to send to ' + results[i]['phone'])
 						// If we want to send to users without iMessage, do so
 						if (!VAULT.onlyuseimessage) {
 							client.messages.create({
@@ -110,6 +110,8 @@ function announce(message, database, twiml, res) {
 		res.end(twiml.toString())
 	})
 }
+
+module.exports.announce = announce()
 
 // Function for texting a receipt
 function textReceipt(data, database, req, name, number) {
