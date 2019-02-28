@@ -12,6 +12,9 @@ const http = require('http')
 const express = require('express')
 const MessagingResponse = require('twilio').twiml.MessagingResponse
 const bodyParser = require('body-parser')
+// Initialize the application
+const app = express();
+app.use(bodyParser.urlencoded({ extended: false }))
 // Twilio number-specific messaging
 const client = require('twilio')(VAULT.twilio.accountSid, VAULT.twilio.authToken)
 // Imessage library
@@ -31,25 +34,30 @@ let database = new SQLInterface()
 // database.getVenmoFinancials((data) => {
 // 	googleapi.runAuthorizeFunction(googleapi.fillVenmoOrders, data, () => {}) })
 
-let message = "11:00 A.M. delivery tomorrow. Dunkin and Starbucks. Order by 10:00 P.M. tonight. If you want to cancel any order, text 2035868752 (Brady)."
+// let message = "11:00 A.M. delivery tomorrow. Dunkin and Starbucks. Order by 10:00 P.M. tonight. If you want to cancel any order, text 2035868752 (Brady)."
 
-// Perform MySQL request to get the list of numbers
-database.pullNumbers((results) => {
-    // With the list of numbers, use the client to send the message to each
-    let someth = 0
-    let failed = 0
-    for (let i = 0; i < results.length; i++) {
-        // If not muted, send the message
-        if (results[i]['muted'] == 0) {
-            // Depending on which number to use, send the messages
-            client.messages.create({
-                body: message,
-                to: results[i]['phone'],
-                from: '+12038946844'
-            })
-            someth++
-        }
-    }
+// // Perform MySQL request to get the list of numbers
+// database.pullNumbers((results) => {
+//     // With the list of numbers, use the client to send the message to each
+//     let someth = 0
+//     let failed = 0
+//     for (let i = 0; i < results.length; i++) {
+//         // If not muted, send the message
+//         if (results[i]['muted'] == 0) {
+//             // Depending on which number to use, send the messages
+//             client.messages.create({
+//                 body: message,
+//                 to: results[i]['phone'],
+//                 from: '+12038946844'
+//             })
+//             someth++
+//         }
+//     }
+// })
+
+// Finally build the HTTP server for the bot
+http.createServer(app).listen(1337, () => {
+    console.log('Express server listening on port 1337')
 })
 
 // googleapi.runAuthorizeFunction(googleapi.getReceipts, 'Breakfast', (data) => {

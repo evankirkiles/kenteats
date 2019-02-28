@@ -111,8 +111,6 @@ function announce(message, database, twiml, res) {
 	})
 }
 
-module.exports.announce = announce()
-
 // Function for texting a receipt
 function textReceipt(data, database, req, name, number) {
 	// Update the receipt database
