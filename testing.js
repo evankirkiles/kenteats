@@ -20,7 +20,7 @@ const client = require('twilio')(VAULT.twilio.accountSid, VAULT.twilio.authToken
 const Checkout = require('./deprecated/scripts/checkout').Checkout
 
 
-// let database = new SQLInterface()
+let database = new SQLInterface()
 // Run the MySQL query to determine if any data is available
 // database.getFinancials((data) => {
 // 	googleapi.runAuthorizeFunction(googleapi.fillFullDayBookkeeping, data, () => {}) })
@@ -31,45 +31,33 @@ const Checkout = require('./deprecated/scripts/checkout').Checkout
 // database.getVenmoFinancials((data) => {
 // 	googleapi.runAuthorizeFunction(googleapi.fillVenmoOrders, data, () => {}) })
 
+let message = "11:00 A.M. delivery tomorrow. Dunkin and Starbucks. Order by 10:00 P.M. tonight. If you want to cancel any order, text 2035868752 (Brady)."
+
+// Perform MySQL request to get the list of numbers
+database.pullNumbers((results) => {
+    // With the list of numbers, use the client to send the message to each
+    let someth = 0
+    let failed = 0
+    for (let i = 0; i < results.length; i++) {
+        // If not muted, send the message
+        if (results[i]['muted'] == 0) {
+            // Depending on which number to use, send the messages
+            client.messages.create({
+                body: message,
+                to: results[i]['phone'],
+                from: '+12038946844'
+            })
+            someth++
+        }
+    }
+})
+
 // googleapi.runAuthorizeFunction(googleapi.getReceipts, 'Breakfast', (data) => {
 // 	data.map((row) => {
 // 		console.log(googleapi.receiptToString(row))
 // 	})
 // })
-
-let stringin = "sdsdhsdh_assd YshdshdsjdsdSasdsahd"
-
-function convertSnake(stringin) {
-    let current = ''
-    let convertToUppercase = false
-    let toggleableWord = 0   // 0: no word, 1: ignorable word, 2: toggleable word
-    for (let i = 0; i < stringin.length; i++) {
-        if (stringin[i] == ' ') { toggleableWord = 0; current += ' '; continue }
-        
-        if (toggleableWord == 0) {
-            current += stringin[i];
-            if (stringin[i] == stringin[i].toUpperCase()) {
-                toggleableWord = 1
-            } else {
-                toggleableWord = 2
-            }
-        } else if (toggleableWord == 2) {
-            if (stringin[i] == stringin[i].toUpperCase()) {
-                current += '_' + stringin[i].toUpperCase()
-            } else if (stringin[i] == '_') {
-                convertToUppercase = true
-            } else {
-                if (convertToUppercase) {
-                    current += stringin[i].toUpperCase()
-                    convertToUppercase = false
-                } else {
-                    current += stringin[i]
-                }
-            }
-        }  
-    }
-    return current
-}
+// 
 
 // imessage.send('+123234', 'IDK').catch((error) => {
 // 	console.log('Conversation not started with ' + '+123234' + ' so they did not receive text.')
