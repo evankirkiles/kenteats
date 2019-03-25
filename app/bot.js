@@ -763,7 +763,7 @@ function chatBot(req, res) {
 		// Usage: 'form'
 		} else if (req.body.Body.toLowerCase().trim() == 'form') {
 			// Send the user the link to the order form	
-			twiml.message("https://docs.google.com/forms/d/1nC2Hpm0AcTF00_PV5ugyusUHfAM_xb81Xh7hT2Faje0/edit")
+			twiml.message("https://kenteats.ngrok.io")
 			// Add a content accepted header and send
 			res.writeHead(200, { 'Content-Type': 'text/xml' })
 			res.end(twiml.toString())

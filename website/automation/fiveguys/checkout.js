@@ -1,7 +1,5 @@
 // Require Selenium for checking out
 const {Builder, By, Capabilities, Key, until} = require('selenium-webdriver')
-// Require requests for adding products to cart
-const request = require('request')
 
 // Example products array
 // let SAMPLE_prods = [
@@ -176,8 +174,8 @@ class FiveGuysCheckout {
 
 let fgc = new FiveGuysCheckout()
 fgc.addToCart(SAMPLE_ORDER, () => { 
-	fgc.performCheckout('18:45', 'asdds', SAMPLE_userinfo, (err, res) => {
-		console.log(err)
+	fgc.getCartPrice((data) => {
+		console.log(data);
 	})
 })
 

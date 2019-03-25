@@ -1,0 +1,1778 @@
+{
+  "BURGERS": {
+    "id": "9025",
+    "children": {
+      "HAMBURGER": {
+        "prodid": "3761993",
+        "price": "$7.89",
+        "condiments": {
+          "No bun (bowl)": {
+            "condid": "446047454",
+            "quantities": false
+          },
+          "No bun (wrapped in lettuce)": {
+            "condid": "446047455",
+            "quantities": false
+          },
+          "All the Way": {
+            "condid": "446047449",
+            "quantities": false
+          },
+          "Mayo": {
+            "condid": "446047432",
+            "quantities": true
+          },
+          "Ketchup": {
+            "condid": "446047433",
+            "quantities": true
+          },
+          "Relish": {
+            "condid": "446047434",
+            "quantities": true
+          },
+          "Mustard": {
+            "condid": "446047435",
+            "quantities": true
+          },
+          "Onion": {
+            "condid": "446047436",
+            "quantities": true
+          },
+          "Jalapeno Peppers": {
+            "condid": "446047437",
+            "quantities": true
+          },
+          "Lettuce": {
+            "condid": "446047438",
+            "quantities": true
+          },
+          "Green Peppers": {
+            "condid": "446047439",
+            "quantities": true
+          },
+          "Pickles": {
+            "condid": "446047440",
+            "quantities": true
+          },
+          "A.1.(R) Steak Sauce": {
+            "condid": "446047441",
+            "quantities": true
+          },
+          "Tomatoes": {
+            "condid": "446047442",
+            "quantities": true
+          },
+          "BBQ Sauce": {
+            "condid": "446047443",
+            "quantities": true
+          },
+          "Grilled Onions": {
+            "condid": "446047444",
+            "quantities": true
+          },
+          "Hot Sauce": {
+            "condid": "446047445",
+            "quantities": true
+          },
+          "Grilled Mushrooms": {
+            "condid": "446047446",
+            "quantities": true
+          },
+          "Grilled Jalapenos": {
+            "condid": "446047450",
+            "quantities": true
+          },
+          "Grilled Green Peppers": {
+            "condid": "446047451",
+            "quantities": true
+          },
+          "Add Cheese": {
+            "condid": "446047447",
+            "quantities": false
+          },
+          "Add Bacon": {
+            "condid": "446047448",
+            "quantities": false
+          },
+          "Add Patty": {
+            "condid": "446047452",
+            "quantities": false
+          },
+          "Plain": {
+            "condid": "446047453",
+            "quantities": false
+          }
+        }
+      },
+      "LITTLE HAMBURGER": {
+        "prodid": "3761994",
+        "price": "$5.89",
+        "condiments": {
+          "No bun (bowl)": {
+            "condid": "446047529",
+            "quantities": false
+          },
+          "No bun (wrapped in lettuce)": {
+            "condid": "446047530",
+            "quantities": false
+          },
+          "All the Way": {
+            "condid": "446047524",
+            "quantities": false
+          },
+          "Mayo": {
+            "condid": "446047507",
+            "quantities": true
+          },
+          "Ketchup": {
+            "condid": "446047508",
+            "quantities": true
+          },
+          "Relish": {
+            "condid": "446047509",
+            "quantities": true
+          },
+          "Mustard": {
+            "condid": "446047510",
+            "quantities": true
+          },
+          "Onion": {
+            "condid": "446047511",
+            "quantities": true
+          },
+          "Jalapeno Peppers": {
+            "condid": "446047512",
+            "quantities": true
+          },
+          "Lettuce": {
+            "condid": "446047513",
+            "quantities": true
+          },
+          "Green Peppers": {
+            "condid": "446047514",
+            "quantities": true
+          },
+          "Pickles": {
+            "condid": "446047515",
+            "quantities": true
+          },
+          "A.1.(R) Steak Sauce": {
+            "condid": "446047516",
+            "quantities": true
+          },
+          "Tomatoes": {
+            "condid": "446047517",
+            "quantities": true
+          },
+          "BBQ Sauce": {
+            "condid": "446047518",
+            "quantities": true
+          },
+          "Grilled Onions": {
+            "condid": "446047519",
+            "quantities": true
+          },
+          "Hot Sauce": {
+            "condid": "446047520",
+            "quantities": true
+          },
+          "Grilled Mushrooms": {
+            "condid": "446047521",
+            "quantities": true
+          },
+          "Grilled Jalapenos": {
+            "condid": "446047525",
+            "quantities": true
+          },
+          "Grilled Green Peppers": {
+            "condid": "446047526",
+            "quantities": true
+          },
+          "Add Cheese": {
+            "condid": "446047522",
+            "quantities": false
+          },
+          "Add Bacon": {
+            "condid": "446047523",
+            "quantities": false
+          },
+          "Add Patty": {
+            "condid": "446047527",
+            "quantities": false
+          },
+          "Plain": {
+            "condid": "446047528",
+            "quantities": false
+          }
+        }
+      },
+      "CHEESEBURGER": {
+        "prodid": "3761995",
+        "price": "$8.59",
+        "condiments": {
+          "No bun (bowl)": {
+            "condid": "446047604",
+            "quantities": false
+          },
+          "No bun (wrapped in lettuce)": {
+            "condid": "446047605",
+            "quantities": false
+          },
+          "All the Way": {
+            "condid": "446047599",
+            "quantities": false
+          },
+          "Mayo": {
+            "condid": "446047582",
+            "quantities": true
+          },
+          "Ketchup": {
+            "condid": "446047583",
+            "quantities": true
+          },
+          "Relish": {
+            "condid": "446047584",
+            "quantities": true
+          },
+          "Mustard": {
+            "condid": "446047585",
+            "quantities": true
+          },
+          "Onion": {
+            "condid": "446047586",
+            "quantities": true
+          },
+          "Jalapeno Peppers": {
+            "condid": "446047587",
+            "quantities": true
+          },
+          "Lettuce": {
+            "condid": "446047588",
+            "quantities": true
+          },
+          "Green Peppers": {
+            "condid": "446047589",
+            "quantities": true
+          },
+          "Pickles": {
+            "condid": "446047590",
+            "quantities": true
+          },
+          "A.1.(R) Steak Sauce": {
+            "condid": "446047591",
+            "quantities": true
+          },
+          "Tomatoes": {
+            "condid": "446047592",
+            "quantities": true
+          },
+          "BBQ Sauce": {
+            "condid": "446047593",
+            "quantities": true
+          },
+          "Grilled Onions": {
+            "condid": "446047594",
+            "quantities": true
+          },
+          "Hot Sauce": {
+            "condid": "446047595",
+            "quantities": true
+          },
+          "Grilled Mushrooms": {
+            "condid": "446047596",
+            "quantities": true
+          },
+          "Grilled Jalapenos": {
+            "condid": "446047600",
+            "quantities": true
+          },
+          "Grilled Green Peppers": {
+            "condid": "446047601",
+            "quantities": true
+          },
+          "Add Cheese": {
+            "condid": "446047597",
+            "quantities": false
+          },
+          "Add Bacon": {
+            "condid": "446047598",
+            "quantities": false
+          },
+          "Add Patty": {
+            "condid": "446047602",
+            "quantities": false
+          },
+          "Plain": {
+            "condid": "446047603",
+            "quantities": false
+          }
+        }
+      },
+      "LITTLE CHEESEBURGER": {
+        "prodid": "3761996",
+        "price": "$6.59",
+        "condiments": {
+          "No bun (bowl)": {
+            "condid": "446047679",
+            "quantities": false
+          },
+          "No bun (wrapped in lettuce)": {
+            "condid": "446047680",
+            "quantities": false
+          },
+          "All the Way": {
+            "condid": "446047674",
+            "quantities": false
+          },
+          "Mayo": {
+            "condid": "446047657",
+            "quantities": true
+          },
+          "Ketchup": {
+            "condid": "446047658",
+            "quantities": true
+          },
+          "Relish": {
+            "condid": "446047659",
+            "quantities": true
+          },
+          "Mustard": {
+            "condid": "446047660",
+            "quantities": true
+          },
+          "Onion": {
+            "condid": "446047661",
+            "quantities": true
+          },
+          "Jalapeno Peppers": {
+            "condid": "446047662",
+            "quantities": true
+          },
+          "Lettuce": {
+            "condid": "446047663",
+            "quantities": true
+          },
+          "Green Peppers": {
+            "condid": "446047664",
+            "quantities": true
+          },
+          "Pickles": {
+            "condid": "446047665",
+            "quantities": true
+          },
+          "A.1.(R) Steak Sauce": {
+            "condid": "446047666",
+            "quantities": true
+          },
+          "Tomatoes": {
+            "condid": "446047667",
+            "quantities": true
+          },
+          "BBQ Sauce": {
+            "condid": "446047668",
+            "quantities": true
+          },
+          "Grilled Onions": {
+            "condid": "446047669",
+            "quantities": true
+          },
+          "Hot Sauce": {
+            "condid": "446047670",
+            "quantities": true
+          },
+          "Grilled Mushrooms": {
+            "condid": "446047671",
+            "quantities": true
+          },
+          "Grilled Jalapenos": {
+            "condid": "446047675",
+            "quantities": true
+          },
+          "Grilled Green Peppers": {
+            "condid": "446047676",
+            "quantities": true
+          },
+          "Add Cheese": {
+            "condid": "446047672",
+            "quantities": false
+          },
+          "Add Bacon": {
+            "condid": "446047673",
+            "quantities": false
+          },
+          "Add Patty": {
+            "condid": "446047677",
+            "quantities": false
+          },
+          "Plain": {
+            "condid": "446047678",
+            "quantities": false
+          }
+        }
+      },
+      "BACON BURGER": {
+        "prodid": "3761997",
+        "price": "$8.89",
+        "condiments": {
+          "No bun (bowl)": {
+            "condid": "446047753",
+            "quantities": false
+          },
+          "No bun (wrapped in lettuce)": {
+            "condid": "446047754",
+            "quantities": false
+          },
+          "All the Way": {
+            "condid": "446047747",
+            "quantities": false
+          },
+          "Mayo": {
+            "condid": "446047732",
+            "quantities": true
+          },
+          "Ketchup": {
+            "condid": "446047733",
+            "quantities": true
+          },
+          "Relish": {
+            "condid": "446047734",
+            "quantities": true
+          },
+          "Mustard": {
+            "condid": "446047735",
+            "quantities": true
+          },
+          "Onion": {
+            "condid": "446047736",
+            "quantities": true
+          },
+          "Jalapeno Peppers": {
+            "condid": "446047737",
+            "quantities": true
+          },
+          "Lettuce": {
+            "condid": "446047738",
+            "quantities": true
+          },
+          "Green Peppers": {
+            "condid": "446047739",
+            "quantities": true
+          },
+          "Pickles": {
+            "condid": "446047740",
+            "quantities": true
+          },
+          "A.1.(R) Steak Sauce": {
+            "condid": "446047741",
+            "quantities": true
+          },
+          "Tomatoes": {
+            "condid": "446047742",
+            "quantities": true
+          },
+          "BBQ Sauce": {
+            "condid": "446047743",
+            "quantities": true
+          },
+          "Grilled Onions": {
+            "condid": "446047744",
+            "quantities": true
+          },
+          "Hot Sauce": {
+            "condid": "446047745",
+            "quantities": true
+          },
+          "Grilled Mushrooms": {
+            "condid": "446047746",
+            "quantities": true
+          },
+          "Grilled Jalapenos": {
+            "condid": "446047748",
+            "quantities": true
+          },
+          "Grilled Green Peppers": {
+            "condid": "446047749",
+            "quantities": true
+          },
+          "Add Patty": {
+            "condid": "446047750",
+            "quantities": false
+          },
+          "Plain": {
+            "condid": "446047751",
+            "quantities": false
+          }
+        }
+      },
+      "LITTLE BACON BURGER": {
+        "prodid": "3761998",
+        "price": "$6.89",
+        "condiments": {
+          "No bun (bowl)": {
+            "condid": "446047827",
+            "quantities": false
+          },
+          "No bun (wrapped in lettuce)": {
+            "condid": "446047828",
+            "quantities": false
+          },
+          "All the Way": {
+            "condid": "446047821",
+            "quantities": false
+          },
+          "Mayo": {
+            "condid": "446047806",
+            "quantities": true
+          },
+          "Ketchup": {
+            "condid": "446047807",
+            "quantities": true
+          },
+          "Relish": {
+            "condid": "446047808",
+            "quantities": true
+          },
+          "Mustard": {
+            "condid": "446047809",
+            "quantities": true
+          },
+          "Onion": {
+            "condid": "446047810",
+            "quantities": true
+          },
+          "Jalapeno Peppers": {
+            "condid": "446047811",
+            "quantities": true
+          },
+          "Lettuce": {
+            "condid": "446047812",
+            "quantities": true
+          },
+          "Green Peppers": {
+            "condid": "446047813",
+            "quantities": true
+          },
+          "Pickles": {
+            "condid": "446047814",
+            "quantities": true
+          },
+          "A.1.(R) Steak Sauce": {
+            "condid": "446047815",
+            "quantities": true
+          },
+          "Tomatoes": {
+            "condid": "446047816",
+            "quantities": true
+          },
+          "BBQ Sauce": {
+            "condid": "446047817",
+            "quantities": true
+          },
+          "Grilled Onions": {
+            "condid": "446047818",
+            "quantities": true
+          },
+          "Hot Sauce": {
+            "condid": "446047819",
+            "quantities": true
+          },
+          "Grilled Mushrooms": {
+            "condid": "446047820",
+            "quantities": true
+          },
+          "Grilled Jalapenos": {
+            "condid": "446047822",
+            "quantities": true
+          },
+          "Grilled Green Peppers": {
+            "condid": "446047823",
+            "quantities": true
+          },
+          "Add Patty": {
+            "condid": "446047824",
+            "quantities": false
+          },
+          "Plain": {
+            "condid": "446047825",
+            "quantities": false
+          }
+        }
+      },
+      "BACON CHEESEBURGER": {
+        "prodid": "3761999",
+        "price": "$9.59",
+        "condiments": {
+          "No bun (bowl)": {
+            "condid": "446047902",
+            "quantities": false
+          },
+          "No bun (wrapped in lettuce)": {
+            "condid": "446047903",
+            "quantities": false
+          },
+          "All the Way": {
+            "condid": "446047897",
+            "quantities": false
+          },
+          "Mayo": {
+            "condid": "446047881",
+            "quantities": true
+          },
+          "Ketchup": {
+            "condid": "446047882",
+            "quantities": true
+          },
+          "Relish": {
+            "condid": "446047883",
+            "quantities": true
+          },
+          "Mustard": {
+            "condid": "446047884",
+            "quantities": true
+          },
+          "Onion": {
+            "condid": "446047885",
+            "quantities": true
+          },
+          "Jalapeno Peppers": {
+            "condid": "446047886",
+            "quantities": true
+          },
+          "Lettuce": {
+            "condid": "446047887",
+            "quantities": true
+          },
+          "Green Peppers": {
+            "condid": "446047888",
+            "quantities": true
+          },
+          "Pickles": {
+            "condid": "446047889",
+            "quantities": true
+          },
+          "A.1.(R) Steak Sauce": {
+            "condid": "446047890",
+            "quantities": true
+          },
+          "Tomatoes": {
+            "condid": "446047891",
+            "quantities": true
+          },
+          "BBQ Sauce": {
+            "condid": "446047892",
+            "quantities": true
+          },
+          "Grilled Onions": {
+            "condid": "446047893",
+            "quantities": true
+          },
+          "Hot Sauce": {
+            "condid": "446047894",
+            "quantities": true
+          },
+          "Grilled Mushrooms": {
+            "condid": "446047895",
+            "quantities": true
+          },
+          "Grilled Jalapenos": {
+            "condid": "446047898",
+            "quantities": true
+          },
+          "Grilled Green Peppers": {
+            "condid": "446047899",
+            "quantities": true
+          },
+          "Extra Cheese": {
+            "condid": "446047896",
+            "quantities": false
+          },
+          "Add Patty": {
+            "condid": "446047900",
+            "quantities": false
+          },
+          "Plain": {
+            "condid": "446047901",
+            "quantities": false
+          }
+        }
+      },
+      "LITTLE BACON CHEESEBURGER": {
+        "prodid": "3762000",
+        "price": "$7.59",
+        "condiments": {
+          "No bun (bowl)": {
+            "condid": "446047977",
+            "quantities": false
+          },
+          "No bun (wrapped in lettuce)": {
+            "condid": "446047978",
+            "quantities": false
+          },
+          "All the Way": {
+            "condid": "446047971",
+            "quantities": false
+          },
+          "Mayo": {
+            "condid": "446047955",
+            "quantities": true
+          },
+          "Ketchup": {
+            "condid": "446047956",
+            "quantities": true
+          },
+          "Relish": {
+            "condid": "446047957",
+            "quantities": true
+          },
+          "Mustard": {
+            "condid": "446047958",
+            "quantities": true
+          },
+          "Onion": {
+            "condid": "446047959",
+            "quantities": true
+          },
+          "Jalapeno Peppers": {
+            "condid": "446047960",
+            "quantities": true
+          },
+          "Lettuce": {
+            "condid": "446047961",
+            "quantities": true
+          },
+          "Green Peppers": {
+            "condid": "446047962",
+            "quantities": true
+          },
+          "Pickles": {
+            "condid": "446047963",
+            "quantities": true
+          },
+          "A.1.(R) Steak Sauce": {
+            "condid": "446047964",
+            "quantities": true
+          },
+          "Tomatoes": {
+            "condid": "446047965",
+            "quantities": true
+          },
+          "BBQ Sauce": {
+            "condid": "446047966",
+            "quantities": true
+          },
+          "Grilled Onions": {
+            "condid": "446047967",
+            "quantities": true
+          },
+          "Hot Sauce": {
+            "condid": "446047968",
+            "quantities": true
+          },
+          "Grilled Mushrooms": {
+            "condid": "446047969",
+            "quantities": true
+          },
+          "Grilled Jalapenos": {
+            "condid": "446047972",
+            "quantities": true
+          },
+          "Grilled Green Peppers": {
+            "condid": "446047973",
+            "quantities": true
+          },
+          "Extra Cheese": {
+            "condid": "446047970",
+            "quantities": false
+          },
+          "Add Patty": {
+            "condid": "446047974",
+            "quantities": false
+          },
+          "Plain": {
+            "condid": "446047975",
+            "quantities": false
+          }
+        }
+      }
+    }
+  },
+  "Hot Dogs": {
+    "id": "9026",
+    "children": {
+      "HOT DOG": {
+        "prodid": "3762005",
+        "price": "$5.29",
+        "condiments": {
+          "No bun (bowl)": {
+            "condid": "446048342",
+            "quantities": false
+          },
+          "No bun (wrapped in lettuce)": {
+            "condid": "446048343",
+            "quantities": false
+          },
+          "All the Way": {
+            "condid": "446048337",
+            "quantities": false
+          },
+          "Mayo": {
+            "condid": "446048320",
+            "quantities": true
+          },
+          "Ketchup": {
+            "condid": "446048321",
+            "quantities": true
+          },
+          "Relish": {
+            "condid": "446048322",
+            "quantities": true
+          },
+          "Mustard": {
+            "condid": "446048323",
+            "quantities": true
+          },
+          "Onion": {
+            "condid": "446048324",
+            "quantities": true
+          },
+          "Jalapeno Peppers": {
+            "condid": "446048325",
+            "quantities": true
+          },
+          "Lettuce": {
+            "condid": "446048326",
+            "quantities": true
+          },
+          "Green Peppers": {
+            "condid": "446048327",
+            "quantities": true
+          },
+          "Pickles": {
+            "condid": "446048328",
+            "quantities": true
+          },
+          "A.1.(R) Steak Sauce": {
+            "condid": "446048329",
+            "quantities": true
+          },
+          "Tomatoes": {
+            "condid": "446048330",
+            "quantities": true
+          },
+          "BBQ Sauce": {
+            "condid": "446048331",
+            "quantities": true
+          },
+          "Grilled Onions": {
+            "condid": "446048332",
+            "quantities": true
+          },
+          "Hot Sauce": {
+            "condid": "446048333",
+            "quantities": true
+          },
+          "Grilled Mushrooms": {
+            "condid": "446048334",
+            "quantities": true
+          },
+          "Grilled Jalapenos": {
+            "condid": "446048338",
+            "quantities": true
+          },
+          "Grilled Green Peppers": {
+            "condid": "446048339",
+            "quantities": true
+          },
+          "Add Cheese": {
+            "condid": "446048335",
+            "quantities": false
+          },
+          "Add Bacon": {
+            "condid": "446048336",
+            "quantities": false
+          },
+          "Plain": {
+            "condid": "446048341",
+            "quantities": false
+          }
+        }
+      },
+      "BACON DOG": {
+        "prodid": "3762006",
+        "price": "$6.29",
+        "condiments": {
+          "No bun (bowl)": {
+            "condid": "446048416",
+            "quantities": false
+          },
+          "No bun (wrapped in lettuce)": {
+            "condid": "446048417",
+            "quantities": false
+          },
+          "All the Way": {
+            "condid": "446048410",
+            "quantities": false
+          },
+          "Mayo": {
+            "condid": "446048395",
+            "quantities": true
+          },
+          "Ketchup": {
+            "condid": "446048396",
+            "quantities": true
+          },
+          "Relish": {
+            "condid": "446048397",
+            "quantities": true
+          },
+          "Mustard": {
+            "condid": "446048398",
+            "quantities": true
+          },
+          "Onion": {
+            "condid": "446048399",
+            "quantities": true
+          },
+          "Jalapeno Peppers": {
+            "condid": "446048400",
+            "quantities": true
+          },
+          "Lettuce": {
+            "condid": "446048401",
+            "quantities": true
+          },
+          "Green Peppers": {
+            "condid": "446048402",
+            "quantities": true
+          },
+          "Pickles": {
+            "condid": "446048403",
+            "quantities": true
+          },
+          "A.1.(R) Steak Sauce": {
+            "condid": "446048404",
+            "quantities": true
+          },
+          "Tomatoes": {
+            "condid": "446048405",
+            "quantities": true
+          },
+          "BBQ Sauce": {
+            "condid": "446048406",
+            "quantities": true
+          },
+          "Grilled Onions": {
+            "condid": "446048407",
+            "quantities": true
+          },
+          "Hot Sauce": {
+            "condid": "446048408",
+            "quantities": true
+          },
+          "Grilled Mushrooms": {
+            "condid": "446048409",
+            "quantities": true
+          },
+          "Grilled Jalapenos": {
+            "condid": "446048411",
+            "quantities": true
+          },
+          "Grilled Green Peppers": {
+            "condid": "446048412",
+            "quantities": true
+          },
+          "Plain": {
+            "condid": "446048414",
+            "quantities": false
+          }
+        }
+      },
+      "CHEESE DOG": {
+        "prodid": "3762007",
+        "price": "$5.99",
+        "condiments": {
+          "No bun (bowl)": {
+            "condid": "446048491",
+            "quantities": false
+          },
+          "No bun (wrapped in lettuce)": {
+            "condid": "446048492",
+            "quantities": false
+          },
+          "All the Way": {
+            "condid": "446048486",
+            "quantities": false
+          },
+          "Mayo": {
+            "condid": "446048469",
+            "quantities": true
+          },
+          "Ketchup": {
+            "condid": "446048470",
+            "quantities": true
+          },
+          "Relish": {
+            "condid": "446048471",
+            "quantities": true
+          },
+          "Mustard": {
+            "condid": "446048472",
+            "quantities": true
+          },
+          "Onion": {
+            "condid": "446048473",
+            "quantities": true
+          },
+          "Jalapeno Peppers": {
+            "condid": "446048474",
+            "quantities": true
+          },
+          "Lettuce": {
+            "condid": "446048475",
+            "quantities": true
+          },
+          "Green Peppers": {
+            "condid": "446048476",
+            "quantities": true
+          },
+          "Pickles": {
+            "condid": "446048477",
+            "quantities": true
+          },
+          "A.1.(R) Steak Sauce": {
+            "condid": "446048478",
+            "quantities": true
+          },
+          "Tomatoes": {
+            "condid": "446048479",
+            "quantities": true
+          },
+          "BBQ Sauce": {
+            "condid": "446048480",
+            "quantities": true
+          },
+          "Grilled Onions": {
+            "condid": "446048481",
+            "quantities": true
+          },
+          "Hot Sauce": {
+            "condid": "446048482",
+            "quantities": true
+          },
+          "Grilled Mushrooms": {
+            "condid": "446048483",
+            "quantities": true
+          },
+          "Grilled Jalapenos": {
+            "condid": "446048487",
+            "quantities": true
+          },
+          "Grilled Green Peppers": {
+            "condid": "446048488",
+            "quantities": true
+          },
+          "Add Cheese": {
+            "condid": "446048484",
+            "quantities": false
+          },
+          "Add Bacon": {
+            "condid": "446048485",
+            "quantities": false
+          },
+          "Plain": {
+            "condid": "446048490",
+            "quantities": false
+          }
+        }
+      },
+      "BACON CHEESE DOG": {
+        "prodid": "3762008",
+        "price": "$6.99",
+        "condiments": {
+          "No bun (bowl)": {
+            "condid": "446048566",
+            "quantities": false
+          },
+          "No bun (wrapped in lettuce)": {
+            "condid": "446048567",
+            "quantities": false
+          },
+          "All the Way": {
+            "condid": "446048560",
+            "quantities": false
+          },
+          "Mayo": {
+            "condid": "446048544",
+            "quantities": true
+          },
+          "Ketchup": {
+            "condid": "446048545",
+            "quantities": true
+          },
+          "Relish": {
+            "condid": "446048546",
+            "quantities": true
+          },
+          "Mustard": {
+            "condid": "446048547",
+            "quantities": true
+          },
+          "Onion": {
+            "condid": "446048548",
+            "quantities": true
+          },
+          "Jalapeno Peppers": {
+            "condid": "446048549",
+            "quantities": true
+          },
+          "Lettuce": {
+            "condid": "446048550",
+            "quantities": true
+          },
+          "Green Peppers": {
+            "condid": "446048551",
+            "quantities": true
+          },
+          "Pickles": {
+            "condid": "446048552",
+            "quantities": true
+          },
+          "A.1.(R) Steak Sauce": {
+            "condid": "446048553",
+            "quantities": true
+          },
+          "Tomatoes": {
+            "condid": "446048554",
+            "quantities": true
+          },
+          "BBQ Sauce": {
+            "condid": "446048555",
+            "quantities": true
+          },
+          "Grilled Onions": {
+            "condid": "446048556",
+            "quantities": true
+          },
+          "Hot Sauce": {
+            "condid": "446048557",
+            "quantities": true
+          },
+          "Grilled Mushrooms": {
+            "condid": "446048558",
+            "quantities": true
+          },
+          "Grilled Jalapenos": {
+            "condid": "446048561",
+            "quantities": true
+          },
+          "Grilled Green Peppers": {
+            "condid": "446048562",
+            "quantities": true
+          },
+          "Extra Cheese": {
+            "condid": "446048559",
+            "quantities": false
+          },
+          "Plain": {
+            "condid": "446048564",
+            "quantities": false
+          }
+        }
+      }
+    }
+  },
+  "Sandwiches": {
+    "id": "9027",
+    "children": {
+      "GRILLED CHEESE SANDWICH": {
+        "prodid": "3762001",
+        "price": "$4.79",
+        "condiments": {
+          "All the Way": {
+            "condid": "446048047",
+            "quantities": false
+          },
+          "Mayo": {
+            "condid": "446048030",
+            "quantities": true
+          },
+          "Ketchup": {
+            "condid": "446048031",
+            "quantities": true
+          },
+          "Relish": {
+            "condid": "446048032",
+            "quantities": true
+          },
+          "Mustard": {
+            "condid": "446048033",
+            "quantities": true
+          },
+          "Onion": {
+            "condid": "446048034",
+            "quantities": true
+          },
+          "Jalapeno Peppers": {
+            "condid": "446048035",
+            "quantities": true
+          },
+          "Lettuce": {
+            "condid": "446048036",
+            "quantities": true
+          },
+          "Green Peppers": {
+            "condid": "446048037",
+            "quantities": true
+          },
+          "Pickles": {
+            "condid": "446048038",
+            "quantities": true
+          },
+          "A.1.(R) Steak Sauce": {
+            "condid": "446048039",
+            "quantities": true
+          },
+          "Tomatoes": {
+            "condid": "446048040",
+            "quantities": true
+          },
+          "BBQ Sauce": {
+            "condid": "446048041",
+            "quantities": true
+          },
+          "Grilled Onions": {
+            "condid": "446048042",
+            "quantities": true
+          },
+          "Hot Sauce": {
+            "condid": "446048043",
+            "quantities": true
+          },
+          "Grilled Mushrooms": {
+            "condid": "446048044",
+            "quantities": true
+          },
+          "Grilled Jalapenos": {
+            "condid": "446048048",
+            "quantities": true
+          },
+          "Grilled Green Peppers": {
+            "condid": "446048049",
+            "quantities": true
+          },
+          "Add Cheese": {
+            "condid": "446048045",
+            "quantities": false
+          },
+          "Add Bacon": {
+            "condid": "446048046",
+            "quantities": false
+          },
+          "Add Patty": {
+            "condid": "446048050",
+            "quantities": false
+          },
+          "Plain": {
+            "condid": "446048051",
+            "quantities": false
+          }
+        }
+      },
+      "VEGGIE SANDWICH": {
+        "prodid": "3762002",
+        "price": "$4.09",
+        "condiments": {
+          "No bun (bowl)": {
+            "condid": "446048124",
+            "quantities": false
+          },
+          "No bun (wrapped in lettuce)": {
+            "condid": "446048125",
+            "quantities": false
+          },
+          "All the Way": {
+            "condid": "446048103",
+            "quantities": false
+          },
+          "Mayo": {
+            "condid": "446048104",
+            "quantities": true
+          },
+          "Ketchup": {
+            "condid": "446048105",
+            "quantities": true
+          },
+          "Relish": {
+            "condid": "446048106",
+            "quantities": true
+          },
+          "Mustard": {
+            "condid": "446048107",
+            "quantities": true
+          },
+          "Onion": {
+            "condid": "446048108",
+            "quantities": true
+          },
+          "Jalapeno Peppers": {
+            "condid": "446048109",
+            "quantities": true
+          },
+          "Lettuce": {
+            "condid": "446048110",
+            "quantities": true
+          },
+          "Green Peppers": {
+            "condid": "446048111",
+            "quantities": true
+          },
+          "Pickles": {
+            "condid": "446048112",
+            "quantities": true
+          },
+          "A.1.(R) Steak Sauce": {
+            "condid": "446048113",
+            "quantities": true
+          },
+          "Tomatoes": {
+            "condid": "446048114",
+            "quantities": true
+          },
+          "BBQ Sauce": {
+            "condid": "446048115",
+            "quantities": true
+          },
+          "Grilled Onions": {
+            "condid": "446048116",
+            "quantities": true
+          },
+          "Hot Sauce": {
+            "condid": "446048117",
+            "quantities": true
+          },
+          "Grilled Mushrooms": {
+            "condid": "446048118",
+            "quantities": true
+          },
+          "Grilled Jalapenos": {
+            "condid": "446048119",
+            "quantities": true
+          },
+          "Grilled Green Peppers": {
+            "condid": "446048120",
+            "quantities": true
+          },
+          "Add Cheese": {
+            "condid": "446048121",
+            "quantities": false
+          },
+          "Add Bacon": {
+            "condid": "446048122",
+            "quantities": false
+          },
+          "Plain": {
+            "condid": "446048123",
+            "quantities": false
+          },
+          "Regular": {
+            "condid": "446048174",
+            "quantities": false
+          },
+          "Lite": {
+            "condid": "446048175",
+            "quantities": false
+          },
+          "Extra": {
+            "condid": "446048176",
+            "quantities": false
+          }
+        }
+      },
+      "BLT SANDWICH": {
+        "prodid": "3762003",
+        "price": "$5.89",
+        "condiments": {
+          "No bun (bowl)": {
+            "condid": "446048199",
+            "quantities": false
+          },
+          "No bun (wrapped in lettuce)": {
+            "condid": "446048200",
+            "quantities": false
+          },
+          "All the Way": {
+            "condid": "446048177",
+            "quantities": false
+          },
+          "Mayo": {
+            "condid": "446048178",
+            "quantities": true
+          },
+          "Ketchup": {
+            "condid": "446048179",
+            "quantities": true
+          },
+          "Relish": {
+            "condid": "446048180",
+            "quantities": true
+          },
+          "Mustard": {
+            "condid": "446048181",
+            "quantities": true
+          },
+          "Onion": {
+            "condid": "446048182",
+            "quantities": true
+          },
+          "Jalapeno Peppers": {
+            "condid": "446048183",
+            "quantities": true
+          },
+          "Green Peppers": {
+            "condid": "446048184",
+            "quantities": true
+          },
+          "Pickles": {
+            "condid": "446048185",
+            "quantities": true
+          },
+          "A.1.(R) Steak Sauce": {
+            "condid": "446048186",
+            "quantities": true
+          },
+          "BBQ Sauce": {
+            "condid": "446048187",
+            "quantities": true
+          },
+          "Grilled Onions": {
+            "condid": "446048188",
+            "quantities": true
+          },
+          "Hot Sauce": {
+            "condid": "446048189",
+            "quantities": true
+          },
+          "Grilled Mushrooms": {
+            "condid": "446048190",
+            "quantities": true
+          },
+          "Grilled Jalapenos": {
+            "condid": "446048191",
+            "quantities": true
+          },
+          "Grilled Green Peppers": {
+            "condid": "446048192",
+            "quantities": true
+          },
+          "Add Cheese": {
+            "condid": "446048193",
+            "quantities": false
+          },
+          "Add Extra Patty": {
+            "condid": "446048194",
+            "quantities": false
+          },
+          "Plain": {
+            "condid": "446048195",
+            "quantities": false
+          },
+          "Regular": {
+            "condid": "446048201",
+            "quantities": false
+          },
+          "Lite": {
+            "condid": "446048202",
+            "quantities": false
+          },
+          "Extra": {
+            "condid": "446048203",
+            "quantities": false
+          }
+        }
+      },
+      "VEGGIE SANDWICH WITH CHEESE": {
+        "prodid": "3762004",
+        "price": "$4.79",
+        "condiments": {
+          "No bun (bowl)": {
+            "condid": "446048267",
+            "quantities": false
+          },
+          "No bun (wrapped in lettuce)": {
+            "condid": "446048268",
+            "quantities": false
+          },
+          "All the Way": {
+            "condid": "446048246",
+            "quantities": false
+          },
+          "Mayo": {
+            "condid": "446048247",
+            "quantities": true
+          },
+          "Ketchup": {
+            "condid": "446048248",
+            "quantities": true
+          },
+          "Relish": {
+            "condid": "446048249",
+            "quantities": true
+          },
+          "Mustard": {
+            "condid": "446048250",
+            "quantities": true
+          },
+          "Onion": {
+            "condid": "446048251",
+            "quantities": true
+          },
+          "Jalapeno Peppers": {
+            "condid": "446048252",
+            "quantities": true
+          },
+          "Lettuce": {
+            "condid": "446048253",
+            "quantities": true
+          },
+          "Green Peppers": {
+            "condid": "446048254",
+            "quantities": true
+          },
+          "Pickles": {
+            "condid": "446048255",
+            "quantities": true
+          },
+          "A.1.(R) Steak Sauce": {
+            "condid": "446048256",
+            "quantities": true
+          },
+          "Tomatoes": {
+            "condid": "446048257",
+            "quantities": true
+          },
+          "BBQ Sauce": {
+            "condid": "446048258",
+            "quantities": true
+          },
+          "Grilled Onions": {
+            "condid": "446048259",
+            "quantities": true
+          },
+          "Hot Sauce": {
+            "condid": "446048260",
+            "quantities": true
+          },
+          "Grilled Mushrooms": {
+            "condid": "446048261",
+            "quantities": true
+          },
+          "Grilled Jalapenos": {
+            "condid": "446048262",
+            "quantities": true
+          },
+          "Grilled Green Peppers": {
+            "condid": "446048263",
+            "quantities": true
+          },
+          "Extra Cheese": {
+            "condid": "446048264",
+            "quantities": false
+          },
+          "Add Bacon": {
+            "condid": "446048265",
+            "quantities": false
+          },
+          "Plain": {
+            "condid": "446048266",
+            "quantities": false
+          },
+          "Regular": {
+            "condid": "446048317",
+            "quantities": false
+          },
+          "Lite": {
+            "condid": "446048318",
+            "quantities": false
+          },
+          "Extra": {
+            "condid": "446048319",
+            "quantities": false
+          }
+        }
+      }
+    }
+  },
+  "Fries": {
+    "id": "8475",
+    "children": {
+      "LITTLE FRIES": {
+        "prodid": "3762009",
+        "price": "$3.69",
+        "condiments": {}
+      },
+      "LITTLE CAJUN FRIES": {
+        "prodid": "3762010",
+        "price": "$3.69",
+        "condiments": {}
+      },
+      "REGULAR FRIES": {
+        "prodid": "3762011",
+        "price": "$4.59",
+        "condiments": {}
+      },
+      "CAJUN FRIES": {
+        "prodid": "3762012",
+        "price": "$4.59",
+        "condiments": {}
+      },
+      "LARGE FRIES": {
+        "prodid": "3762013",
+        "price": "$5.99",
+        "condiments": {}
+      },
+      "LARGE CAJUN FRIES": {
+        "prodid": "3762014",
+        "price": "$5.99",
+        "condiments": {}
+      }
+    }
+  },
+  "Drinks": {
+    "id": "8476",
+    "children": {
+      "REGULAR DRINK": {
+        "prodid": "9351750",
+        "price": "$2.49",
+        "condiments": {
+          "Coke": {
+            "condid": "1724684258",
+            "quantities": false
+          },
+          "Diet Coke": {
+            "condid": "1724684259",
+            "quantities": false
+          },
+          "Sprite": {
+            "condid": "1724684260",
+            "quantities": false
+          }
+        }
+      },
+      "LARGE DRINK": {
+        "prodid": "9351751",
+        "price": "$2.79",
+        "condiments": {
+          "Coke": {
+            "condid": "1724684261",
+            "quantities": false
+          },
+          "Diet Coke": {
+            "condid": "1724684262",
+            "quantities": false
+          },
+          "Sprite": {
+            "condid": "1724684263",
+            "quantities": false
+          }
+        }
+      },
+      "BOTTLED WATER": {
+        "prodid": "3762017",
+        "price": "$2.09",
+        "condiments": {}
+      },
+      "HONEST TEA BOTTLE": {
+        "prodid": "9351756",
+        "price": "$2.79",
+        "condiments": {}
+      },
+      "SIMPLY LEMONADE BOTTLE": {
+        "prodid": "9351755",
+        "price": "$2.79",
+        "condiments": {}
+      },
+      "COKE BOTTLE": {
+        "prodid": "9351754",
+        "price": "$2.59",
+        "condiments": {}
+      },
+      "DIET COKE BOTTLE": {
+        "prodid": "9351753",
+        "price": "$2.59",
+        "condiments": {}
+      },
+      "SPRITE BOTTLE": {
+        "prodid": "9351752",
+        "price": "$2.59",
+        "condiments": {}
+      }
+    }
+  },
+  "Shakes": {
+    "id": "10875",
+    "children": {
+      "MILKSHAKE": {
+        "prodid": "8099376",
+        "price": "$4.99",
+        "condiments": {
+          "Coffee": {
+            "condid": "1495341039",
+            "quantities": true
+          },
+          "Bacon": {
+            "condid": "1495341040",
+            "quantities": true
+          },
+          "Oreo® Creme": {
+            "condid": "2191141487",
+            "quantities": true
+          },
+          "Oreo® Cookies": {
+            "condid": "1495341042",
+            "quantities": true
+          },
+          "Salted Caramel": {
+            "condid": "1495341043",
+            "quantities": true
+          },
+          "Peanut Butter": {
+            "condid": "1495341044",
+            "quantities": true
+          },
+          "Double Stuf® (Oreo® Creme & Oreo® Cookie)": {
+            "condid": "2192621097",
+            "quantities": true
+          },
+          "Cherry": {
+            "condid": "1495341046",
+            "quantities": true
+          },
+          "Banana": {
+            "condid": "1495341047",
+            "quantities": true
+          },
+          "Vanilla": {
+            "condid": "1495341048",
+            "quantities": true
+          },
+          "Chocolate": {
+            "condid": "1495341049",
+            "quantities": true
+          },
+          "Strawberry": {
+            "condid": "1495341050",
+            "quantities": true
+          },
+          "Malted Milk": {
+            "condid": "1495341051",
+            "quantities": true
+          },
+          "Whipped Cream": {
+            "condid": "1495341052",
+            "quantities": true
+          }
+        }
+      }
+    }
+  }
+}
