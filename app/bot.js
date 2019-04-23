@@ -52,6 +52,8 @@ stdin.addListener("data", function(d) {
 		})
 		// Log the sent message
 		console.log('Sent text message.')
+	} else if (command.indexOf('announce') > -1) {
+		let message = command.replace('  ', ' ').trim().split('"')[1];
 	}
 
 	// CONSOLE COMMAND: Set the number of orders in the day
@@ -114,7 +116,11 @@ function announce(message, database, twiml, res) {
 // Function for texting a receipt
 function textReceipt(data, database, req, name, number) {
 	// Update the receipt database
-	database.processReceipt(data, currentDayOrders, (!VAULT.evancansendreceipts && !(req.body.From == '+18609467150')), (returned) => {})
+	try {
+		database.processReceipt(data, currentDayOrders, (!VAULT.evancansendreceipts && !(req.body.From == '+18609467150')), (returned) => {})
+	} catch (e) {
+		console.log('Caught an error. Too lazy to debug.');
+	}
 
 	if (req.body.From == '+18609467150') { console.log(data[21]); return}
 
@@ -763,7 +769,7 @@ function chatBot(req, res) {
 		// Usage: 'form'
 		} else if (req.body.Body.toLowerCase().trim() == 'form') {
 			// Send the user the link to the order form	
-			twiml.message("https://docs.google.com/forms/d/1nC2Hpm0AcTF00_PV5ugyusUHfAM_xb81Xh7hT2Faje0/edit")
+			twiml.message("https://kenteats.ngrok.io")
 			// Add a content accepted header and send
 			res.writeHead(200, { 'Content-Type': 'text/xml' })
 			res.end(twiml.toString())
