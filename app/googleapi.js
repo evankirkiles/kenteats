@@ -258,7 +258,7 @@ function fillStudentIDOrders(auth, callback, data) {
   const sheets = google.sheets({version: 'v4', auth});
   sheets.spreadsheets.values.get({
     spreadsheetId: '1gRSSPxuDottfMmwAAiZsHdQYllU7RECJ7_XtGiFWeGY',
-    range: 'Sheet1!A1:A999'
+    range: 'Sheet1!A1:A1737'
   }, (err, result) => {
     if (err) return console.log('The API returned an error: ' + err)
       // Cycle through the results to find the first empty cell to begin the range with
