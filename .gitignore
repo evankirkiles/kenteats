@@ -61,5 +61,4 @@ typings/
 .next
 
 # MY CUSTOM GITIGNORES
-config/vault.js
 .DS_STORE

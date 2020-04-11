@@ -1,0 +1,107 @@
+{
+    "twilio": {
+        "accountSid": "",
+        "authToken": "",
+        "phoneNumber": "",
+        "allowedNumbers": [],
+        "webhookUrl":
+    },
+
+    "deals": {
+        "referrals": {
+            "active": true,
+            "referredbybval": "2.00",
+            "referredtoval": "2.00",
+            "maxreferrals": -1
+        }
+    },
+
+    "menus": [
+        "Dunkin: https://www.dunkindonuts.com/en/menu",
+        "Starbucks: https://www.starbucks.com/menu",
+        "Five Guys: http://www.fiveguys.com/Menu",
+        "Chipotle: https://www.chipotle.com/nutrition-calculator.html",
+        "Panera: https://www.panerabread.com/panerabread/documents/nutrition/Menu-Retail.PDF",
+        "Chick-Fil-A: https://www.chick-fil-a.com"
+    ],
+
+    "announcewithtwilio": false,
+    "onlyuseimessage": false,
+
+    "express": {
+        "port": "1337"
+    },
+
+    "mysql": {
+        "host": "",
+        "username": "",
+        "password": ""
+    },
+
+    "dorms": [
+        "North",
+        "MDS",
+        "Borsdorff",
+        "Case",
+        "Hoerle",
+        "Field"
+    ],
+
+    "evancansendreceipts": true,
+
+    "deliveryfee": 6,
+
+    "messagedelim": "*",
+
+    "mutednumbers": [],
+
+    "stores": {
+        "Chipotle": false,
+        "Chick-A": false,
+        "Taco Bell": false,
+        "Five Guys": false,
+        "Panera": false,
+        "Wendys": false,
+        "McDonalds": false,
+        "Starbucks": false,
+        "Dunkin": false,
+        "Dominos": false
+    },
+
+    "about": "KentEats is run by Brady McGowan (delivery and management) and Evan Kirkiles (code for chatbot, database, server, and finances). We offer a food delivery service similar to that of DoorDash and UberEats. Texts to the chatbot (this number) are not guaranteed to reach either of us, although the console will be monitored from time to time. If you want to contact the deliverer directly, Brady's number is (203)586-8752.",
+    "support": "Text 12035868752 to contact the owner of KentEats or begin receiving order announcements. This is not the same as unmute.",
+
+    "admincommands": {
+        "get receipts": "Retrieves receipts for a given time of day and a given store (if specified).\n USAGE: 'get b receipts' or 'get a receipts for starbucks'",
+        "send receipts": "Sends all the receipts for a given time of day and a person (if specified).\n USAGE: 'send b receipts' or 'send b receipt to Jim'",
+        "mass message": "Sends a message to all users with a receipt at a given time of day and in a dorm (if specified).\n USAGE: 'mass b message * hi * hoerle'",
+        "update financials": "Manually updates the bookkeeping Google Sheet which is usually updated at 9:30 P.M.\n USAGE: 'update financials'",
+        "clear input": "Clears the responses Google Sheet to allow for a new set of orders to come in.\n USAGE: 'clear input'",
+        "mile": "Logs the miles for each run. Should always be called at beginning of end of a run, with start or end and then the miles on the car.\n USAGE: 'mile start 10000' and then 'mile end 12034'",
+        "toggle twilio": "Turns on/off announcements sending to users with Twilio.\n USAGE: 'toggle twilio'",
+        "announce": "Sends a message to all numbers in the database. \n USAGE: 'announce * hellooooo * '",
+        "coupons": "Views the list of all existing coupons with their code, amount, and uses left.\n USAGE: 'coupons'",
+        "orders": "Views the orders for a dorm or store at a specified time of day.\n USAGE: 'north b orders' or 'fiveguys b orders'",
+        "stores": "Gets the list of stores to visit for a time of day, in order.\n USAGE: 'get b stores'",
+        "form" : "Returns the form which is used to place an order.\n USAGE: 'form'",
+        "menu": "Provides links to the menus of supported stores.\n USAGE: 'menu'",
+        "about": "More information about the bot and business themselves.\n USAGE: 'about'",
+        "?": "Provides more info and usage tips on a command.\n USAGE: '? get receipt'"
+    },
+
+    "normiecommands": {
+        "form": "Gets the link for the Google form with which you can order.\n USAGE: 'form'",
+        "menu": "Provides links to the menus of supported stores.\n USAGE: 'menu'",
+        "about": "More information about the bot and business themselves.\n USAGE: 'about'",
+        "support": "Provides the support number whcih can be texted to begin receiving order time announcements.",
+        "refer": "Takes the number of the person who referred you for a small bonus on your next order.\n USAGE: 'refer 1234567890'",
+        "credit": "Checks your credit, which can be used on any order by typing 'CREDIT' in the coupon field.\n USAGE: 'credit'",
+        "mute": "Mutes your number from receiving global announcements.\n USAGE: 'mute'",
+        "unmute": "Allows your number to receive global announcements.\n USAGE: 'unmute'",
+        "?": "Provides more info and usage tips on a command.\n USAGE: '? mute'"
+    },
+
+    "files": {
+        "useranalytics": "./store/useranalytics.json"
+    }
+}
